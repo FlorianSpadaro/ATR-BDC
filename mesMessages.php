@@ -51,60 +51,152 @@
             </div>
         </header>
 
-        <div class="container">
-            <div class="row">
-                <section class="col-sm-8 table responsive">
-                    <table class="table table-condensed">
-                        <caption>
-                            <h4>Messages reçus</h4>
-                        </caption>
-                        <thead>
-                            <tr>
-                                <th>Sujet</th>
-                                <th>Correspondant</th>
-                                <th>Date</th>
-                                <th>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><input type="checkbox" id="allMessagesRecus" /></span>
-                                        <button class="btn btn-danger" id="supprimerSelection">Supprimer</button>
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
+        <ul class="nav nav-pills container">
+            <li class="active"><a href="#messagesRecus" data-toggle="tab">Messages reçus</a></li>
+            <li><a href="#messagesEnvoyes" data-toggle="tab">Messages envoyés</a></li>
+        </ul>
+
+        <div class="tab-content">
+
+            <div class="tab-pane active fade in container" id="messagesRecus">
+
+                <?php
+                if($messages !== null && isset($messages->recus) && $messages->recus !== null){
+                    ?>
+                    <section class="col-sm-8 table responsive">
+                        <table class="table table-condensed">
+                            <caption>
+                                <h4>Messages reçus</h4>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>Sujet</th>
+                                    <th>Correspondant</th>
+                                    <th>Date</th>
+                                    <th>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><input type="checkbox" id="allMessagesRecus" /></span>
+                                            <button class="btn btn-danger" id="supprimerSelection">Supprimer</button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
                             foreach($messages->recus as $messageRecu)
                             {
                                 ?>
-                                <tr 
-                                    <?php if(!$messageRecu->lu){echo "class='success'";}
-                                    ?>
-                                    id="messageRecu<?php echo $messageRecu->id ?>"
-                                >
-                                    <td>
-                                        <?php echo $messageRecu->sujet ?>
-                                    </td>
-                                    <td>
-                                        <?php echo strtoupper($messageRecu->correspondant->nom)." ".strtoupper(substr($messageRecu->correspondant->prenom, 0, 1)).strtolower(substr($messageRecu->correspondant->prenom, 1)); ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $messageRecu->date->jour." à ".$messageRecu->date->heure ?>
-                                    </td>
-                                    <td>
-                                        <input type="checkbox" class="selectionMessageRecus" name="<?php echo $messageRecu->id ?>" id="<?php echo $messageRecu->id ?>" />
-                                    </td>
-                                </tr>
-                                <?php
+                                    <tr <?php if(!$messageRecu->lu){echo "class='success'";} ?> id="messageRecu<?php echo $messageRecu->id ?>" >
+                                            <td>
+                                                <a href="message.php?id=<?php echo $messageRecu->id ?>">
+                                                    <?php echo $messageRecu->sujet ?>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <div class="modal fade" id="infos<?php echo $messageRecu->correspondant->id ?>">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content"></div>
+                                                    </div>
+                                                </div>
+                                                <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $messageRecu->correspondant->id ?>&amp;prenom=<?php echo $messageRecu->correspondant->prenom ?>&amp;nom=<?php echo $messageRecu->correspondant->nom ?>&amp;fonction=<?php echo $messageRecu->correspondant->fonction->libelle ?>&amp;niveau=<?php echo $messageRecu->correspondant->fonction->niveau->libelle ?>&amp;photo=<?php echo $messageRecu->correspondant->photo ?>&amp;email=<?php echo $messageRecu->correspondant->email ?>" data-target="#infos<?php echo $messageRecu->correspondant->id ?>">
+                                                    <?php echo strtoupper($messageRecu->correspondant->nom)." ".strtoupper(substr($messageRecu->correspondant->prenom, 0, 1)).strtolower(substr($messageRecu->correspondant->prenom, 1)); ?>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <?php echo $messageRecu->date->jour." à ".$messageRecu->date->heure ?>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="selectionMessageRecus" name="<?php echo $messageRecu->id ?>" id="<?php echo $messageRecu->id ?>" />
+                                            </td>
+                                    </tr>
+                                    <?php
                             }
                             ?>
-                        </tbody>
-                    </table>
-                    
-                </section>
+                            </tbody>
+                        </table>
+
+                    </section>
+                    <?php
+                }
+                else{
+                    ?>
+                        <label class="label label-info">Vous n'avez reçu aucun message</label>
+                        <?php
+                }
+                ?>
+
+
+
             </div>
 
-            <div class="row">
-                <section class="col-sm-8 table responsive">
+            <div class="tab-pane fade container" id="messagesEnvoyes">
+
+                <?php
+                if($messages !== null && isset($messages->envoyes) && $messages->envoyes !== null)
+                {
+                    ?>
+                    <section class="col-sm-8 table responsive">
+                        <table class="table table-condensed">
+                            <caption>
+                                <h4>Messages envoyés</h4>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>Sujet</th>
+                                    <th>Correspondant</th>
+                                    <th>Date</th>
+                                    <th>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><input type="checkbox" id="allMessagesEnvoyes" /></span>
+                                            <button class="btn btn-danger" id="supprimerSelectionEnvoyes">Supprimer</button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                            foreach($messages->envoyes as $messageEnvoye)
+                            {
+                                ?>
+                                    <tr id="messageEnvoye<?php echo $messageEnvoye->id ?>">
+                                        <td>
+                                            <a href="message.php?id=<?php echo $messageEnvoye->id ?>">
+                                                <?php echo $messageEnvoye->sujet ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="modal fade" id="infos<?php echo $messageEnvoye->utilisateur->id ?>">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content"></div>
+                                                </div>
+                                            </div>
+                                            <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $messageEnvoye->utilisateur->id ?>&amp;prenom=<?php echo $messageEnvoye->utilisateur->prenom ?>&amp;nom=<?php echo $messageEnvoye->utilisateur->nom ?>&amp;fonction=<?php echo $messageEnvoye->utilisateur->fonction->libelle ?>&amp;niveau=<?php echo $messageEnvoye->utilisateur->fonction->niveau->libelle ?>&amp;photo=<?php echo $messageEnvoye->utilisateur->photo ?>&amp;email=<?php echo $messageEnvoye->utilisateur->email ?>" data-target="#infos<?php echo $messageEnvoye->utilisateur->id ?>">
+                                                <?php echo strtoupper($messageEnvoye->utilisateur->nom)." ".strtoupper(substr($messageEnvoye->utilisateur->prenom, 0, 1)).strtolower(substr($messageEnvoye->utilisateur->prenom, 1)); ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <?php echo $messageEnvoye->date->jour." à ".$messageEnvoye->date->heure ?>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" class="selectionMessagesEnvoyes" name="<?php echo $messageEnvoye->id ?>" id="<?php echo $messageEnvoye->id ?>" />
+                                        </td>
+                                    </tr>
+                                    <?php
+                            }
+                            ?>
+                            </tbody>
+                        </table>
+
+                    </section>
+                    <?php
+                }else{
+                    ?>
+                    <label class="label label-info">Vous n'avez envoyé aucun message</label>
+                    <?php
+                }
+                ?>
+
+                        <!--<section class="col-sm-8 table responsive">
                     <table class="table table-bordered table-striped table-condensed">
                         <caption>
                             <h4>Messages envoyés</h4>
@@ -156,7 +248,7 @@
                             </tr>
                         </tbody>
                     </table>
-                </section>
+                </section>-->
             </div>
         </div>
 
@@ -168,10 +260,10 @@
                         <h4 class="modal-title">Confirmation</h4>
                     </div>
                     <div class="modal-body">
-                        Voulez-vous supprimer ces <span id="nbMessagesSelectionne"></span> message(s)?
+                        Voulez-vous supprimer ce(s) <span id="nbMessagesSelectionne"></span> message(s)?
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-info" id="confirmationSuppression" >Confirmer</button>
+                        <button class="btn btn-info" id="confirmationSuppression">Confirmer</button>
                         <button class="btn btn-danger" data-dismiss="modal">Annuler</button>
                     </div>
                 </div>

@@ -38,7 +38,13 @@ $(function () {
         $(".selectionMessageRecus:checked").each(function(){
             tab.push($(this).attr("id"));
         });
-        $("#nbMessagesSelectionne").text(tab.length);
+        if(tab.length > 1)
+            {
+                $("#nbMessagesSelectionne").text(tab.length);
+            }
+        else{
+            $("#nbMessagesSelectionne").text("");
+        }
         $('#messageSuppression').modal('show');
         $("#confirmationSuppression").click(function(){
             tab.forEach(function(id){
@@ -53,23 +59,67 @@ $(function () {
         });
     });
     
-/*  $(".supprimerMessage").click(function(){
-      var idMessage = $(this).attr("id");
-      $('#messageSuppression').modal('show');
-      $("#confirmationSuppression").click(function(){
-          console.log(idMessage);
-      });*/
-      /*if(confirm("Voulez-vou supprimer ce message?"))
-          {
-              $.post("API/deleteMessageById.php", {message_id: $(this).attr("id")}, function(data){
-                  var reponse = JSON.parse(data);
-                  if(data){
-                      
-                  }
-                  else{
-                      
-                  }
-              });
-          }*/
-  //});
+    //ENVOYER
+    
+    
+    $("#supprimerSelectionEnvoyes").prop("disabled", true);
+    
+    $("#allMessagesEnvoyes").click(function(){
+        if($(this).is(":checked"))
+            {
+                $(".selectionMessagesEnvoyes").each(function(){
+                    $(this).prop("checked", "checked");
+                });
+                $("#supprimerSelectionEnvoyes").prop("disabled", false);
+            }
+        else{
+            $(".selectionMessagesEnvoyes").each(function(){
+                    $(this).removeProp("checked");
+                });
+            $("#supprimerSelectionEnvoyes").prop("disabled", true);
+        }
+    });
+    
+    $(".selectionMessagesEnvoyes").click(function(){
+        var nb = 0;
+        $(".selectionMessagesEnvoyes:checked").each(function(){
+            nb++;
+        });
+        if(nb>0)
+            {
+                $("#allMessagesEnvoyes").prop("checked", "checked");
+                $("#supprimerSelectionEnvoyes").prop("disabled", false);
+            }
+        else{
+            $("#allMessagesEnvoyes").removeProp("checked");
+            $("#supprimerSelectionEnvoyes").prop("disabled", true);
+        }
+    });
+    
+    $("#supprimerSelectionEnvoyes").click(function(){
+        var tab2 = [];
+        $(".selectionMessagesEnvoyes:checked").each(function(){
+            tab2.push($(this).attr("id"));
+        });
+        if(tab2.length > 1)
+            {
+                $("#nbMessagesSelectionne").text(tab2.length);
+            }
+        else{
+            $("#nbMessagesSelectionne").text("");
+        }
+        $('#messageSuppression').modal('show');
+        $("#confirmationSuppression").click(function(){
+            tab2.forEach(function(id){
+                $.post("API/deleteMessageById.php", {message_id: id}, function(){
+                    $("#"+id).removeProp("checked");
+                    $("#messageEnvoye"+id).hide();
+                });
+            });
+            $("#allMessagesEnvoyes").removeProp("checked");
+            $('#messageSuppression').modal('hide');
+            /*window.location.reload();*/
+        });
+    });
+
 });
