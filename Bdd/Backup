@@ -1,0 +1,2378 @@
+--
+-- PostgreSQL database cluster dump
+--
+
+-- Started on 2017-08-24 21:43:45
+
+SET default_transaction_read_only = off;
+
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+
+--
+-- Roles
+--
+
+CREATE ROLE "CYRRIC";
+ALTER ROLE "CYRRIC" WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION NOBYPASSRLS PASSWORD 'md51e41e0d1e2d4f6af471687a02a4678be';
+CREATE ROLE "USER";
+ALTER ROLE "USER" WITH SUPERUSER INHERIT NOCREATEROLE NOCREATEDB LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'md5e355ff3a4a5960b855abdbe2666e5e1d';
+CREATE ROLE admambigroup;
+ALTER ROLE admambigroup WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'md5822377278ffce218523dae959c59a8ed';
+CREATE ROLE postgres;
+ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYPASSRLS PASSWORD 'md53175bce1d3201d16594cebf9d7eb3f9d';
+
+
+
+
+
+
+--
+-- Database creation
+--
+
+CREATE DATABASE bdc WITH TEMPLATE = template0 OWNER = admambigroup;
+REVOKE CONNECT,TEMPORARY ON DATABASE template1 FROM PUBLIC;
+GRANT CONNECT ON DATABASE template1 TO PUBLIC;
+
+
+\connect bdc
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.1
+-- Dumped by pg_dump version 9.6.1
+
+-- Started on 2017-08-24 21:43:45
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 1 (class 3079 OID 12393)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2406 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 185 (class 1259 OID 16440)
+-- Name: abonnement; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE abonnement (
+    id integer NOT NULL,
+    utilisateur_id integer NOT NULL,
+    secteur_id integer,
+    domaine_id integer,
+    sous_domaine_id integer,
+    projet_id integer,
+    contrat_id integer
+);
+
+
+ALTER TABLE abonnement OWNER TO postgres;
+
+--
+-- TOC entry 186 (class 1259 OID 16443)
+-- Name: abonnement_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE abonnement_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE abonnement_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2407 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: abonnement_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE abonnement_id_seq OWNED BY abonnement.id;
+
+
+--
+-- TOC entry 187 (class 1259 OID 16445)
+-- Name: actualite; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE actualite (
+    id integer NOT NULL,
+    titre character varying(255) NOT NULL,
+    contenu text NOT NULL,
+    date_creation timestamp with time zone NOT NULL,
+    date_derniere_maj timestamp with time zone NOT NULL,
+    secteur_id integer,
+    sous_domaine_id integer,
+    projet_id integer,
+    contrat_id integer,
+    utilisateur_id integer NOT NULL,
+    domaine_id integer,
+    notification boolean NOT NULL,
+    description character varying(255)
+);
+
+
+ALTER TABLE actualite OWNER TO postgres;
+
+--
+-- TOC entry 188 (class 1259 OID 16451)
+-- Name: actualite_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE actualite_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE actualite_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2408 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: actualite_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE actualite_id_seq OWNED BY actualite.id;
+
+
+--
+-- TOC entry 189 (class 1259 OID 16453)
+-- Name: actualite_pj; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE actualite_pj (
+    actualite_id integer,
+    piece_jointe_id integer,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE actualite_pj OWNER TO postgres;
+
+--
+-- TOC entry 190 (class 1259 OID 16456)
+-- Name: actualite_pj_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE actualite_pj_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE actualite_pj_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2409 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: actualite_pj_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE actualite_pj_id_seq OWNED BY actualite_pj.id;
+
+
+--
+-- TOC entry 191 (class 1259 OID 16458)
+-- Name: connexion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE connexion (
+    id integer NOT NULL,
+    login character varying NOT NULL,
+    mdp character varying NOT NULL,
+    utilisateur_id integer NOT NULL
+);
+
+
+ALTER TABLE connexion OWNER TO postgres;
+
+--
+-- TOC entry 192 (class 1259 OID 16464)
+-- Name: connexion_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE connexion_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE connexion_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2410 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: connexion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE connexion_id_seq OWNED BY connexion.id;
+
+
+--
+-- TOC entry 193 (class 1259 OID 16466)
+-- Name: contrat; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE contrat (
+    id integer NOT NULL,
+    libelle character varying(255) NOT NULL,
+    miniature_id integer NOT NULL,
+    utilisateur_id integer NOT NULL
+);
+
+
+ALTER TABLE contrat OWNER TO postgres;
+
+--
+-- TOC entry 194 (class 1259 OID 16469)
+-- Name: contrat_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE contrat_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE contrat_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2411 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: contrat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE contrat_id_seq OWNED BY contrat.id;
+
+
+--
+-- TOC entry 195 (class 1259 OID 16471)
+-- Name: domaine; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE domaine (
+    id integer NOT NULL,
+    libelle character varying(255) NOT NULL,
+    secteur_id integer NOT NULL,
+    utilisateur_id integer NOT NULL,
+    description character varying(255)
+);
+
+
+ALTER TABLE domaine OWNER TO postgres;
+
+--
+-- TOC entry 196 (class 1259 OID 16474)
+-- Name: domaine_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE domaine_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE domaine_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2412 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: domaine_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE domaine_id_seq OWNED BY domaine.id;
+
+
+--
+-- TOC entry 197 (class 1259 OID 16476)
+-- Name: fonction; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE fonction (
+    id integer NOT NULL,
+    libelle character varying(255) NOT NULL,
+    niveau_id integer NOT NULL
+);
+
+
+ALTER TABLE fonction OWNER TO postgres;
+
+--
+-- TOC entry 198 (class 1259 OID 16479)
+-- Name: fonction_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE fonction_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE fonction_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2413 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: fonction_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE fonction_id_seq OWNED BY fonction.id;
+
+
+--
+-- TOC entry 199 (class 1259 OID 16481)
+-- Name: miniature; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE miniature (
+    id integer NOT NULL,
+    nom character varying(255) NOT NULL,
+    url character varying(255) NOT NULL
+);
+
+
+ALTER TABLE miniature OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1259 OID 16487)
+-- Name: miniature_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE miniature_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE miniature_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2414 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: miniature_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE miniature_id_seq OWNED BY miniature.id;
+
+
+--
+-- TOC entry 201 (class 1259 OID 16489)
+-- Name: niveau; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE niveau (
+    id integer NOT NULL,
+    niveau integer NOT NULL,
+    libelle character varying(255) NOT NULL
+);
+
+
+ALTER TABLE niveau OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 16492)
+-- Name: niveau_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE niveau_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE niveau_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2415 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: niveau_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE niveau_id_seq OWNED BY niveau.id;
+
+
+--
+-- TOC entry 203 (class 1259 OID 16494)
+-- Name: piece_jointe; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE piece_jointe (
+    id integer NOT NULL,
+    libelle character varying(255) NOT NULL,
+    url character varying(255) NOT NULL,
+    description character varying(255) NOT NULL
+);
+
+
+ALTER TABLE piece_jointe OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1259 OID 16500)
+-- Name: piece_jointe_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE piece_jointe_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE piece_jointe_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2416 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: piece_jointe_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE piece_jointe_id_seq OWNED BY piece_jointe.id;
+
+
+--
+-- TOC entry 205 (class 1259 OID 16502)
+-- Name: projet; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE projet (
+    id integer NOT NULL,
+    titre character varying(255) NOT NULL,
+    description text,
+    contenu text NOT NULL,
+    date_creation timestamp with time zone NOT NULL,
+    date_derniere_maj timestamp with time zone NOT NULL,
+    sous_domaine_id integer NOT NULL,
+    contrat_id integer,
+    utilisateur_id integer NOT NULL
+);
+
+
+ALTER TABLE projet OWNER TO postgres;
+
+--
+-- TOC entry 206 (class 1259 OID 16508)
+-- Name: projet_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE projet_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE projet_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2417 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: projet_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE projet_id_seq OWNED BY projet.id;
+
+
+--
+-- TOC entry 207 (class 1259 OID 16510)
+-- Name: projet_pj; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE projet_pj (
+    projet_id integer NOT NULL,
+    piece_jointe_id integer NOT NULL,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE projet_pj OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 16513)
+-- Name: projet_pj_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE projet_pj_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE projet_pj_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2418 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: projet_pj_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE projet_pj_id_seq OWNED BY projet_pj.id;
+
+
+--
+-- TOC entry 218 (class 1259 OID 16793)
+-- Name: reponse; Type: TABLE; Schema: public; Owner: admambigroup
+--
+
+CREATE TABLE reponse (
+    id integer NOT NULL,
+    suggestion_id integer NOT NULL,
+    contenu text NOT NULL,
+    utilisateur_id integer NOT NULL,
+    date_creation timestamp with time zone NOT NULL,
+    date_derniere_maj timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE reponse OWNER TO admambigroup;
+
+--
+-- TOC entry 217 (class 1259 OID 16791)
+-- Name: reponse_id_seq; Type: SEQUENCE; Schema: public; Owner: admambigroup
+--
+
+CREATE SEQUENCE reponse_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE reponse_id_seq OWNER TO admambigroup;
+
+--
+-- TOC entry 2419 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: reponse_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admambigroup
+--
+
+ALTER SEQUENCE reponse_id_seq OWNED BY reponse.id;
+
+
+--
+-- TOC entry 209 (class 1259 OID 16515)
+-- Name: secteur; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE secteur (
+    id integer NOT NULL,
+    libelle character varying(255) NOT NULL
+);
+
+
+ALTER TABLE secteur OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 16518)
+-- Name: secteur_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE secteur_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE secteur_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2420 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: secteur_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE secteur_id_seq OWNED BY secteur.id;
+
+
+--
+-- TOC entry 211 (class 1259 OID 16520)
+-- Name: sous_domaine; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE sous_domaine (
+    id integer NOT NULL,
+    libelle character varying(255) NOT NULL,
+    description text,
+    domaine_id integer NOT NULL,
+    utilisateur_id integer NOT NULL
+);
+
+
+ALTER TABLE sous_domaine OWNER TO postgres;
+
+--
+-- TOC entry 212 (class 1259 OID 16526)
+-- Name: sous_domaine_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE sous_domaine_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE sous_domaine_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2421 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: sous_domaine_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE sous_domaine_id_seq OWNED BY sous_domaine.id;
+
+
+--
+-- TOC entry 213 (class 1259 OID 16528)
+-- Name: suggestion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE suggestion (
+    id integer NOT NULL,
+    titre character varying(255) NOT NULL,
+    contenu text NOT NULL,
+    date_creation timestamp with time zone NOT NULL,
+    date_derniere_maj timestamp with time zone NOT NULL,
+    secteur_id integer,
+    domaine_id integer,
+    sous_domaine_id integer,
+    utilisateur_id integer NOT NULL,
+    projet_id integer,
+    publique boolean NOT NULL
+);
+
+
+ALTER TABLE suggestion OWNER TO postgres;
+
+--
+-- TOC entry 214 (class 1259 OID 16534)
+-- Name: suggestion_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE suggestion_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE suggestion_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2422 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: suggestion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE suggestion_id_seq OWNED BY suggestion.id;
+
+
+--
+-- TOC entry 215 (class 1259 OID 16536)
+-- Name: utilisateur; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE utilisateur (
+    id integer NOT NULL,
+    nom character varying(255) NOT NULL,
+    prenom character varying(255) NOT NULL,
+    email character varying(255) NOT NULL,
+    fonction_id integer NOT NULL,
+    photo character varying(255)
+);
+
+
+ALTER TABLE utilisateur OWNER TO postgres;
+
+--
+-- TOC entry 216 (class 1259 OID 16542)
+-- Name: utilisateur_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE utilisateur_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE utilisateur_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2423 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: utilisateur_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE utilisateur_id_seq OWNED BY utilisateur.id;
+
+
+--
+-- TOC entry 220 (class 1259 OID 33177)
+-- Name: utilisateur_messages; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE utilisateur_messages (
+    id integer NOT NULL,
+    utilisateur_id integer NOT NULL,
+    message character varying(255) NOT NULL,
+    lu boolean DEFAULT false NOT NULL,
+    date timestamp with time zone NOT NULL,
+    correspondant_id integer NOT NULL,
+    sujet character varying(50) NOT NULL
+);
+
+
+ALTER TABLE utilisateur_messages OWNER TO postgres;
+
+--
+-- TOC entry 2424 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN utilisateur_messages.utilisateur_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN utilisateur_messages.utilisateur_id IS 'Personne qui a reçu le message';
+
+
+--
+-- TOC entry 2425 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN utilisateur_messages.correspondant_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN utilisateur_messages.correspondant_id IS 'Personne qui a envoyé le message';
+
+
+--
+-- TOC entry 219 (class 1259 OID 33175)
+-- Name: utilisateur_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE utilisateur_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE utilisateur_messages_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2426 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: utilisateur_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE utilisateur_messages_id_seq OWNED BY utilisateur_messages.id;
+
+
+--
+-- TOC entry 222 (class 1259 OID 49561)
+-- Name: utilisateur_notifs; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE utilisateur_notifs (
+    id integer NOT NULL,
+    description character varying(255) NOT NULL,
+    vu boolean DEFAULT false NOT NULL,
+    lien character varying(255),
+    utilisateur_id integer
+);
+
+
+ALTER TABLE utilisateur_notifs OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 49559)
+-- Name: utilisateur_notifs_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE utilisateur_notifs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE utilisateur_notifs_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2427 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: utilisateur_notifs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE utilisateur_notifs_id_seq OWNED BY utilisateur_notifs.id;
+
+
+--
+-- TOC entry 2124 (class 2604 OID 16544)
+-- Name: abonnement id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement ALTER COLUMN id SET DEFAULT nextval('abonnement_id_seq'::regclass);
+
+
+--
+-- TOC entry 2125 (class 2604 OID 16545)
+-- Name: actualite id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite ALTER COLUMN id SET DEFAULT nextval('actualite_id_seq'::regclass);
+
+
+--
+-- TOC entry 2126 (class 2604 OID 16546)
+-- Name: actualite_pj id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite_pj ALTER COLUMN id SET DEFAULT nextval('actualite_pj_id_seq'::regclass);
+
+
+--
+-- TOC entry 2127 (class 2604 OID 16547)
+-- Name: connexion id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY connexion ALTER COLUMN id SET DEFAULT nextval('connexion_id_seq'::regclass);
+
+
+--
+-- TOC entry 2128 (class 2604 OID 16548)
+-- Name: contrat id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY contrat ALTER COLUMN id SET DEFAULT nextval('contrat_id_seq'::regclass);
+
+
+--
+-- TOC entry 2129 (class 2604 OID 16549)
+-- Name: domaine id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY domaine ALTER COLUMN id SET DEFAULT nextval('domaine_id_seq'::regclass);
+
+
+--
+-- TOC entry 2130 (class 2604 OID 16550)
+-- Name: fonction id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY fonction ALTER COLUMN id SET DEFAULT nextval('fonction_id_seq'::regclass);
+
+
+--
+-- TOC entry 2131 (class 2604 OID 16551)
+-- Name: miniature id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY miniature ALTER COLUMN id SET DEFAULT nextval('miniature_id_seq'::regclass);
+
+
+--
+-- TOC entry 2132 (class 2604 OID 16552)
+-- Name: niveau id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY niveau ALTER COLUMN id SET DEFAULT nextval('niveau_id_seq'::regclass);
+
+
+--
+-- TOC entry 2133 (class 2604 OID 16553)
+-- Name: piece_jointe id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY piece_jointe ALTER COLUMN id SET DEFAULT nextval('piece_jointe_id_seq'::regclass);
+
+
+--
+-- TOC entry 2134 (class 2604 OID 16554)
+-- Name: projet id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet ALTER COLUMN id SET DEFAULT nextval('projet_id_seq'::regclass);
+
+
+--
+-- TOC entry 2135 (class 2604 OID 16555)
+-- Name: projet_pj id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet_pj ALTER COLUMN id SET DEFAULT nextval('projet_pj_id_seq'::regclass);
+
+
+--
+-- TOC entry 2140 (class 2604 OID 16796)
+-- Name: reponse id; Type: DEFAULT; Schema: public; Owner: admambigroup
+--
+
+ALTER TABLE ONLY reponse ALTER COLUMN id SET DEFAULT nextval('reponse_id_seq'::regclass);
+
+
+--
+-- TOC entry 2136 (class 2604 OID 16556)
+-- Name: secteur id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY secteur ALTER COLUMN id SET DEFAULT nextval('secteur_id_seq'::regclass);
+
+
+--
+-- TOC entry 2137 (class 2604 OID 16557)
+-- Name: sous_domaine id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY sous_domaine ALTER COLUMN id SET DEFAULT nextval('sous_domaine_id_seq'::regclass);
+
+
+--
+-- TOC entry 2138 (class 2604 OID 16558)
+-- Name: suggestion id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY suggestion ALTER COLUMN id SET DEFAULT nextval('suggestion_id_seq'::regclass);
+
+
+--
+-- TOC entry 2139 (class 2604 OID 16559)
+-- Name: utilisateur id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur ALTER COLUMN id SET DEFAULT nextval('utilisateur_id_seq'::regclass);
+
+
+--
+-- TOC entry 2141 (class 2604 OID 33180)
+-- Name: utilisateur_messages id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur_messages ALTER COLUMN id SET DEFAULT nextval('utilisateur_messages_id_seq'::regclass);
+
+
+--
+-- TOC entry 2143 (class 2604 OID 49564)
+-- Name: utilisateur_notifs id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur_notifs ALTER COLUMN id SET DEFAULT nextval('utilisateur_notifs_id_seq'::regclass);
+
+
+--
+-- TOC entry 2362 (class 0 OID 16440)
+-- Dependencies: 185
+-- Data for Name: abonnement; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY abonnement (id, utilisateur_id, secteur_id, domaine_id, sous_domaine_id, projet_id, contrat_id) FROM stdin;
+17	3	\N	1	\N	\N	\N
+39	1	2	\N	\N	\N	\N
+40	1	\N	5	\N	\N	\N
+41	1	\N	\N	10	\N	\N
+\.
+
+
+--
+-- TOC entry 2428 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: abonnement_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('abonnement_id_seq', 41, true);
+
+
+--
+-- TOC entry 2364 (class 0 OID 16445)
+-- Dependencies: 187
+-- Data for Name: actualite; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY actualite (id, titre, contenu, date_creation, date_derniere_maj, secteur_id, sous_domaine_id, projet_id, contrat_id, utilisateur_id, domaine_id, notification, description) FROM stdin;
+108	enim. Nunc ut erat. Sed	commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor	2009-09-12 00:00:00+02	2004-11-16 00:00:00+01	1	8	35	1	3	2	t	\N
+109	scelerisque scelerisque	id magna et ipsum cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non enim commodo hendrerit. Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet, metus	2020-03-12 00:00:00+01	2019-11-17 00:00:00+01	2	10	84	3	1	4	t	\N
+110	montes, nascetur ridiculus mus.	risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim.	2020-10-12 00:00:00+02	2004-03-17 00:00:00+01	3	9	53	3	2	6	t	\N
+111	Proin eget odio.	massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est,	2011-06-12 00:00:00+02	2031-07-17 00:00:00+02	2	21	69	1	3	2	f	\N
+112	tincidunt, neque vitae semper egestas, urna justo faucibus lectus,	posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis diam luctus lobortis. Class aptent	2021-01-12 00:00:00+01	2023-06-16 00:00:00+02	3	3	40	1	1	1	f	\N
+113	mi fringilla mi lacinia mattis. Integer	lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet molestie tellus. Aenean egestas hendrerit neque. In ornare sagittis felis. Donec tempor, est ac mattis semper, dui lectus rutrum urna, nec luctus felis purus ac tellus. Suspendisse sed dolor. Fusce mi lorem, vehicula et, rutrum eu, ultrices sit amet, risus. Donec nibh enim, gravida sit amet, dapibus id, blandit at, nisi. Cum sociis natoque penatibus et	2019-11-13 00:00:00+01	2028-07-16 00:00:00+02	3	16	87	3	2	10	t	\N
+114	dignissim	nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et ipsum cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non enim commodo hendrerit. Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante. Nunc	2023-02-12 00:00:00+01	2013-11-17 00:00:00+01	1	19	38	1	3	9	t	\N
+115	iaculis aliquet diam.	ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum mi, ac mattis velit justo nec ante. Maecenas mi felis, adipiscing fringilla, porttitor vulputate, posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse dui. Fusce diam nunc, ullamcorper eu, euismod ac, fermentum vel, mauris. Integer sem elit, pharetra ut, pharetra sed,	2022-08-13 00:00:00+02	2002-07-17 00:00:00+02	2	14	40	1	3	5	f	\N
+102	tellus eu augue porttitor interdum. Sed auctor odio a purus.	test	2001-05-13 00:00:00+02	2019-09-17 00:00:00+02	1	16	44	1	2	3	t	\N
+103	Cum sociis natoque penatibus et magnis	test	2001-08-12 00:00:00+02	2002-09-16 00:00:00+02	1	17	93	3	1	5	t	\N
+104	a tortor. Nunc commodo auctor velit. Aliquam nisl.	test	2002-04-13 00:00:00+02	2023-03-16 00:00:00+01	1	1	49	2	1	7	f	\N
+105	ante ipsum primis in	Nulla eget metus eu erat semper rutrum. Fusce dolor quam, elementum at, egestas a, scelerisque sed, sapien. Nunc pulvinar arcu et pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget	2015-05-13 00:00:00+02	2014-11-17 00:00:00+01	1	9	8	2	3	1	t	\N
+106	vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras	quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a	2014-05-13 00:00:00+02	2011-11-17 00:00:00+01	2	17	78	3	2	6	t	\N
+116	volutpat ornare, facilisis eget, ipsum. Donec	ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris	2025-03-14 00:00:00+01	2004-03-17 00:00:00+01	1	18	24	3	2	4	t	\N
+117	dui, semper	Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna. Nullam lobortis quam a felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla. Integer urna. Vivamus molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla	2024-02-13 00:00:00+01	2002-12-16 00:00:00+01	1	18	81	1	2	2	f	\N
+118	nec urna et arcu	blandit at, nisi. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel nisl. Quisque fringilla euismod enim. Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et ipsum cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non enim commodo hendrerit. Donec porttitor tellus non magna. Nam ligula elit, pretium	2014-03-12 00:00:00+01	2001-12-15 00:00:00+01	3	9	48	1	2	2	f	\N
+119	sollicitudin a, malesuada id, erat. Etiam vestibulum	vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante	2010-05-13 00:00:00+02	2004-01-17 00:00:00+01	1	5	41	1	3	5	t	\N
+138	semper	ac ipsum. Phasellus vitae mauris sit amet lorem semper auctor. Mauris vel turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut,	2005-12-12 00:00:00+01	2020-02-17 00:00:00+01	2	18	97	2	2	9	t	\N
+120	molestie. Sed	pharetra sed, hendrerit a, arcu. Sed et libero. Proin mi. Aliquam gravida mauris ut mi. Duis risus odio, auctor vitae, aliquet nec, imperdiet nec, leo. Morbi neque tellus, imperdiet non, vestibulum nec, euismod in, dolor. Fusce feugiat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam auctor, velit eget laoreet posuere, enim nisl elementum purus, accumsan	2025-09-12 00:00:00+02	2015-10-16 00:00:00+02	3	6	58	2	3	2	f	\N
+121	accumsan interdum libero dui	lectus pede et risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in	2020-05-14 00:00:00+02	2009-10-17 00:00:00+02	2	12	9	2	2	4	t	\N
+122	commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis	2014-04-14 00:00:00+02	2010-08-16 00:00:00+02	1	8	44	1	1	7	f	\N
+123	est ac facilisis facilisis, magna tellus	orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu	2016-06-12 00:00:00+02	2009-03-16 00:00:00+01	1	19	100	3	1	10	f	\N
+125	vitae dolor. Donec fringilla. Donec	parturient montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique neque venenatis lacus. Etiam bibendum fermentum metus. Aenean sed pede nec ante blandit viverra. Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem magna nec quam. Curabitur vel lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper, velit in aliquet lobortis, nisi nibh	2016-07-14 00:00:00+02	2004-06-16 00:00:00+02	3	10	64	2	3	5	f	\N
+126	mollis lectus	aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In nec orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate	2013-05-12 00:00:00+02	2001-01-16 00:00:00+01	2	6	91	2	1	8	t	\N
+127	sagittis. Duis gravida. Praesent	tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi	2021-01-12 00:00:00+01	2009-10-17 00:00:00+02	3	2	48	3	2	1	t	\N
+128	dui. Cum sociis natoque penatibus et magnis dis parturient	libero mauris, aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In	2014-06-14 00:00:00+02	2011-02-16 00:00:00+01	2	10	7	3	3	8	t	\N
+129	non, feugiat nec, diam. Duis mi enim, condimentum	Nunc mauris elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum. Curabitur dictum. Phasellus in felis. Nulla tempor augue ac ipsum. Phasellus vitae mauris sit amet lorem semper auctor. Mauris vel turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut, molestie in, tempus eu, ligula. Aenean euismod mauris eu elit. Nulla	2003-08-14 00:00:00+02	2009-05-17 00:00:00+02	3	15	97	2	2	5	t	\N
+130	in molestie tortor nibh	mauris sit amet lorem semper auctor. Mauris vel turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut, molestie in, tempus eu, ligula. Aenean euismod mauris eu elit. Nulla facilisi. Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis in faucibus orci	2002-11-13 00:00:00+01	2013-05-16 00:00:00+02	1	1	94	2	3	10	t	\N
+176	accumsan convallis,	Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem magna nec quam. Curabitur vel lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper, velit in	2003-09-13 00:00:00+02	2025-10-16 00:00:00+02	3	3	53	2	2	4	t	\N
+131	nisl arcu iaculis	sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque	2011-06-12 00:00:00+02	2027-02-17 00:00:00+01	2	8	59	1	2	4	f	\N
+132	Quisque nonummy ipsum non arcu. Vivamus sit amet risus.	Nunc lectus pede, ultrices a, auctor non, feugiat nec, diam. Duis mi enim, condimentum	2004-06-13 00:00:00+02	2025-05-17 00:00:00+02	3	18	64	2	3	9	t	\N
+133	sit amet risus. Donec egestas. Aliquam nec enim.	Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras vulputate velit eu sem. Pellentesque ut ipsum ac mi eleifend egestas. Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem. Donec	2022-07-14 00:00:00+02	2021-09-17 00:00:00+02	2	3	27	1	2	9	f	\N
+134	Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc	adipiscing. Mauris molestie pharetra nibh. Aliquam ornare, libero at auctor ullamcorper, nisl arcu iaculis enim, sit amet ornare lectus justo eu arcu. Morbi sit amet massa.	2009-08-12 00:00:00+02	2001-07-16 00:00:00+02	3	2	36	3	2	2	f	\N
+135	dolor dolor, tempus non, lacinia at, iaculis quis, pede.	libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum	2003-10-13 00:00:00+02	2001-06-16 00:00:00+02	3	17	38	1	2	7	t	\N
+136	primis in faucibus orci luctus et ultrices posuere cubilia Curae;	sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus.	2026-07-13 00:00:00+02	2008-07-17 00:00:00+02	2	4	89	3	3	9	t	\N
+139	hendrerit consectetuer, cursus et, magna.	Aliquam fringilla cursus purus. Nullam scelerisque neque sed sem egestas blandit. Nam nulla magna, malesuada vel, convallis in, cursus et, eros. Proin ultrices. Duis volutpat nunc sit amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare	2005-05-12 00:00:00+02	2027-01-17 00:00:00+01	2	20	64	3	3	1	t	\N
+140	sem molestie sodales. Mauris blandit enim consequat purus.	varius orci, in consequat enim diam vel arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu tellus eu augue porttitor interdum. Sed auctor odio a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi magna sed dui. Fusce aliquam, enim nec tempus scelerisque, lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet molestie tellus. Aenean egestas hendrerit neque. In ornare sagittis felis. Donec tempor, est ac mattis	2005-06-13 00:00:00+02	2030-01-16 00:00:00+01	3	9	22	3	1	9	t	\N
+141	et, commodo at, libero. Morbi accumsan	turpis egestas. Aliquam fringilla cursus purus. Nullam scelerisque neque sed sem egestas blandit. Nam nulla magna, malesuada vel, convallis in, cursus et, eros. Proin ultrices. Duis volutpat nunc sit amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a	2013-08-14 00:00:00+02	2005-04-17 00:00:00+02	3	18	85	3	1	6	f	\N
+142	pellentesque, tellus sem mollis	iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique neque venenatis lacus. Etiam bibendum fermentum metus. Aenean sed pede nec ante blandit viverra. Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem magna nec quam. Curabitur vel lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim magna	2022-06-13 00:00:00+02	2015-03-16 00:00:00+01	1	10	18	3	1	1	t	\N
+143	mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet,	ultrices. Duis volutpat nunc sit amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac	2023-09-13 00:00:00+02	2015-04-17 00:00:00+02	1	17	6	1	2	9	t	\N
+145	sem elit, pharetra ut, pharetra	commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero	2017-03-14 00:00:00+01	2029-05-16 00:00:00+02	1	6	65	2	1	10	f	\N
+146	dictum eleifend, nunc risus varius orci, in consequat enim diam	Fusce aliquam, enim nec tempus scelerisque, lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet molestie tellus. Aenean egestas hendrerit neque. In ornare sagittis felis. Donec tempor, est ac mattis semper, dui lectus rutrum urna, nec luctus felis purus ac tellus. Suspendisse sed dolor. Fusce mi lorem, vehicula et, rutrum eu, ultrices sit amet, risus. Donec nibh enim, gravida sit amet, dapibus id, blandit at, nisi. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel nisl. Quisque fringilla	2019-04-13 00:00:00+02	2003-06-16 00:00:00+02	2	9	72	1	2	3	t	\N
+147	molestie orci tincidunt adipiscing. Mauris molestie pharetra nibh.	cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non	2015-03-12 00:00:00+01	2003-01-17 00:00:00+01	2	2	22	2	1	3	t	\N
+148	massa. Vestibulum accumsan neque et nunc. Quisque ornare	dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend, nunc risus varius orci, in consequat enim diam vel arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras	2016-07-13 00:00:00+02	2020-01-17 00:00:00+01	3	9	80	1	2	5	t	\N
+149	ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas	neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna justo faucibus lectus, a sollicitudin orci sem eget massa.	2007-12-13 00:00:00+01	2006-06-17 00:00:00+02	3	19	84	3	3	2	f	\N
+150	arcu et	Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio. Phasellus at augue id ante dictum cursus. Nunc mauris elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum. Curabitur	2011-04-14 00:00:00+02	2004-11-16 00:00:00+01	1	14	93	2	2	4	t	\N
+151	diam vel arcu. Curabitur ut odio vel est tempor bibendum.	risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum mi, ac mattis velit justo nec ante. Maecenas mi felis, adipiscing fringilla, porttitor vulputate, posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non,	2003-09-14 00:00:00+02	2029-08-16 00:00:00+02	1	21	87	3	2	6	t	\N
+153	ullamcorper, nisl	porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna justo faucibus lectus, a sollicitudin orci sem eget massa. Suspendisse eleifend. Cras sed leo. Cras vehicula aliquet libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend, nunc risus varius orci, in consequat enim diam vel arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing	2023-02-13 00:00:00+01	2002-08-17 00:00:00+02	2	6	69	2	2	9	t	\N
+154	Mauris eu turpis. Nulla aliquet.	amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras vulputate velit eu sem. Pellentesque ut ipsum ac mi eleifend egestas. Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem.	2015-04-14 00:00:00+02	2009-03-16 00:00:00+01	2	15	16	2	2	8	f	\N
+155	auctor vitae, aliquet nec, imperdiet nec,	faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis. Duis sit amet diam eu dolor egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis diam luctus lobortis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus.	2016-11-13 00:00:00+01	2023-11-17 00:00:00+01	1	10	60	3	2	3	f	\N
+156	congue a, aliquet vel, vulputate eu, odio. Phasellus at	convallis dolor. Quisque tincidunt pede ac urna. Ut tincidunt vehicula risus. Nulla eget metus eu erat semper rutrum. Fusce dolor quam, elementum at, egestas a, scelerisque sed, sapien. Nunc pulvinar arcu et pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu,	2030-03-12 00:00:00+01	2008-06-16 00:00:00+02	1	6	51	3	3	1	f	\N
+157	pede. Nunc	vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut	2014-07-13 00:00:00+02	2018-11-17 00:00:00+01	3	17	18	2	1	5	t	\N
+159	Aliquam gravida mauris ut mi. Duis risus odio, auctor vitae,	non, lobortis quis, pede. Suspendisse dui. Fusce diam nunc, ullamcorper eu, euismod ac, fermentum vel, mauris. Integer sem elit, pharetra ut, pharetra sed, hendrerit a, arcu. Sed et libero. Proin mi. Aliquam	2009-11-13 00:00:00+01	2010-05-17 00:00:00+02	1	8	49	3	2	3	t	\N
+160	In tincidunt congue turpis. In condimentum. Donec at arcu.	mollis vitae, posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis diam luctus lobortis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus.	2021-01-14 00:00:00+01	2031-03-16 00:00:00+01	1	17	11	1	1	1	f	\N
+161	sociis natoque penatibus et magnis dis parturient montes,	tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique neque venenatis lacus. Etiam bibendum fermentum metus. Aenean sed pede nec ante blandit viverra. Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem magna nec	2029-05-12 00:00:00+02	2022-06-16 00:00:00+02	2	14	71	1	2	3	t	\N
+162	euismod ac, fermentum	molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna justo faucibus lectus, a sollicitudin orci sem eget massa. Suspendisse eleifend. Cras sed leo. Cras vehicula aliquet libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend,	2008-01-14 00:00:00+01	2002-08-16 00:00:00+02	3	1	23	2	3	5	t	\N
+163	non, bibendum sed, est. Nunc	vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit	2018-12-12 00:00:00+01	2011-08-17 00:00:00+02	3	3	79	3	1	3	t	\N
+164	neque non quam. Pellentesque	ultrices. Duis volutpat nunc sit amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum	2023-10-14 00:00:00+02	2026-08-16 00:00:00+02	2	19	54	1	1	2	f	\N
+165	sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris	commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse dui. Fusce	2022-06-12 00:00:00+02	2028-08-17 00:00:00+02	3	5	60	1	2	10	t	\N
+166	nunc ac mattis ornare, lectus ante	a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In nec orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum	2011-03-13 00:00:00+01	2002-01-16 00:00:00+01	3	19	34	2	2	6	t	\N
+167	Proin	dictum eleifend, nunc risus varius orci, in consequat enim diam vel arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu tellus eu augue porttitor interdum. Sed auctor odio a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi magna sed dui. Fusce aliquam, enim nec tempus scelerisque, lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet molestie	2017-08-14 00:00:00+02	2013-02-16 00:00:00+01	1	15	71	2	1	1	t	\N
+168	non nisi. Aenean eget metus. In nec orci. Donec nibh.	a felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla. Integer urna. Vivamus molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit.	2004-02-13 00:00:00+01	2024-12-15 00:00:00+01	3	1	3	2	2	8	t	\N
+169	at pede. Cras vulputate velit	elit. Curabitur sed tortor. Integer aliquam adipiscing lacus. Ut nec urna et arcu imperdiet ullamcorper. Duis at lacus. Quisque purus sapien, gravida non, sollicitudin a, malesuada id, erat. Etiam vestibulum massa rutrum magna. Cras convallis convallis dolor. Quisque tincidunt pede ac urna. Ut tincidunt vehicula risus. Nulla eget metus eu erat semper rutrum. Fusce dolor quam, elementum at, egestas a, scelerisque sed, sapien. Nunc pulvinar arcu et pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada	2011-01-12 00:00:00+01	2009-04-17 00:00:00+02	2	10	58	3	2	1	t	\N
+170	Nulla aliquet.	enim diam vel arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu tellus eu augue porttitor interdum. Sed auctor odio a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi magna sed dui. Fusce aliquam, enim nec tempus scelerisque, lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet molestie	2014-01-13 00:00:00+01	2017-12-15 00:00:00+01	2	6	99	2	1	10	f	\N
+171	Ut sagittis lobortis	non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet,	2006-07-12 00:00:00+02	2003-01-17 00:00:00+01	1	11	87	2	2	9	f	\N
+172	sed libero. Proin sed	Fusce mollis. Duis sit amet diam eu dolor egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis diam luctus lobortis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac	2028-11-12 00:00:00+01	2008-12-16 00:00:00+01	2	13	15	1	3	5	t	\N
+173	laoreet lectus	eu, ultrices sit amet, risus. Donec nibh enim, gravida sit amet, dapibus id, blandit at, nisi. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel nisl. Quisque fringilla euismod enim. Etiam gravida molestie arcu. Sed eu nibh	2019-11-12 00:00:00+01	2001-02-16 00:00:00+01	3	3	87	1	3	8	f	\N
+174	et	imperdiet nec, leo. Morbi neque tellus, imperdiet non, vestibulum nec, euismod in, dolor. Fusce feugiat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam auctor, velit eget laoreet posuere, enim nisl elementum purus, accumsan interdum libero	2005-07-14 00:00:00+02	2025-06-16 00:00:00+02	2	20	98	3	1	5	f	\N
+175	sed, sapien. Nunc pulvinar arcu	vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id	2001-10-12 00:00:00+02	2014-07-17 00:00:00+02	2	10	28	3	3	1	f	\N
+177	ligula. Aenean gravida nunc sed pede. Cum	quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam fringilla cursus purus. Nullam scelerisque neque sed sem egestas blandit. Nam nulla magna, malesuada vel, convallis in, cursus et, eros. Proin ultrices. Duis volutpat nunc sit amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero lacus, varius	2030-12-14 00:00:00+01	2027-07-17 00:00:00+02	1	7	50	3	1	4	f	\N
+178	dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis	vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est,	2023-02-13 00:00:00+01	2004-01-17 00:00:00+01	2	12	50	3	1	3	t	\N
+179	ornare. Fusce mollis. Duis sit amet diam eu dolor egestas	blandit congue. In scelerisque scelerisque dui. Suspendisse ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique	2007-12-12 00:00:00+01	2010-01-16 00:00:00+01	1	8	28	1	2	5	f	\N
+180	consectetuer mauris id sapien. Cras dolor dolor, tempus	dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna. Nullam lobortis quam a felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla.	2022-12-13 00:00:00+01	2016-12-15 00:00:00+01	2	11	34	3	2	6	f	\N
+181	libero lacus, varius et, euismod et, commodo at, libero. Morbi	Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo.	2022-09-13 00:00:00+02	2005-07-16 00:00:00+02	3	5	44	1	2	7	t	\N
+182	sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris	In mi pede, nonummy ut, molestie in, tempus eu, ligula. Aenean euismod mauris eu elit. Nulla facilisi. Sed neque. Sed eget lacus. Mauris	2016-02-12 00:00:00+01	2027-02-17 00:00:00+01	1	13	48	1	1	1	f	\N
+183	in consequat enim diam vel	consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec,	2016-11-12 00:00:00+01	2026-02-16 00:00:00+01	2	16	59	3	2	5	t	\N
+184	nulla magna, malesuada vel, convallis in, cursus	dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio. Phasellus at augue id ante dictum cursus. Nunc mauris elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum. Curabitur dictum. Phasellus in felis. Nulla tempor augue ac ipsum. Phasellus vitae mauris sit	2001-10-13 00:00:00+02	2004-06-16 00:00:00+02	3	1	54	3	3	5	f	\N
+185	nulla magna,	cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non enim commodo hendrerit. Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus, diam	2012-02-12 00:00:00+01	2030-04-17 00:00:00+02	2	14	94	2	3	8	f	\N
+186	Suspendisse commodo tincidunt	montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique neque venenatis lacus. Etiam bibendum fermentum metus. Aenean sed pede nec ante blandit viverra. Donec tempus, lorem fringilla ornare	2023-04-12 00:00:00+02	2017-06-17 00:00:00+02	2	6	30	1	2	1	f	\N
+187	orci. Phasellus dapibus quam	vehicula risus. Nulla eget metus eu erat semper rutrum. Fusce dolor quam, elementum at, egestas a, scelerisque sed, sapien. Nunc pulvinar arcu et pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus	2002-07-14 00:00:00+02	2028-03-16 00:00:00+01	2	3	13	1	2	9	t	\N
+188	ad litora torquent per	sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum mi, ac mattis velit justo nec ante. Maecenas mi felis, adipiscing fringilla, porttitor vulputate, posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis,	2011-10-14 00:00:00+02	2012-08-17 00:00:00+02	3	10	62	3	2	3	f	\N
+189	tempus non, lacinia at, iaculis quis, pede. Praesent	consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum mi, ac mattis velit justo nec ante. Maecenas mi felis, adipiscing fringilla, porttitor vulputate, posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse dui. Fusce	2018-03-13 00:00:00+01	2027-09-16 00:00:00+02	2	1	20	2	2	7	t	\N
+190	felis purus ac tellus.	pede, ultrices a, auctor non, feugiat nec, diam. Duis mi enim, condimentum eget, volutpat ornare, facilisis eget, ipsum. Donec sollicitudin adipiscing ligula. Aenean gravida nunc sed pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel arcu eu odio tristique pharetra. Quisque ac libero nec ligula consectetuer rhoncus. Nullam velit dui, semper et, lacinia vitae, sodales at,	2007-02-12 00:00:00+01	2011-06-17 00:00:00+02	1	6	55	2	3	5	t	\N
+191	nonummy ipsum non arcu.	varius orci, in consequat enim diam vel arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu tellus eu augue porttitor interdum. Sed auctor odio a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi magna sed dui. Fusce aliquam, enim nec tempus scelerisque, lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse	2009-11-13 00:00:00+01	2006-04-17 00:00:00+02	1	15	86	1	2	9	t	\N
+192	egestas lacinia. Sed congue,	ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem	2009-07-14 00:00:00+02	2003-04-16 00:00:00+02	2	13	58	1	3	4	t	\N
+193	interdum feugiat. Sed nec metus facilisis lorem tristique	magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper, velit in aliquet lobortis, nisi nibh lacinia orci, consectetuer euismod est arcu ac orci. Ut semper pretium neque. Morbi quis urna. Nunc quis arcu vel quam dignissim pharetra. Nam ac nulla. In tincidunt congue turpis. In condimentum. Donec at arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque dui. Suspendisse ac metus	2026-07-13 00:00:00+02	2021-05-17 00:00:00+02	1	8	74	1	3	8	f	\N
+194	quam dignissim	quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In nec orci. Donec nibh.	2017-02-13 00:00:00+01	2001-12-16 00:00:00+01	1	14	71	1	3	7	t	\N
+195	nunc nulla vulputate dui, nec tempus mauris erat eget	augue ac ipsum. Phasellus vitae mauris sit amet lorem semper auctor. Mauris vel turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut, molestie in, tempus eu, ligula. Aenean euismod mauris eu elit. Nulla facilisi. Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis. Duis sit amet diam eu dolor egestas rhoncus. Proin nisl sem, consequat nec, mollis	2019-04-14 00:00:00+02	2004-04-16 00:00:00+02	2	3	39	2	2	8	t	\N
+196	rutrum urna, nec luctus	magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus	2006-08-13 00:00:00+02	2030-01-17 00:00:00+01	3	7	13	3	2	1	f	\N
+197	risus. Donec egestas. Aliquam nec enim. Nunc ut	egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna justo faucibus lectus, a sollicitudin orci sem eget massa. Suspendisse eleifend. Cras sed leo. Cras vehicula aliquet libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non,	2006-05-12 00:00:00+02	2017-04-16 00:00:00+02	3	17	87	1	3	1	t	\N
+198	Cras vehicula aliquet libero. Integer in magna. Phasellus	mauris eu elit. Nulla facilisi. Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis. Duis sit amet diam eu dolor egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere at, velit. Cras lorem lorem, luctus ut,	2025-02-12 00:00:00+01	2030-08-17 00:00:00+02	1	20	11	3	3	1	f	\N
+199	pharetra ut, pharetra sed,	in faucibus orci luctus et ultrices posuere cubilia Curae; Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque dui. Suspendisse ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla	2017-06-13 00:00:00+02	2016-01-17 00:00:00+01	3	13	4	2	2	10	f	\N
+124	et malesuada	test	2025-08-14 00:00:00+02	2001-12-16 00:00:00+01	2	20	69	1	2	2	f	\N
+137	accumsan laoreet ipsum.	erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo	2031-10-13 00:00:00+02	2004-11-17 00:00:00+01	\N	\N	53	2	1	\N	t	Test de la description
+\.
+
+
+--
+-- TOC entry 2429 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: actualite_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('actualite_id_seq', 200, true);
+
+
+--
+-- TOC entry 2366 (class 0 OID 16453)
+-- Dependencies: 189
+-- Data for Name: actualite_pj; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY actualite_pj (actualite_id, piece_jointe_id, id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2430 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: actualite_pj_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('actualite_pj_id_seq', 15, true);
+
+
+--
+-- TOC entry 2368 (class 0 OID 16458)
+-- Dependencies: 191
+-- Data for Name: connexion; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY connexion (id, login, mdp, utilisateur_id) FROM stdin;
+5	bruce.willis	bruce	2
+6	evian.eau	evian	3
+4	florian.spadaro	56910c52ed70539e3ce0391edeb6d339	1
+\.
+
+
+--
+-- TOC entry 2431 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: connexion_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('connexion_id_seq', 6, true);
+
+
+--
+-- TOC entry 2370 (class 0 OID 16466)
+-- Dependencies: 193
+-- Data for Name: contrat; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY contrat (id, libelle, miniature_id, utilisateur_id) FROM stdin;
+1	orange	1	1
+2	inneo	2	2
+3	scopelec	3	3
+\.
+
+
+--
+-- TOC entry 2432 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: contrat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('contrat_id_seq', 20, true);
+
+
+--
+-- TOC entry 2372 (class 0 OID 16471)
+-- Dependencies: 195
+-- Data for Name: domaine; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY domaine (id, libelle, secteur_id, utilisateur_id, description) FROM stdin;
+1	domaine 1	1	1	\N
+2	domaine 2	2	2	\N
+3	domaine 3	3	3	\N
+4	domaine 4	2	1	\N
+6	domaine 6	3	3	\N
+5	domaine 5	1	3	\N
+7	domaine 7	1	2	\N
+8	domaine 8	1	1	\N
+9	domaine 9	3	3	\N
+10	domaine 10	3	1	\N
+11	DOMAINE TRES TRES TRES TRES LONG A ECRIRE TEST TEST	1	1	bfsgsbsbdb
+\.
+
+
+--
+-- TOC entry 2433 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: domaine_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('domaine_id_seq', 11, true);
+
+
+--
+-- TOC entry 2374 (class 0 OID 16476)
+-- Dependencies: 197
+-- Data for Name: fonction; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY fonction (id, libelle, niveau_id) FROM stdin;
+1	Membre	1
+2	Manager	2
+3	Administrateur	3
+4	Responsable d'entreprise	2
+5	Responsable	1
+\.
+
+
+--
+-- TOC entry 2434 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: fonction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('fonction_id_seq', 5, true);
+
+
+--
+-- TOC entry 2376 (class 0 OID 16481)
+-- Dependencies: 199
+-- Data for Name: miniature; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY miniature (id, nom, url) FROM stdin;
+1	orange	images/orange.jpg
+2	inneo	images/inneo.png
+3	scopelec	images/scopelec.png
+\.
+
+
+--
+-- TOC entry 2435 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: miniature_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('miniature_id_seq', 22, true);
+
+
+--
+-- TOC entry 2378 (class 0 OID 16489)
+-- Dependencies: 201
+-- Data for Name: niveau; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY niveau (id, niveau, libelle) FROM stdin;
+1	1	Membre
+2	2	Manager
+3	3	Administrateur
+\.
+
+
+--
+-- TOC entry 2436 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: niveau_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('niveau_id_seq', 3, true);
+
+
+--
+-- TOC entry 2380 (class 0 OID 16494)
+-- Dependencies: 203
+-- Data for Name: piece_jointe; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY piece_jointe (id, libelle, url, description) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2437 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: piece_jointe_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('piece_jointe_id_seq', 19, true);
+
+
+--
+-- TOC entry 2382 (class 0 OID 16502)
+-- Dependencies: 205
+-- Data for Name: projet; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY projet (id, titre, description, contenu, date_creation, date_derniere_maj, sous_domaine_id, contrat_id, utilisateur_id) FROM stdin;
+3	consectetuer adipiscing elit. Aliquam auctor, velit eget laoreet posuere,	enim commodo hendrerit. Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante.	egestas, urna justo faucibus lectus, a sollicitudin orci sem eget massa. Suspendisse eleifend. Cras sed leo. Cras vehicula aliquet libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend, nunc risus varius orci, in consequat	2012-03-27 00:00:00+02	2015-01-17 00:00:00+01	6	3	2
+4	nonummy	primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis.	non nisi. Aenean eget metus. In nec orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla.	2013-02-04 00:00:00+01	2015-11-01 00:00:00+01	14	2	2
+5	nunc est, mollis non, cursus non, egestas a, dui.	malesuada vel, convallis in, cursus et, eros. Proin ultrices. Duis volutpat	Mauris blandit enim consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio. Phasellus at augue id ante dictum cursus. Nunc mauris elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum. Curabitur dictum. Phasellus in felis. Nulla tempor augue ac ipsum. Phasellus vitae mauris sit amet lorem semper auctor.	2013-10-30 00:00:00+01	2016-12-01 00:00:00+01	18	1	3
+6	eget massa. Suspendisse eleifend. Cras	Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus	magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend, nunc risus varius orci, in consequat enim diam vel arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu tellus eu augue porttitor interdum.	2014-04-29 00:00:00+02	2017-06-12 00:00:00+02	4	1	3
+7	sociis natoque penatibus et magnis dis parturient	libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend,	lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla. Integer urna. Vivamus molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna justo faucibus lectus, a	2012-01-24 00:00:00+01	2015-06-29 00:00:00+02	21	3	1
+8	luctus. Curabitur egestas nunc sed	libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend, nunc	hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet, metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor,	2012-11-04 00:00:00+01	2015-05-28 00:00:00+02	11	1	1
+9	Curabitur egestas nunc sed libero. Proin	tincidunt, neque vitae semper egestas, urna justo faucibus lectus, a	vestibulum lorem, sit amet ultricies sem magna nec quam. Curabitur vel lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper, velit in aliquet lobortis, nisi nibh	2012-05-24 00:00:00+02	2017-10-04 00:00:00+02	17	2	2
+10	augue porttitor interdum. Sed	aliquet lobortis, nisi nibh lacinia orci, consectetuer euismod est arcu ac orci.	lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem magna nec quam. Curabitur	2012-12-12 00:00:00+01	2015-02-14 00:00:00+01	10	3	3
+11	nibh. Donec est	torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus	facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero lacus, varius et, euismod et, commodo at,	2012-06-13 00:00:00+02	2015-05-15 00:00:00+02	9	2	3
+12	diam eu dolor egestas	Fusce feugiat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam auctor, velit eget laoreet	libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare,	2012-10-23 00:00:00+02	2016-05-05 00:00:00+02	3	3	3
+13	Fusce aliquet magna a neque.	Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae	ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis	2014-02-18 00:00:00+01	2017-11-07 00:00:00+01	20	1	3
+14	a odio semper cursus. Integer mollis. Integer tincidunt	tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam	Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique neque venenatis lacus. Etiam bibendum fermentum metus. Aenean sed pede nec ante blandit viverra. Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem magna nec quam. Curabitur vel lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis	2012-04-16 00:00:00+02	2016-08-02 00:00:00+02	14	3	3
+15	nec, mollis vitae,	cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est	a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit	2014-05-09 00:00:00+02	2016-03-02 00:00:00+01	8	1	1
+16	Morbi sit amet massa. Quisque porttitor eros nec tellus. Nunc	sit amet diam eu dolor egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget,	egestas. Duis ac arcu. Nunc mauris. Morbi non sapien molestie orci tincidunt adipiscing. Mauris molestie pharetra nibh. Aliquam ornare, libero at auctor ullamcorper, nisl arcu iaculis enim, sit amet ornare lectus justo eu arcu. Morbi sit	2013-03-25 00:00:00+01	2015-10-10 00:00:00+02	17	3	2
+17	eleifend. Cras sed leo. Cras vehicula aliquet libero.	ultricies sem magna nec quam. Curabitur vel lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim	ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum	2014-05-15 00:00:00+02	2016-08-19 00:00:00+02	11	3	3
+18	sed	Phasellus ornare. Fusce mollis. Duis sit amet diam eu dolor egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere at, velit. Cras lorem lorem, luctus ut,	Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus.	2014-01-03 00:00:00+01	2017-06-19 00:00:00+02	11	2	3
+19	a purus. Duis elementum, dui quis accumsan	rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus,	aliquet libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend, nunc risus varius orci, in consequat enim diam vel arcu. Curabitur	2013-08-06 00:00:00+02	2015-02-08 00:00:00+01	2	2	1
+20	scelerisque dui. Suspendisse ac metus	nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est, congue	scelerisque dui. Suspendisse ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu	2012-09-29 00:00:00+02	2017-11-17 00:00:00+01	8	3	1
+21	tempus, lorem fringilla ornare	ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In nec orci. Donec nibh. Quisque nonummy ipsum non	gravida mauris ut mi. Duis risus odio, auctor vitae, aliquet nec, imperdiet nec,	2013-08-08 00:00:00+02	2017-01-12 00:00:00+01	3	1	2
+22	interdum.	et pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu, accumsan sed, facilisis	amet, faucibus ut, nulla. Cras eu tellus eu augue porttitor interdum. Sed auctor odio a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi magna sed dui. Fusce aliquam, enim	2014-08-02 00:00:00+02	2015-06-14 00:00:00+02	3	3	2
+23	in faucibus orci luctus et	lacus. Etiam bibendum fermentum metus. Aenean sed pede nec ante blandit viverra. Donec tempus, lorem	ridiculus mus. Proin vel nisl. Quisque fringilla euismod enim. Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et ipsum cursus vestibulum. Mauris magna. Duis	2014-02-07 00:00:00+01	2015-03-18 00:00:00+01	1	3	2
+24	malesuada fames	a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi	Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio. Phasellus at	2014-08-16 00:00:00+02	2017-10-02 00:00:00+02	4	1	1
+25	leo. Vivamus nibh dolor, nonummy	Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna.	velit eu sem. Pellentesque ut ipsum ac mi eleifend egestas. Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem. Donec elementum, lorem ut aliquam iaculis, lacus pede sagittis augue, eu tempor erat neque non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam fringilla cursus purus. Nullam	2013-07-24 00:00:00+02	2016-05-30 00:00:00+02	18	2	3
+26	tincidunt, neque vitae semper	Duis at lacus. Quisque purus sapien, gravida non, sollicitudin a, malesuada id, erat. Etiam vestibulum massa rutrum magna. Cras convallis convallis dolor. Quisque tincidunt pede ac urna.	non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est	2013-03-05 00:00:00+01	2017-05-02 00:00:00+02	4	1	1
+27	ligula. Aenean gravida	Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat	Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit	2013-04-21 00:00:00+02	2015-04-17 00:00:00+02	7	2	2
+28	Donec vitae erat vel pede blandit congue. In	aliquam iaculis, lacus pede sagittis augue, eu tempor erat neque non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis	eget varius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem. Donec elementum, lorem ut aliquam iaculis, lacus pede sagittis augue, eu tempor erat neque non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam fringilla cursus purus. Nullam scelerisque neque sed sem egestas blandit. Nam nulla magna, malesuada vel, convallis in, cursus et, eros. Proin ultrices. Duis volutpat	2014-04-14 00:00:00+02	2017-02-10 00:00:00+01	18	3	3
+29	eu	Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper	pede sagittis augue, eu tempor erat neque non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam fringilla cursus purus. Nullam scelerisque neque	2013-12-02 00:00:00+01	2016-02-14 00:00:00+01	18	2	2
+30	in, dolor. Fusce	ut ipsum ac mi eleifend egestas. Sed pharetra, felis eget	tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum mi, ac mattis velit justo nec ante. Maecenas mi felis, adipiscing fringilla, porttitor vulputate, posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum. Suspendisse	2012-09-16 00:00:00+02	2016-06-24 00:00:00+02	12	1	1
+31	Aenean eget magna. Suspendisse tristique	leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse dui. Fusce diam nunc, ullamcorper eu, euismod ac, fermentum	commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse dui. Fusce diam nunc, ullamcorper eu, euismod ac, fermentum vel, mauris. Integer sem elit, pharetra ut, pharetra sed, hendrerit a, arcu. Sed et libero. Proin mi. Aliquam gravida mauris ut mi. Duis risus odio, auctor	2014-05-19 00:00:00+02	2015-03-19 00:00:00+01	16	1	1
+32	sed orci lobortis augue scelerisque mollis. Phasellus	porttitor eros nec tellus. Nunc lectus pede, ultrices a, auctor non, feugiat nec, diam. Duis mi enim, condimentum eget, volutpat ornare, facilisis eget, ipsum. Donec sollicitudin adipiscing ligula. Aenean	enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem,	2014-11-11 00:00:00+01	2015-06-09 00:00:00+02	17	2	1
+33	enim nisl elementum purus, accumsan interdum libero dui nec	at auctor ullamcorper, nisl arcu iaculis enim, sit amet ornare lectus justo eu arcu. Morbi sit amet	velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis diam luctus lobortis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu. Nunc mauris. Morbi non sapien molestie orci tincidunt adipiscing. Mauris molestie pharetra nibh. Aliquam ornare, libero at	2014-12-24 00:00:00+01	2015-10-10 00:00:00+02	13	3	1
+34	aliquam iaculis, lacus pede sagittis augue,	nec tellus. Nunc lectus pede, ultrices a, auctor non, feugiat nec, diam. Duis mi enim, condimentum eget, volutpat ornare, facilisis eget, ipsum.	amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras vulputate velit eu sem. Pellentesque ut ipsum ac mi	2012-12-07 00:00:00+01	2017-04-06 00:00:00+02	13	3	1
+36	Nunc ullamcorper, velit in aliquet lobortis, nisi nibh lacinia orci,	dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer	magna, malesuada vel, convallis in, cursus et, eros. Proin ultrices. Duis volutpat nunc sit amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis	2014-09-29 00:00:00+02	2015-05-06 00:00:00+02	2	3	2
+37	nisl. Nulla eu	per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu. Nunc mauris. Morbi non	Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras vulputate velit eu sem. Pellentesque ut ipsum ac mi eleifend egestas. Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu	2013-08-23 00:00:00+02	2016-11-20 00:00:00+01	5	2	2
+38	quam quis diam. Pellentesque habitant morbi tristique senectus et netus	et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula	magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem,	2012-03-13 00:00:00+01	2015-06-14 00:00:00+02	18	3	2
+39	Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla.	pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend, nunc risus	Curabitur vel lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper, velit in aliquet lobortis, nisi nibh lacinia orci, consectetuer euismod est arcu ac orci. Ut	2014-02-15 00:00:00+01	2015-06-23 00:00:00+02	16	1	2
+40	Phasellus in felis. Nulla tempor augue	Aliquam fringilla cursus purus. Nullam scelerisque neque sed sem egestas blandit. Nam nulla magna, malesuada vel, convallis	molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare	2013-02-02 00:00:00+01	2017-02-04 00:00:00+01	5	2	1
+41	ipsum.	urna, nec luctus felis purus ac tellus. Suspendisse sed dolor. Fusce mi lorem, vehicula et, rutrum eu,	metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi tempor lorem, eget mollis lectus pede et risus. Quisque libero lacus, varius et, euismod et, commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum mi, ac	2012-03-01 00:00:00+01	2016-04-28 00:00:00+02	19	2	2
+35	sociis natoque penatibus TEST	TEST	TEST	2012-01-15 00:00:00+01	2016-03-18 00:00:00+01	19	3	3
+42	massa	primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis. Duis	elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras vulputate velit eu sem. Pellentesque ut ipsum ac mi eleifend egestas. Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem. Donec elementum, lorem ut aliquam iaculis, lacus pede sagittis augue, eu tempor erat neque non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam fringilla cursus purus. Nullam scelerisque neque sed sem egestas blandit. Nam nulla magna, malesuada vel, convallis in, cursus	2013-06-19 00:00:00+02	2015-08-05 00:00:00+02	3	1	1
+43	laoreet posuere, enim nisl elementum purus, accumsan interdum libero	arcu. Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit	quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet, metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum	2013-09-04 00:00:00+02	2016-11-28 00:00:00+01	7	3	2
+44	mauris ipsum porta elit, a	Proin mi. Aliquam gravida mauris ut mi. Duis risus odio, auctor	pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In nec orci. Donec nibh. Quisque nonummy ipsum	2014-03-18 00:00:00+01	2015-06-29 00:00:00+02	16	1	3
+45	aliquam adipiscing lacus.	non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit	tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet, metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis	2013-03-13 00:00:00+01	2017-05-18 00:00:00+02	13	3	3
+46	eu neque pellentesque massa	dis parturient montes, nascetur ridiculus mus. Proin vel nisl. Quisque fringilla euismod enim. Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam	Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis. Duis	2014-10-31 00:00:00+01	2017-06-28 00:00:00+02	15	3	1
+47	fringilla purus mauris a nunc. In	cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at	semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit	2013-04-08 00:00:00+02	2015-02-17 00:00:00+01	8	1	2
+48	ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor	nisi magna sed dui. Fusce aliquam, enim nec tempus scelerisque, lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet	arcu eu odio tristique pharetra. Quisque ac libero nec ligula consectetuer rhoncus. Nullam velit dui, semper et, lacinia vitae, sodales at, velit. Pellentesque ultricies dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna. Nullam lobortis quam a felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla. Integer urna. Vivamus molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam	2012-03-03 00:00:00+01	2016-12-27 00:00:00+01	12	1	1
+49	in sodales elit erat vitae risus. Duis a mi	egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer	nunc, ullamcorper eu, euismod ac, fermentum vel, mauris. Integer sem elit, pharetra ut, pharetra sed, hendrerit a, arcu. Sed et libero. Proin mi. Aliquam gravida mauris ut mi. Duis risus odio, auctor vitae, aliquet nec, imperdiet nec, leo. Morbi neque tellus, imperdiet non, vestibulum nec, euismod in, dolor. Fusce feugiat. Lorem ipsum dolor sit amet,	2014-10-29 00:00:00+01	2017-02-28 00:00:00+01	6	1	1
+50	blandit. Nam	cubilia Curae; Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque dui. Suspendisse ac metus vitae velit	ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque dui.	2014-05-26 00:00:00+02	2017-06-11 00:00:00+02	3	3	1
+51	metus. Vivamus euismod urna. Nullam lobortis	ut eros non enim commodo hendrerit. Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante.	vel turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut, molestie in, tempus eu, ligula. Aenean euismod mauris eu elit. Nulla facilisi. Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis	2014-10-20 00:00:00+02	2016-04-19 00:00:00+02	17	1	1
+52	Suspendisse ac metus vitae velit egestas lacinia.	enim. Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula.	Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim	2012-12-24 00:00:00+01	2017-02-01 00:00:00+01	19	3	3
+53	ut quam vel sapien imperdiet ornare. In	In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu. Nunc mauris. Morbi non sapien molestie orci tincidunt adipiscing. Mauris molestie pharetra nibh. Aliquam ornare,	Duis cursus, diam at pretium aliquet, metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique neque venenatis	2013-01-28 00:00:00+01	2016-04-14 00:00:00+02	5	3	1
+54	molestie sodales. Mauris blandit enim consequat purus.	adipiscing lacus. Ut nec urna et arcu imperdiet ullamcorper. Duis at lacus. Quisque purus sapien, gravida non, sollicitudin a, malesuada id, erat. Etiam vestibulum massa	eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis. Duis sit amet diam eu dolor egestas rhoncus. Proin	2014-11-09 00:00:00+01	2017-02-17 00:00:00+01	4	1	3
+55	eget varius ultrices, mauris ipsum	nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam enim.	porttitor vulputate, posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse dui. Fusce diam nunc, ullamcorper eu, euismod ac, fermentum vel, mauris. Integer sem elit, pharetra ut, pharetra sed, hendrerit a, arcu. Sed et libero. Proin mi. Aliquam gravida mauris ut mi. Duis risus	2012-02-10 00:00:00+01	2016-12-12 00:00:00+01	17	1	1
+56	fermentum risus, at	non, feugiat nec, diam. Duis mi enim, condimentum eget, volutpat ornare, facilisis eget, ipsum. Donec	ultrices a, auctor non, feugiat nec, diam. Duis mi enim, condimentum eget, volutpat ornare, facilisis eget, ipsum. Donec sollicitudin adipiscing ligula. Aenean gravida	2012-11-10 00:00:00+01	2017-01-28 00:00:00+01	6	1	1
+57	lacinia vitae, sodales at, velit.	gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus.	purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet molestie tellus. Aenean egestas hendrerit neque. In ornare sagittis felis. Donec tempor, est ac mattis semper, dui lectus rutrum urna, nec luctus felis purus ac tellus. Suspendisse sed dolor. Fusce mi lorem,	2014-04-09 00:00:00+02	2016-06-03 00:00:00+02	20	2	2
+58	eu erat semper rutrum. Fusce dolor	sagittis lobortis mauris. Suspendisse aliquet molestie tellus. Aenean egestas hendrerit neque. In ornare sagittis felis. Donec tempor, est ac mattis semper,	ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna justo faucibus	2013-07-08 00:00:00+02	2015-11-07 00:00:00+01	9	3	2
+59	egestas a, scelerisque sed, sapien. Nunc pulvinar	gravida nunc sed pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel arcu eu odio tristique pharetra. Quisque ac libero nec ligula	ac mattis semper, dui lectus rutrum urna, nec luctus felis purus ac tellus. Suspendisse sed dolor. Fusce mi lorem, vehicula et, rutrum eu, ultrices sit amet, risus. Donec nibh enim, gravida sit amet, dapibus id, blandit at, nisi. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel nisl. Quisque fringilla euismod enim. Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus.	2012-12-15 00:00:00+01	2017-06-06 00:00:00+02	6	2	1
+60	dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse	sit amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem	nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et ipsum cursus vestibulum. Mauris magna. Duis dignissim tempor	2012-12-05 00:00:00+01	2015-12-09 00:00:00+01	21	3	3
+61	eu nulla at sem molestie sodales. Mauris blandit	ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus.	Cras convallis convallis dolor. Quisque tincidunt pede ac urna. Ut tincidunt vehicula risus. Nulla eget metus eu erat semper rutrum. Fusce dolor quam, elementum at, egestas a, scelerisque sed, sapien. Nunc pulvinar arcu et pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus libero mauris, aliquam eu, accumsan sed, facilisis vitae, orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean	2012-02-08 00:00:00+01	2017-03-28 00:00:00+02	4	2	1
+62	In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus.	vel nisl. Quisque fringilla euismod enim. Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam	magnis dis parturient montes, nascetur ridiculus mus. Proin vel nisl. Quisque fringilla euismod enim. Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis placerat. Cras dictum ultricies ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et ipsum cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non enim commodo hendrerit. Donec porttitor	2013-04-11 00:00:00+02	2015-09-18 00:00:00+02	19	2	3
+64	metus sit amet ante.	ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat	quis diam luctus lobortis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu. Nunc	2013-04-25 00:00:00+02	2017-11-15 00:00:00+01	8	2	1
+65	purus ac tellus. Suspendisse sed dolor. Fusce mi lorem, vehicula	elit, pharetra ut, pharetra sed, hendrerit a, arcu. Sed et libero. Proin mi. Aliquam gravida mauris ut mi. Duis risus odio, auctor vitae, aliquet nec, imperdiet	quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu	2012-07-26 00:00:00+02	2015-10-18 00:00:00+02	20	2	3
+66	accumsan neque et nunc. Quisque ornare tortor at risus.	montes, nascetur ridiculus mus. Proin vel arcu eu odio tristique pharetra. Quisque ac libero nec ligula consectetuer	tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras	2014-09-12 00:00:00+02	2015-11-02 00:00:00+01	8	3	1
+67	arcu.	libero. Integer in magna. Phasellus dolor elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet	In at pede. Cras vulputate velit eu sem. Pellentesque ut ipsum ac mi eleifend egestas. Sed pharetra, felis	2012-05-05 00:00:00+02	2016-05-16 00:00:00+02	17	1	2
+68	ipsum. Suspendisse non leo.	a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In	pharetra nibh. Aliquam ornare, libero at auctor ullamcorper, nisl arcu iaculis enim, sit amet ornare lectus justo eu arcu. Morbi sit amet massa. Quisque porttitor eros nec tellus. Nunc lectus pede, ultrices a, auctor non, feugiat nec, diam. Duis mi enim, condimentum eget, volutpat ornare, facilisis eget, ipsum. Donec sollicitudin adipiscing ligula. Aenean gravida nunc sed pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel arcu eu odio tristique pharetra. Quisque ac libero nec ligula consectetuer rhoncus. Nullam velit dui, semper et, lacinia vitae, sodales at, velit. Pellentesque ultricies dignissim	2014-01-14 00:00:00+01	2017-04-22 00:00:00+02	2	1	3
+69	pretium aliquet, metus urna convallis erat, eget tincidunt dui augue	tempor augue ac ipsum. Phasellus vitae mauris sit amet lorem semper auctor. Mauris vel turpis. Aliquam adipiscing lobortis risus. In	nisl arcu iaculis enim, sit amet ornare lectus justo eu arcu. Morbi sit amet massa. Quisque	2014-06-30 00:00:00+02	2015-01-31 00:00:00+01	14	2	3
+70	ornare,	dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla	non, luctus sit amet, faucibus ut, nulla. Cras eu tellus eu augue porttitor interdum. Sed auctor odio a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi magna sed dui. Fusce aliquam, enim nec tempus scelerisque, lorem ipsum sodales purus, in molestie tortor nibh sit amet orci. Ut sagittis lobortis mauris. Suspendisse aliquet molestie tellus. Aenean egestas hendrerit neque. In ornare sagittis felis. Donec tempor, est ac mattis semper, dui lectus rutrum urna, nec luctus	2012-11-24 00:00:00+01	2016-12-24 00:00:00+01	7	1	2
+71	tempor arcu. Vestibulum ut eros non enim	ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur	ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida	2014-03-29 00:00:00+01	2016-12-04 00:00:00+01	16	1	2
+72	Sed id risus quis diam luctus lobortis.	vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat	Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum mi, ac mattis velit justo	2012-05-23 00:00:00+02	2015-02-26 00:00:00+01	2	3	2
+73	In ornare sagittis felis.	commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est.	id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et magnis dis parturient montes,	2012-11-11 00:00:00+01	2015-05-09 00:00:00+02	10	1	1
+74	amet ornare	Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras	ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla. Integer urna. Vivamus molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin	2014-04-25 00:00:00+02	2015-02-13 00:00:00+01	13	2	1
+75	arcu eu odio tristique pharetra. Quisque ac libero	Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum	dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet, metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec	2013-05-27 00:00:00+02	2016-08-07 00:00:00+02	12	3	1
+76	justo	ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec	egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum	2012-11-30 00:00:00+01	2017-04-17 00:00:00+02	5	3	2
+77	velit. Cras lorem	aliquet vel, vulputate eu, odio. Phasellus at augue id ante dictum cursus. Nunc mauris elit, dictum eu, eleifend nec, malesuada ut,	orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus,	2013-05-11 00:00:00+02	2015-06-09 00:00:00+02	7	1	1
+78	convallis ligula. Donec luctus aliquet	metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras	Donec at arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque dui. Suspendisse ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget,	2014-07-19 00:00:00+02	2015-03-10 00:00:00+01	4	3	1
+79	arcu. Aliquam ultrices iaculis odio. Nam interdum	ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget	metus. In nec orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed	2014-05-14 00:00:00+02	2016-08-01 00:00:00+02	9	3	3
+92	lorem.	Ut nec urna et arcu imperdiet ullamcorper. Duis at lacus. Quisque purus sapien, gravida	consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus sit amet ante. Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio.	2012-08-31 00:00:00+02	2016-04-09 00:00:00+02	19	2	3
+80	iaculis aliquet diam. Sed diam lorem, auctor quis, tristique	a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam	diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla. Integer urna. Vivamus molestie dapibus ligula. Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas ligula. Nullam feugiat placerat velit. Quisque varius. Nam porttitor scelerisque neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna justo faucibus lectus, a sollicitudin orci sem eget massa. Suspendisse eleifend. Cras sed leo. Cras vehicula aliquet libero. Integer in magna.	2012-05-04 00:00:00+02	2016-12-19 00:00:00+01	5	1	1
+81	arcu. Sed et libero. Proin mi. Aliquam gravida mauris	et arcu imperdiet ullamcorper. Duis at lacus. Quisque purus sapien, gravida non, sollicitudin a, malesuada id, erat. Etiam vestibulum massa rutrum magna. Cras convallis convallis dolor. Quisque tincidunt	ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet,	2013-08-17 00:00:00+02	2017-01-12 00:00:00+01	10	2	2
+82	laoreet, libero et tristique pellentesque, tellus sem mollis dui, in	Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec tincidunt.	Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras vulputate velit	2013-03-11 00:00:00+01	2017-11-11 00:00:00+01	4	2	1
+83	ipsum primis in faucibus orci luctus et ultrices	sit amet ornare lectus justo eu arcu. Morbi sit amet massa. Quisque porttitor eros nec tellus. Nunc lectus pede, ultrices a, auctor non, feugiat nec, diam. Duis mi enim,	ante dictum mi, ac mattis velit justo nec ante. Maecenas mi felis, adipiscing fringilla, porttitor vulputate, posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum. Suspendisse non leo. Vivamus nibh dolor, nonummy ac, feugiat non, lobortis quis, pede. Suspendisse dui. Fusce diam nunc, ullamcorper eu, euismod ac, fermentum vel, mauris. Integer sem elit, pharetra ut, pharetra sed, hendrerit a, arcu. Sed et libero. Proin mi.	2014-04-09 00:00:00+02	2017-11-24 00:00:00+01	16	1	1
+84	metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse	vestibulum, neque sed dictum eleifend, nunc risus varius orci, in	tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum	2013-06-06 00:00:00+02	2015-09-20 00:00:00+02	1	2	2
+85	parturient montes, nascetur	vel, convallis in, cursus et, eros. Proin ultrices. Duis volutpat nunc sit amet metus.	Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis diam luctus lobortis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet	2013-03-31 00:00:00+01	2017-05-27 00:00:00+02	17	3	1
+86	iaculis, lacus pede sagittis augue, eu tempor	neque. Nullam nisl. Maecenas malesuada fringilla est. Mauris eu turpis. Nulla aliquet. Proin velit.	nunc sed pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel arcu eu odio tristique pharetra. Quisque ac libero nec ligula consectetuer rhoncus. Nullam velit dui, semper et, lacinia vitae, sodales at, velit. Pellentesque ultricies dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna. Nullam lobortis quam a felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi.	2014-04-06 00:00:00+02	2015-07-14 00:00:00+02	4	3	3
+87	Nunc ut erat.	at, velit. Pellentesque ultricies dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna.	Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio.	2014-09-16 00:00:00+02	2016-05-29 00:00:00+02	18	2	1
+88	amet	a felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris nulla. Integer urna. Vivamus	fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In nec orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat dolor	2014-01-31 00:00:00+01	2015-09-26 00:00:00+02	10	2	1
+89	in, tempus eu, ligula. Aenean euismod mauris eu elit.	scelerisque dui. Suspendisse ac metus vitae velit egestas lacinia. Sed congue,	luctus lobortis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu. Nunc mauris. Morbi non sapien molestie orci tincidunt adipiscing. Mauris molestie pharetra nibh. Aliquam ornare, libero at auctor ullamcorper, nisl arcu iaculis enim, sit amet ornare lectus justo eu arcu. Morbi sit amet massa. Quisque porttitor	2014-05-31 00:00:00+02	2016-12-29 00:00:00+01	12	1	1
+90	pede ac urna. Ut tincidunt	enim, gravida sit amet, dapibus id, blandit at, nisi. Cum sociis natoque penatibus	non, feugiat nec, diam. Duis mi enim, condimentum eget, volutpat ornare, facilisis eget, ipsum. Donec sollicitudin adipiscing ligula. Aenean gravida nunc sed pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin vel arcu eu odio tristique pharetra. Quisque	2013-10-09 00:00:00+02	2016-03-24 00:00:00+01	17	2	2
+91	Mauris molestie pharetra nibh. Aliquam ornare,	interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus	metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu, placerat eget, venenatis a, magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam laoreet, libero et tristique pellentesque, tellus sem mollis dui, in sodales elit erat vitae risus. Duis a mi fringilla mi lacinia mattis. Integer eu lacus. Quisque imperdiet, erat nonummy ultricies ornare, elit elit fermentum risus, at fringilla purus mauris a nunc. In at pede. Cras vulputate velit eu sem. Pellentesque ut ipsum ac mi eleifend	2012-07-20 00:00:00+02	2015-10-04 00:00:00+02	2	1	3
+93	purus sapien, gravida non, sollicitudin a, malesuada id, erat. Etiam	eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper, velit in aliquet lobortis, nisi nibh lacinia orci, consectetuer euismod est arcu ac orci. Ut semper pretium neque.	luctus et ultrices posuere cubilia Curae; Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque dui. Suspendisse ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor. Nulla semper tellus id nunc interdum feugiat. Sed nec metus facilisis lorem tristique aliquet.	2013-11-16 00:00:00+01	2015-07-01 00:00:00+02	2	3	1
+94	dictum. Proin eget odio. Aliquam	Donec tempor, est ac mattis semper, dui lectus rutrum urna, nec luctus felis purus ac tellus.	cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non enim commodo hendrerit.	2012-07-01 00:00:00+02	2015-03-15 00:00:00+01	3	3	2
+95	pellentesque a, facilisis non, bibendum sed,	ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper,	odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio. Phasellus at augue id ante dictum cursus. Nunc mauris elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum. Curabitur	2012-03-11 00:00:00+01	2017-02-19 00:00:00+01	18	3	2
+96	Etiam laoreet, libero et tristique pellentesque, tellus sem	netus et malesuada fames ac turpis egestas. Aliquam fringilla cursus purus. Nullam	interdum feugiat. Sed nec metus facilisis lorem tristique aliquet. Phasellus fermentum convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum	2013-05-31 00:00:00+02	2016-02-15 00:00:00+01	3	3	3
+97	consequat dolor vitae dolor. Donec fringilla. Donec feugiat metus	sem. Pellentesque ut ipsum ac mi eleifend egestas. Sed pharetra, felis eget	imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus faucibus leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet, metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique neque venenatis	2013-05-18 00:00:00+02	2017-08-21 00:00:00+02	16	1	2
+98	Cras eu tellus eu augue porttitor interdum.	lorem. Donec elementum, lorem ut aliquam iaculis, lacus pede sagittis augue, eu tempor erat neque non quam.	taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu. Nunc mauris. Morbi non sapien molestie orci tincidunt adipiscing. Mauris molestie pharetra nibh. Aliquam ornare, libero at auctor ullamcorper, nisl arcu iaculis enim,	2012-04-12 00:00:00+02	2016-05-13 00:00:00+02	21	3	3
+99	ac, fermentum vel, mauris. Integer sem elit, pharetra	tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam fringilla cursus purus.	dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et ipsum cursus vestibulum. Mauris magna. Duis dignissim tempor arcu. Vestibulum ut eros non enim commodo hendrerit. Donec porttitor tellus non magna. Nam ligula elit, pretium et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna tellus	2013-06-21 00:00:00+02	2016-09-30 00:00:00+02	11	1	2
+100	mauris sapien, cursus in,	turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut, molestie in, tempus eu, ligula. Aenean euismod mauris eu elit. Nulla facilisi. Sed neque. Sed eget	pharetra. Nam ac nulla. In tincidunt congue turpis. In condimentum. Donec at arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque dui. Suspendisse ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis. Nullam vitae diam. Proin dolor.	2012-10-31 00:00:00+01	2015-09-09 00:00:00+02	1	3	2
+101	consectetuer adipiscing elit.	amet luctus vulputate, nisi sem semper erat, in consectetuer ipsum	Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce mollis. Duis sit amet diam eu dolor egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed	2012-11-23 00:00:00+01	2016-05-05 00:00:00+02	15	3	1
+102	fermentum convallis ligula. Donec luctus	Quisque purus sapien, gravida non, sollicitudin a, malesuada id, erat. Etiam vestibulum massa rutrum magna. Cras convallis convallis dolor. Quisque tincidunt pede ac urna. Ut tincidunt vehicula risus. Nulla eget	Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a, enim. Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem, vitae aliquam eros turpis non enim. Mauris quis turpis vitae purus gravida sagittis. Duis gravida. Praesent eu nulla at sem molestie sodales. Mauris blandit enim	2014-07-04 00:00:00+02	2017-05-02 00:00:00+02	18	3	1
+\.
+
+
+--
+-- TOC entry 2438 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: projet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('projet_id_seq', 102, true);
+
+
+--
+-- TOC entry 2384 (class 0 OID 16510)
+-- Dependencies: 207
+-- Data for Name: projet_pj; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY projet_pj (projet_id, piece_jointe_id, id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2439 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: projet_pj_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('projet_pj_id_seq', 101, true);
+
+
+--
+-- TOC entry 2395 (class 0 OID 16793)
+-- Dependencies: 218
+-- Data for Name: reponse; Type: TABLE DATA; Schema: public; Owner: admambigroup
+--
+
+COPY reponse (id, suggestion_id, contenu, utilisateur_id, date_creation, date_derniere_maj) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2440 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: reponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admambigroup
+--
+
+SELECT pg_catalog.setval('reponse_id_seq', 1, false);
+
+
+--
+-- TOC entry 2386 (class 0 OID 16515)
+-- Dependencies: 209
+-- Data for Name: secteur; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY secteur (id, libelle) FROM stdin;
+1	Cuivre
+2	FTTH
+3	Vie de l'entreprise
+\.
+
+
+--
+-- TOC entry 2441 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: secteur_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('secteur_id_seq', 3, true);
+
+
+--
+-- TOC entry 2388 (class 0 OID 16520)
+-- Dependencies: 211
+-- Data for Name: sous_domaine; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY sous_domaine (id, libelle, description, domaine_id, utilisateur_id) FROM stdin;
+1	sous-domaine 1	greshtdhsdsgtd	1	1
+2	sous-domaine 2	tfykuftuyjrtdht	1	2
+3	sous-domaine 3	thdrkugfhfdgdhd	1	2
+4	sous-domaine 4	bfgchwhbdwghdwgd	4	3
+5	sous-domaine 5	hdfeqgrfdsefgsefgfds	7	3
+6	sous-domaine 6	fbgcdgfhdtyrgrsqtqs	6	2
+7	sous-domaine 7	htryezhegeg	5	3
+8	sous-domaine 8	kgfvsqrtyhygfdsdghj	6	3
+9	sous-domaine 9	hgdhdqgrsgsqdffsezfgsqrtqz	10	2
+10	sous-domaine 10	jyfdyeythzgfrsrtsrqsqs	5	2
+11	sous-domaine 11	jyhfdhtdsteyreyyza	4	3
+12	sous-domaine 12	;jhjyjyreutyrze	5	2
+13	sous-domaine 14	jgdsrethtgfghtgtyuttre	9	2
+14	sous-domaine 15	ngfdgdstdruytdgfrsd	8	1
+15	sous-domaine 16	jyfhehtyfertsrsd	7	2
+17	sous-domaine 17	sthtrhrhzhedgfd	3	3
+19	sous-domaine 18	hgdsthhyfdjfddgyt	7	1
+20	sous-domaine 19	ghfdhdfqhtdsghdfhds	5	3
+21	sous-domaine 20	hgdhdsjhfydjfdjfjhfjyfd	8	3
+16	sous-domaine 23	likfyhdshtdshdsfqgfswhdss	8	2
+18	sous-domaine 22	lkhmiyitegrzqgetzg	9	3
+22	TEST	TEST	3	1
+23	Sous-Domaine Test		2	1
+24	SOUS DOMAINE TRES TRES LONG je ne sais pas quoi ecrire	wsgfsgsgsgsg	1	1
+\.
+
+
+--
+-- TOC entry 2442 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: sous_domaine_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('sous_domaine_id_seq', 24, true);
+
+
+--
+-- TOC entry 2390 (class 0 OID 16528)
+-- Dependencies: 213
+-- Data for Name: suggestion; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY suggestion (id, titre, contenu, date_creation, date_derniere_maj, secteur_id, domaine_id, sous_domaine_id, utilisateur_id, projet_id, publique) FROM stdin;
+107	TEST	drytdfuyihuftfilhcggkjftdiudtyrusuygyjxfsfhjxfdfgsregysreiuygwsdtufydrugj	2012-12-17 00:00:00+01	2016-12-11 00:00:00+01	\N	\N	3	1	\N	t
+\.
+
+
+--
+-- TOC entry 2443 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: suggestion_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('suggestion_id_seq', 107, true);
+
+
+--
+-- TOC entry 2392 (class 0 OID 16536)
+-- Dependencies: 215
+-- Data for Name: utilisateur; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY utilisateur (id, nom, prenom, email, fonction_id, photo) FROM stdin;
+1	spadaro	florian	florian.spadaro@outlook.fr	3	images/photosUtilisateurs/inconnu.jpg
+3	eau	evian	evian.eau@outlook.fr	1	images/photosUtilisateurs/inconnu.jpg
+2	willis	bruce	bruce.willis@outlook.fr	2	images/photosUtilisateurs/inconnu.jpg
+6	Res	Ponsable	res.ponsable@grzqe.fr	5	images/photosUtilisateurs/inconnu.jpg
+5	Responsable	Entreprise	responsable.entreprise@outlook.fr	4	images/photosUtilisateurs/inconnu.jpg
+\.
+
+
+--
+-- TOC entry 2444 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: utilisateur_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('utilisateur_id_seq', 6, true);
+
+
+--
+-- TOC entry 2397 (class 0 OID 33177)
+-- Dependencies: 220
+-- Data for Name: utilisateur_messages; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY utilisateur_messages (id, utilisateur_id, message, lu, date, correspondant_id, sujet) FROM stdin;
+2	1	Bonjour,\nJe m'appelle Florian.\n\nCordialement,\nSPADARO Florian	f	2006-06-06 00:00:00+02	1	Sujet 1
+6	1	Ceci est un test	t	2009-08-20 00:00:00+02	2	Autre sujet
+7	1	Nouveau message	t	2017-08-24 00:00:00+02	6	Titre
+8	1	Message non lu	f	2017-08-20 00:00:00+02	3	Autre titre
+\.
+
+
+--
+-- TOC entry 2445 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: utilisateur_messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('utilisateur_messages_id_seq', 30, true);
+
+
+--
+-- TOC entry 2399 (class 0 OID 49561)
+-- Dependencies: 222
+-- Data for Name: utilisateur_notifs; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY utilisateur_notifs (id, description, vu, lien, utilisateur_id) FROM stdin;
+2	TEST true	t	\N	1
+1	TEST	f	\N	1
+\.
+
+
+--
+-- TOC entry 2446 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: utilisateur_notifs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('utilisateur_notifs_id_seq', 2, true);
+
+
+--
+-- TOC entry 2146 (class 2606 OID 16561)
+-- Name: abonnement abonnement_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement
+    ADD CONSTRAINT abonnement_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2150 (class 2606 OID 16563)
+-- Name: actualite_pj actualite_pj_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite_pj
+    ADD CONSTRAINT actualite_pj_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2148 (class 2606 OID 16565)
+-- Name: actualite actualite_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite
+    ADD CONSTRAINT actualite_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2152 (class 2606 OID 16567)
+-- Name: connexion connexion_login_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY connexion
+    ADD CONSTRAINT connexion_login_key UNIQUE (login);
+
+
+--
+-- TOC entry 2154 (class 2606 OID 16569)
+-- Name: connexion connexion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY connexion
+    ADD CONSTRAINT connexion_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2156 (class 2606 OID 16571)
+-- Name: connexion connexion_utilisateur_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY connexion
+    ADD CONSTRAINT connexion_utilisateur_id_key UNIQUE (utilisateur_id);
+
+
+--
+-- TOC entry 2158 (class 2606 OID 16573)
+-- Name: contrat contrat_libelle_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY contrat
+    ADD CONSTRAINT contrat_libelle_key UNIQUE (libelle);
+
+
+--
+-- TOC entry 2160 (class 2606 OID 16575)
+-- Name: contrat contrat_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY contrat
+    ADD CONSTRAINT contrat_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2162 (class 2606 OID 16577)
+-- Name: domaine domaine_libelle_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY domaine
+    ADD CONSTRAINT domaine_libelle_key UNIQUE (libelle);
+
+
+--
+-- TOC entry 2164 (class 2606 OID 16579)
+-- Name: domaine domaine_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY domaine
+    ADD CONSTRAINT domaine_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2166 (class 2606 OID 16581)
+-- Name: fonction fonction_libelle_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY fonction
+    ADD CONSTRAINT fonction_libelle_key UNIQUE (libelle);
+
+
+--
+-- TOC entry 2168 (class 2606 OID 16583)
+-- Name: fonction fonction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY fonction
+    ADD CONSTRAINT fonction_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2170 (class 2606 OID 16585)
+-- Name: miniature miniature_nom_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY miniature
+    ADD CONSTRAINT miniature_nom_key UNIQUE (nom);
+
+
+--
+-- TOC entry 2172 (class 2606 OID 16587)
+-- Name: miniature miniature_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY miniature
+    ADD CONSTRAINT miniature_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2174 (class 2606 OID 16589)
+-- Name: miniature miniature_url_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY miniature
+    ADD CONSTRAINT miniature_url_key UNIQUE (url);
+
+
+--
+-- TOC entry 2176 (class 2606 OID 16591)
+-- Name: niveau niveau_libelle_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY niveau
+    ADD CONSTRAINT niveau_libelle_key UNIQUE (libelle);
+
+
+--
+-- TOC entry 2178 (class 2606 OID 16593)
+-- Name: niveau niveau_niveau_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY niveau
+    ADD CONSTRAINT niveau_niveau_key UNIQUE (niveau);
+
+
+--
+-- TOC entry 2180 (class 2606 OID 16595)
+-- Name: niveau niveau_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY niveau
+    ADD CONSTRAINT niveau_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2182 (class 2606 OID 16597)
+-- Name: piece_jointe piece_jointe_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY piece_jointe
+    ADD CONSTRAINT piece_jointe_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2184 (class 2606 OID 16599)
+-- Name: piece_jointe piece_jointe_url_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY piece_jointe
+    ADD CONSTRAINT piece_jointe_url_key UNIQUE (url);
+
+
+--
+-- TOC entry 2188 (class 2606 OID 16601)
+-- Name: projet_pj projet_pj_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet_pj
+    ADD CONSTRAINT projet_pj_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2186 (class 2606 OID 16603)
+-- Name: projet projet_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet
+    ADD CONSTRAINT projet_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2204 (class 2606 OID 16801)
+-- Name: reponse reponse_pkey; Type: CONSTRAINT; Schema: public; Owner: admambigroup
+--
+
+ALTER TABLE ONLY reponse
+    ADD CONSTRAINT reponse_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2190 (class 2606 OID 16605)
+-- Name: secteur secteur_libelle_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY secteur
+    ADD CONSTRAINT secteur_libelle_key UNIQUE (libelle);
+
+
+--
+-- TOC entry 2192 (class 2606 OID 16607)
+-- Name: secteur secteur_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY secteur
+    ADD CONSTRAINT secteur_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2194 (class 2606 OID 16609)
+-- Name: sous_domaine sous_domaine_libelle_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY sous_domaine
+    ADD CONSTRAINT sous_domaine_libelle_key UNIQUE (libelle);
+
+
+--
+-- TOC entry 2196 (class 2606 OID 16611)
+-- Name: sous_domaine sous_domaine_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY sous_domaine
+    ADD CONSTRAINT sous_domaine_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2198 (class 2606 OID 16613)
+-- Name: suggestion suggestion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY suggestion
+    ADD CONSTRAINT suggestion_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2200 (class 2606 OID 16615)
+-- Name: utilisateur utilisateur_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur
+    ADD CONSTRAINT utilisateur_email_key UNIQUE (email);
+
+
+--
+-- TOC entry 2206 (class 2606 OID 33182)
+-- Name: utilisateur_messages utilisateur_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur_messages
+    ADD CONSTRAINT utilisateur_messages_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2208 (class 2606 OID 49567)
+-- Name: utilisateur_notifs utilisateur_notifs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur_notifs
+    ADD CONSTRAINT utilisateur_notifs_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2202 (class 2606 OID 16617)
+-- Name: utilisateur utilisateur_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur
+    ADD CONSTRAINT utilisateur_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2209 (class 2606 OID 16618)
+-- Name: abonnement abonnement_contrat_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement
+    ADD CONSTRAINT abonnement_contrat_id_fkey FOREIGN KEY (contrat_id) REFERENCES contrat(id);
+
+
+--
+-- TOC entry 2210 (class 2606 OID 16623)
+-- Name: abonnement abonnement_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement
+    ADD CONSTRAINT abonnement_domaine_id_fkey FOREIGN KEY (domaine_id) REFERENCES domaine(id);
+
+
+--
+-- TOC entry 2211 (class 2606 OID 16628)
+-- Name: abonnement abonnement_projet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement
+    ADD CONSTRAINT abonnement_projet_id_fkey FOREIGN KEY (projet_id) REFERENCES projet(id);
+
+
+--
+-- TOC entry 2212 (class 2606 OID 16633)
+-- Name: abonnement abonnement_secteur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement
+    ADD CONSTRAINT abonnement_secteur_id_fkey FOREIGN KEY (secteur_id) REFERENCES secteur(id);
+
+
+--
+-- TOC entry 2213 (class 2606 OID 16638)
+-- Name: abonnement abonnement_sous_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement
+    ADD CONSTRAINT abonnement_sous_domaine_id_fkey FOREIGN KEY (sous_domaine_id) REFERENCES sous_domaine(id);
+
+
+--
+-- TOC entry 2214 (class 2606 OID 16643)
+-- Name: abonnement abonnement_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY abonnement
+    ADD CONSTRAINT abonnement_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2215 (class 2606 OID 16648)
+-- Name: actualite actualite_contrat_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite
+    ADD CONSTRAINT actualite_contrat_id_fkey FOREIGN KEY (contrat_id) REFERENCES contrat(id);
+
+
+--
+-- TOC entry 2216 (class 2606 OID 16653)
+-- Name: actualite actualite_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite
+    ADD CONSTRAINT actualite_domaine_id_fkey FOREIGN KEY (domaine_id) REFERENCES domaine(id);
+
+
+--
+-- TOC entry 2221 (class 2606 OID 16658)
+-- Name: actualite_pj actualite_pj_actualite_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite_pj
+    ADD CONSTRAINT actualite_pj_actualite_id_fkey FOREIGN KEY (actualite_id) REFERENCES actualite(id);
+
+
+--
+-- TOC entry 2222 (class 2606 OID 16663)
+-- Name: actualite_pj actualite_pj_piece_jointe_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite_pj
+    ADD CONSTRAINT actualite_pj_piece_jointe_id_fkey FOREIGN KEY (piece_jointe_id) REFERENCES piece_jointe(id);
+
+
+--
+-- TOC entry 2217 (class 2606 OID 16668)
+-- Name: actualite actualite_projet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite
+    ADD CONSTRAINT actualite_projet_id_fkey FOREIGN KEY (projet_id) REFERENCES projet(id);
+
+
+--
+-- TOC entry 2218 (class 2606 OID 16673)
+-- Name: actualite actualite_secteur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite
+    ADD CONSTRAINT actualite_secteur_id_fkey FOREIGN KEY (secteur_id) REFERENCES secteur(id);
+
+
+--
+-- TOC entry 2219 (class 2606 OID 16678)
+-- Name: actualite actualite_sous_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite
+    ADD CONSTRAINT actualite_sous_domaine_id_fkey FOREIGN KEY (sous_domaine_id) REFERENCES sous_domaine(id);
+
+
+--
+-- TOC entry 2220 (class 2606 OID 16683)
+-- Name: actualite actualite_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY actualite
+    ADD CONSTRAINT actualite_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2223 (class 2606 OID 16688)
+-- Name: connexion connexion_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY connexion
+    ADD CONSTRAINT connexion_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2224 (class 2606 OID 16693)
+-- Name: contrat contrat_miniature_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY contrat
+    ADD CONSTRAINT contrat_miniature_id_fkey FOREIGN KEY (miniature_id) REFERENCES miniature(id);
+
+
+--
+-- TOC entry 2225 (class 2606 OID 16698)
+-- Name: contrat contrat_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY contrat
+    ADD CONSTRAINT contrat_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2226 (class 2606 OID 16703)
+-- Name: domaine domaine_secteur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY domaine
+    ADD CONSTRAINT domaine_secteur_id_fkey FOREIGN KEY (secteur_id) REFERENCES secteur(id);
+
+
+--
+-- TOC entry 2227 (class 2606 OID 16708)
+-- Name: domaine domaine_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY domaine
+    ADD CONSTRAINT domaine_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2228 (class 2606 OID 16713)
+-- Name: fonction fonction_niveau_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY fonction
+    ADD CONSTRAINT fonction_niveau_id_fkey FOREIGN KEY (niveau_id) REFERENCES niveau(id);
+
+
+--
+-- TOC entry 2229 (class 2606 OID 16718)
+-- Name: projet projet_contrat_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet
+    ADD CONSTRAINT projet_contrat_id_fkey FOREIGN KEY (contrat_id) REFERENCES contrat(id);
+
+
+--
+-- TOC entry 2232 (class 2606 OID 16723)
+-- Name: projet_pj projet_pj_piece_jointe_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet_pj
+    ADD CONSTRAINT projet_pj_piece_jointe_id_fkey FOREIGN KEY (piece_jointe_id) REFERENCES piece_jointe(id);
+
+
+--
+-- TOC entry 2233 (class 2606 OID 16728)
+-- Name: projet_pj projet_pj_projet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet_pj
+    ADD CONSTRAINT projet_pj_projet_id_fkey FOREIGN KEY (projet_id) REFERENCES projet(id);
+
+
+--
+-- TOC entry 2230 (class 2606 OID 16733)
+-- Name: projet projet_sous_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet
+    ADD CONSTRAINT projet_sous_domaine_id_fkey FOREIGN KEY (sous_domaine_id) REFERENCES sous_domaine(id);
+
+
+--
+-- TOC entry 2231 (class 2606 OID 16738)
+-- Name: projet projet_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY projet
+    ADD CONSTRAINT projet_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2234 (class 2606 OID 16743)
+-- Name: sous_domaine sous_domaine_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY sous_domaine
+    ADD CONSTRAINT sous_domaine_domaine_id_fkey FOREIGN KEY (domaine_id) REFERENCES domaine(id);
+
+
+--
+-- TOC entry 2235 (class 2606 OID 16748)
+-- Name: sous_domaine sous_domaine_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY sous_domaine
+    ADD CONSTRAINT sous_domaine_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2236 (class 2606 OID 16753)
+-- Name: suggestion suggestion_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY suggestion
+    ADD CONSTRAINT suggestion_domaine_id_fkey FOREIGN KEY (domaine_id) REFERENCES domaine(id);
+
+
+--
+-- TOC entry 2237 (class 2606 OID 16758)
+-- Name: suggestion suggestion_projet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY suggestion
+    ADD CONSTRAINT suggestion_projet_id_fkey FOREIGN KEY (projet_id) REFERENCES projet(id);
+
+
+--
+-- TOC entry 2238 (class 2606 OID 16763)
+-- Name: suggestion suggestion_secteur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY suggestion
+    ADD CONSTRAINT suggestion_secteur_id_fkey FOREIGN KEY (secteur_id) REFERENCES secteur(id);
+
+
+--
+-- TOC entry 2239 (class 2606 OID 16768)
+-- Name: suggestion suggestion_sous_domaine_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY suggestion
+    ADD CONSTRAINT suggestion_sous_domaine_id_fkey FOREIGN KEY (sous_domaine_id) REFERENCES sous_domaine(id);
+
+
+--
+-- TOC entry 2240 (class 2606 OID 16773)
+-- Name: suggestion suggestion_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY suggestion
+    ADD CONSTRAINT suggestion_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id);
+
+
+--
+-- TOC entry 2241 (class 2606 OID 16778)
+-- Name: utilisateur utilisateur_fonction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur
+    ADD CONSTRAINT utilisateur_fonction_id_fkey FOREIGN KEY (fonction_id) REFERENCES fonction(id);
+
+
+--
+-- TOC entry 2243 (class 2606 OID 57761)
+-- Name: utilisateur_messages utilisateur_messages_recus_correspondant_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur_messages
+    ADD CONSTRAINT utilisateur_messages_recus_correspondant_id_fkey FOREIGN KEY (correspondant_id) REFERENCES utilisateur(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2242 (class 2606 OID 57751)
+-- Name: utilisateur_messages utilisateur_messages_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur_messages
+    ADD CONSTRAINT utilisateur_messages_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2244 (class 2606 OID 57756)
+-- Name: utilisateur_notifs utilisateur_notifs_utilisateur_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY utilisateur_notifs
+    ADD CONSTRAINT utilisateur_notifs_utilisateur_id_fkey FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+-- Completed on 2017-08-24 21:43:45
+
+--
+-- PostgreSQL database dump complete
+--
+
+\connect postgres
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.1
+-- Dumped by pg_dump version 9.6.1
+
+-- Started on 2017-08-24 21:43:45
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2121 (class 1262 OID 12407)
+-- Dependencies: 2120
+-- Name: postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
+-- TOC entry 1 (class 3079 OID 12393)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2123 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+-- Completed on 2017-08-24 21:43:45
+
+--
+-- PostgreSQL database dump complete
+--
+
+\connect template1
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.1
+-- Dumped by pg_dump version 9.6.1
+
+-- Started on 2017-08-24 21:43:45
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2121 (class 1262 OID 1)
+-- Dependencies: 2120
+-- Name: template1; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE template1 IS 'default template for new databases';
+
+
+--
+-- TOC entry 1 (class 3079 OID 12393)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2123 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+-- Completed on 2017-08-24 21:43:46
+
+--
+-- PostgreSQL database dump complete
+--
+
+-- Completed on 2017-08-24 21:43:46
+
+--
+-- PostgreSQL database cluster dump complete
+--
+
