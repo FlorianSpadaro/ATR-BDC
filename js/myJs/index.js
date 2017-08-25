@@ -37,7 +37,7 @@ $(function () {
 
                 pElt = document.createElement("p");
                 pElt.classList += "post-meta";
-                pElt.innerHTML = "Posté par <a href='infosUtilisateur.php?id=" + actu.utilisateur.id + "&amp;prenom=" + actu.utilisateur.prenom + "&amp;nom=" + actu.utilisateur.nom + "&amp;fonction=" + actu.utilisateur.fonction.libelle + "&amp;niveau=" + actu.utilisateur.fonction.niveau.libelle + "&amp;photo=" + actu.utilisateur.photo + "&amp;email=" + actu.utilisateur.email + "' data-toggle='modal' data-target='#infos" + actu.utilisateur.id + "'>" + actu.utilisateur.nom.toUpperCase() + " " + actu.utilisateur.prenom.charAt(0).toUpperCase() + actu.utilisateur.prenom.slice(1).toLowerCase() + "</a><span class='pull-right'>" + actu.date_creation.slice(0, 19) + "</span>";
+                pElt.innerHTML = "Posté par <a href='infosUtilisateur.php?id=" + actu.utilisateur.id + "' data-toggle='modal' data-target='#infos" + actu.utilisateur.id + "'>" + actu.utilisateur.nom.toUpperCase() + " " + actu.utilisateur.prenom.charAt(0).toUpperCase() + actu.utilisateur.prenom.slice(1).toLowerCase() + "</a><span class='pull-right'>" + actu.date_creation.slice(0, 19) + "</span>";
                 divElt.appendChild(pElt);
 
                 var listeActus = document.getElementById("listeActus");

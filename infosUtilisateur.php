@@ -6,10 +6,7 @@
         .td{
             padding-left: 10px;
         }
-        #messageDiv{
-            display: none;
-        }
-        #emailDiv{
+        .messageDiv{
             display: none;
         }
         #succes{
@@ -20,13 +17,18 @@
 </head>
 
 <body>
-
-    <input type="hidden" name="idUser" id="idUser" value="<?php echo urldecode($_GET["id"]) ?>" />
+    
+    <?php
+    require_once("API/fonctions.php");
+    $user = json_decode(getUtilisateurById($_GET["id"]));
+    ?>
+    
+    <input type="hidden" name="idUser" id="idUser" value="<?php $_GET["id"] ?>" />
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <img src="<?php echo urldecode($_GET["photo"]) ?>" width="100" height="130">
-        <b><?php echo strtoupper(urldecode($_GET["nom"]))." ".strtoupper(substr(urldecode($_GET["prenom"]), 0, 1)).strtolower(substr(urldecode($_GET["prenom"]), 1)) ?></b>
+        <img src="<?php echo $user->photo ?>" width="100" height="130">
+        <b><?php echo strtoupper($user->nom)." ".strtoupper(substr($user->prenom, 0, 1)).strtolower(substr($user->prenom, 1)) ?></b>
     </div>
     <div class="modal-body">
         <div id="test"></div>
@@ -34,30 +36,30 @@
             <tr>
                 <th class="th">Email : </th>
                 <td class="td">
-                    <?php echo urldecode($_GET["email"]) ?>
+                    <?php echo $user->email ?>
                 </td>
             </tr>
             <tr>
                 <th class="th">Fonction : </th>
                 <td class="td">
-                    <?php echo urldecode($_GET["fonction"]) ?>
+                    <?php echo $user->fonction->libelle ?>
                 </td>
             </tr>
             <tr>
                 <th class="th">Niveau : </th>
                 <td class="td">
-                    <?php echo urldecode($_GET["niveau"]) ?>
+                    <?php echo $user->fonction->niveau->libelle ?>
                 </td>
             </tr>
         </table>
     </div>
     <div class="modal-footer">
         <div class="btn-group">
-            <button class="btn btn-info" id="buttonMessage"><span class="glyphicon glyphicon-envelope"></span> Message</button>
+            <button class="btn btn-info buttonMessage" id="buttonMessage"><span class="glyphicon glyphicon-envelope"></span> Message</button>
         </div>
         <div id="succes"><span class="glyphicon glyphicon-ok-circle"></span> Message envoyé avec succès</div>
         
-        <div id="messageDiv">
+        <div class="messageDiv">
             <hr/>
             <form id="messageForm">
                 <div class="form-group">
@@ -92,10 +94,6 @@
     
     <script>
         $(function(){
-            if($("#idUser").val() === $("#user_id").val())
-                {
-                    $("#buttonMessage").prop("disabled", true);
-                }
             
             $("#annulerMessage").click(function(e){
                 e.preventDefault();
@@ -104,8 +102,8 @@
                 $("#sujet").val("");
             });
             
-            $("#buttonMessage").click(function(){
-                $("#messageDiv").show("fade");
+            $(".buttonMessage").click(function(){
+                $(".messageDiv").show("fade");
             });
             
             $("#message").on("keyup", function(){
