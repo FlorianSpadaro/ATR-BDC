@@ -50,7 +50,52 @@
                 </div>
             </div>
         </header>
-
+        
+        <?php
+            $tab = array();
+            foreach($messages->recus as $msgRecu)
+            {
+                $contient = false;
+                foreach($tab as $elt)
+                {
+                    if($elt == $msgRecu->correspondant->id)
+                    {
+                        $contient = true;
+                    }
+                }
+                if(!$contient)
+                {
+                    array_push($tab, $msgRecu->correspondant->id);
+                }
+            }
+            foreach($messages->envoyes as $msgEnvoye)
+            {
+                $contient = false;
+                foreach($tab as $elt)
+                {
+                    if($elt == $msgEnvoye->correspondant->id)
+                    {
+                        $contient = true;
+                    }
+                }
+                if(!$contient)
+                {
+                    array_push($tab, $msgEnvoye->correspondant->id);
+                }
+            }
+        
+        foreach($tab as $elt)
+        {
+            ?>
+            <div class="modal fade" id="infos<?php echo $elt ?>">
+                <div class="modal-dialog">  
+                  <div class="modal-content"></div>  
+                </div> 
+              </div>
+            <?php
+        }
+        ?>
+        
         <ul class="nav nav-pills container">
             <li class="active"><a href="#messagesRecus" data-toggle="tab">Messages reçus</a></li>
             <li><a href="#messagesEnvoyes" data-toggle="tab">Messages envoyés</a></li>
@@ -88,22 +133,18 @@
                                 ?>
                                     <tr <?php if(!$messageRecu->lu){echo "class='success'";} ?> id="messageRecu<?php echo $messageRecu->id ?>" >
                                             <td>
-                                                <a href="message.php?id=<?php echo $messageRecu->id ?>">
-                                                    <?php echo $messageRecu->sujet ?>
+                                                <a href="message.php?id=<?php echo $messageRecu->message->id ?>">
+                                                    <?php echo $messageRecu->message->sujet ?>
                                                 </a>
                                             </td>
                                             <td>
-                                                <div class="modal fade" id="infos<?php echo $messageRecu->correspondant->id ?>">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content"></div>
-                                                    </div>
-                                                </div>
+                                                
                                                 <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $messageRecu->correspondant->id ?>&amp;prenom=<?php echo $messageRecu->correspondant->prenom ?>&amp;nom=<?php echo $messageRecu->correspondant->nom ?>&amp;fonction=<?php echo $messageRecu->correspondant->fonction->libelle ?>&amp;niveau=<?php echo $messageRecu->correspondant->fonction->niveau->libelle ?>&amp;photo=<?php echo $messageRecu->correspondant->photo ?>&amp;email=<?php echo $messageRecu->correspondant->email ?>" data-target="#infos<?php echo $messageRecu->correspondant->id ?>">
                                                     <?php echo strtoupper($messageRecu->correspondant->nom)." ".strtoupper(substr($messageRecu->correspondant->prenom, 0, 1)).strtolower(substr($messageRecu->correspondant->prenom, 1)); ?>
                                                 </a>
                                             </td>
                                             <td>
-                                                <?php echo $messageRecu->date->jour." à ".$messageRecu->date->heure ?>
+                                                <?php echo $messageRecu->message->date->jour." à ".$messageRecu->message->date->heure ?>
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="selectionMessageRecus" name="<?php echo $messageRecu->id ?>" id="<?php echo $messageRecu->id ?>" />
@@ -160,22 +201,17 @@
                                 ?>
                                     <tr id="messageEnvoye<?php echo $messageEnvoye->id ?>">
                                         <td>
-                                            <a href="message.php?id=<?php echo $messageEnvoye->id ?>">
-                                                <?php echo $messageEnvoye->sujet ?>
+                                            <a href="message.php?id=<?php echo $messageEnvoye->message->id ?>">
+                                                <?php echo $messageEnvoye->message->sujet ?>
                                             </a>
                                         </td>
                                         <td>
-                                            <div class="modal fade" id="infos<?php echo $messageEnvoye->utilisateur->id ?>">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content"></div>
-                                                </div>
-                                            </div>
-                                            <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $messageEnvoye->utilisateur->id ?>&amp;prenom=<?php echo $messageEnvoye->utilisateur->prenom ?>&amp;nom=<?php echo $messageEnvoye->utilisateur->nom ?>&amp;fonction=<?php echo $messageEnvoye->utilisateur->fonction->libelle ?>&amp;niveau=<?php echo $messageEnvoye->utilisateur->fonction->niveau->libelle ?>&amp;photo=<?php echo $messageEnvoye->utilisateur->photo ?>&amp;email=<?php echo $messageEnvoye->utilisateur->email ?>" data-target="#infos<?php echo $messageEnvoye->utilisateur->id ?>">
-                                                <?php echo strtoupper($messageEnvoye->utilisateur->nom)." ".strtoupper(substr($messageEnvoye->utilisateur->prenom, 0, 1)).strtolower(substr($messageEnvoye->utilisateur->prenom, 1)); ?>
+                                            <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $messageEnvoye->correspondant->id ?>&amp;prenom=<?php echo $messageEnvoye->correspondant->prenom ?>&amp;nom=<?php echo $messageEnvoye->correspondant->nom ?>&amp;fonction=<?php echo $messageEnvoye->correspondant->fonction->libelle ?>&amp;niveau=<?php echo $messageEnvoye->correspondant->fonction->niveau->libelle ?>&amp;photo=<?php echo $messageEnvoye->correspondant->photo ?>&amp;email=<?php echo $messageEnvoye->correspondant->email ?>" data-target="#infos<?php echo $messageEnvoye->correspondant->id ?>">
+                                                <?php echo strtoupper($messageEnvoye->correspondant->nom)." ".strtoupper(substr($messageEnvoye->correspondant->prenom, 0, 1)).strtolower(substr($messageEnvoye->correspondant->prenom, 1)); ?>
                                             </a>
                                         </td>
                                         <td>
-                                            <?php echo $messageEnvoye->date->jour." à ".$messageEnvoye->date->heure ?>
+                                            <?php echo $messageEnvoye->message->date->jour." à ".$messageEnvoye->message->date->heure ?>
                                         </td>
                                         <td>
                                             <input type="checkbox" class="selectionMessagesEnvoyes" name="<?php echo $messageEnvoye->id ?>" id="<?php echo $messageEnvoye->id ?>" />
@@ -196,59 +232,6 @@
                 }
                 ?>
 
-                        <!--<section class="col-sm-8 table responsive">
-                    <table class="table table-bordered table-striped table-condensed">
-                        <caption>
-                            <h4>Messages envoyés</h4>
-                        </caption>
-                        <thead>
-                            <tr>
-                                <th>Correspondant</th>
-                                <th>Sujet</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="success">
-                                <td>Grand Mekong</td>
-                                <td>Demande croissante de certaines parties de l’animal pour la médecine chinoise traditionnelle et fragmentation des habitats du fait du développement non durable d’infrastructures</td>
-                                <td>6 jours</td>
-                                <td>Supprimer</td>
-                            </tr>
-                            <tr class="danger">
-                                <td>Île de Sumatra</td>
-                                <td>Production d’huile de palme et de pâtes à papiers</td>
-                                <td>6 jours</td>
-                                <td>Supprimer</td>
-                            </tr>
-                            <tr class="warning">
-                                <td>Indonésie et Malaisie</td>
-                                <td>Pâte à papier, l’huile de palme et le caoutchouc</td>
-                                <td>6 jours</td>
-                                <td>Supprimer</td>
-                            </tr>
-                            <tr class="active">
-                                <td>États-Unis</td>
-                                <td>Les tigres captifs représentent un danger pour les tigres sauvages</td>
-                                <td>6 jours</td>
-                                <td>Supprimer</td>
-                            </tr>
-                            <tr class="success">
-                                <td>Europe</td>
-                                <td>Gros appétit pour l’huile de palme</td>
-                                <td>6 jours</td>
-                                <td>Supprimer</td>
-                            </tr>
-                            <tr class="danger">
-                                <td>Népal</td>
-                                <td>Commerce illégal de produits dérivés de tigres</td>
-                                <td>6 jours</td>
-                                <td>Supprimer</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>-->
             </div>
         </div>
 

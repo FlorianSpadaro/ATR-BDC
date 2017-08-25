@@ -1,4 +1,5 @@
 $(function () {
+    
     $("#supprimerSelection").prop("disabled", true);
     
     $("#allMessagesRecus").click(function(){

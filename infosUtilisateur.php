@@ -1,9 +1,9 @@
 <head>
     <style>
-        th{
+        .th{
             text-align: right;
         }
-        td{
+        .td{
             padding-left: 10px;
         }
         #messageDiv{
@@ -32,20 +32,20 @@
         <div id="test"></div>
         <table>
             <tr>
-                <th>Email : </th>
-                <td>
+                <th class="th">Email : </th>
+                <td class="td">
                     <?php echo $_GET["email"] ?>
                 </td>
             </tr>
             <tr>
-                <th>Fonction : </th>
-                <td>
+                <th class="th">Fonction : </th>
+                <td class="td">
                     <?php echo $_GET["fonction"] ?>
                 </td>
             </tr>
             <tr>
-                <th>Niveau : </th>
-                <td>
+                <th class="th">Niveau : </th>
+                <td class="td">
                     <?php echo $_GET["niveau"] ?>
                 </td>
             </tr>
@@ -92,6 +92,11 @@
     
     <script>
         $(function(){
+            if($("#idUser").val() === $("#user_id").val())
+                {
+                    $("#buttonMessage").prop("disabled", true);
+                }
+            
             $("#annulerMessage").click(function(e){
                 e.preventDefault();
                 $("#messageDiv").hide("fade");
@@ -118,9 +123,9 @@
             $("#messageForm").submit(function(e){
                 e.preventDefault();
                 var sujet = $("#sujet").val();
-                var idUser = $("#idUser").val();
+                var idCorrespondant = $("#idUser").val();
                 var message = $("#message").val();
-                var idCorrespondant = $("#user_id").val();
+                var idUser = $("#user_id").val();
                 var objet = {utilisateur_id: idUser, sujet: sujet, message: message, correspondant_id: idCorrespondant};
                 $.post("API/addMessage.php", objet, function(data){
                     var reponse = JSON.parse(data);

@@ -1,16 +1,48 @@
 <?php
-	function deleteMessageById($id)
+	function deleteMessageEnvoyeById($id)
 	{
 		include("connexionBdd.php");
 		
 		try{
-			$req = $bdd->prepare("DELETE FROM utilisateur_messages WHERE id = ?");
+			$req = $bdd->prepare("DELETE FROM utilisateur_messages_envoyes WHERE id = ?");
 			$data = $req->execute(array($id));
 		}catch(Exception $e){
 			$data = false;
 		}
 		
 		return json_encode($data);
+	}
+
+	function deleteMessageRecuById($id)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("DELETE FROM utilisateur_messages_recus WHERE id = ?");
+			$data = $req->execute(array($id));
+		}catch(Exception $e){
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
+	function getMessageById($id)
+	{
+		include("connexionBdd.php");
+		
+		$message = null;
+		$req = $bdd->prepare("SELECT * FROM message WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$message["id"] = $data["id"];
+			$message["sujet"] = $data["sujet"];
+			$message["message"] = $data["message"];
+			$message["date"] = json_decode(modifierDate($data["date"]));
+		}
+		
+		return json_encode($message);
 	}
 
 	function getMessagesByUtilisateurId($id)
@@ -20,33 +52,29 @@
 		$messages = null;
 		$i = 0;
 		$j = 0;
-		$req = $bdd->prepare("SELECT * FROM utilisateur_messages WHERE utilisateur_id = ? OR correspondant_id = ? ORDER BY lu, date DESC");
-		$req->execute(array($id, $id));
+		$req = $bdd->prepare("SELECT * FROM utilisateur_messages_recus umr JOIN message m ON m.id = umr.message_id WHERE umr.utilisateur_id = ? ORDER BY umr.lu, m.date DESC");
+		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
-			if($data["utilisateur_id"] == $id)
-			{
-				$messages["recus"][$i]["id"] = $data["id"];
-				$messages["recus"][$i]["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
-				$messages["recus"][$i]["message"] = $data["message"];
-				$messages["recus"][$i]["lu"] = $data["lu"];
-				$messages["recus"][$i]["date"] = json_decode(modifierDate($data["date"]));
-				$messages["recus"][$i]["correspondant"] = json_decode(getUtilisateurById($data["correspondant_id"]));
-				$messages["recus"][$i]["sujet"] = $data["sujet"];
-				$i++;
-			}
-			if($data["correspondant_id"] == $id)
-			{
-				$messages["envoyes"][$j]["id"] = $data["id"];
-				$messages["envoyes"][$j]["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
-				$messages["envoyes"][$j]["message"] = $data["message"];
-				$messages["envoyes"][$j]["lu"] = $data["lu"];
-				$messages["envoyes"][$j]["date"] = json_decode(modifierDate($data["date"]));
-				$messages["envoyes"][$j]["correspondant"] = json_decode(getUtilisateurById($data["correspondant_id"]));
-				$messages["envoyes"][$j]["sujet"] = $data["sujet"];
-				$j++;
-			}
+			$messages["recus"][$i]["message"] = json_decode(getMessageById($data["message_id"]));
+			$messages["recus"][$i]["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
+			$messages["recus"][$i]["lu"] = $data["lu"];
+			$messages["recus"][$i]["correspondant"] = json_decode(getUtilisateurById($data["correspondant_id"]));
+			$messages["recus"][$i]["id"] = $data["id"];
 			
+			$i++;
+		}
+		
+		$req2 = $bdd->prepare("SELECT * FROM utilisateur_messages_envoyes ume JOIN message m ON m.id = ume.message_id WHERE ume.utilisateur_id = ? ORDER BY m.date DESC");
+		$req2->execute(array($id));
+		while($data2 = $req2->fetch())
+		{
+			$messages["envoyes"][$j]["id"] = $data2["id"];
+			$messages["envoyes"][$j]["message"] = json_decode(getMessageById($data2["message_id"]));
+			$messages["envoyes"][$j]["utilisateur"] = json_decode(getUtilisateurById($data2["utilisateur_id"]));
+			$messages["envoyes"][$j]["correspondant"] = json_decode(getUtilisateurById($data2["correspondant_id"]));
+			
+			$j++;
 		}
 		
 		return json_encode($messages);
@@ -71,7 +99,7 @@
 		include("connexionBdd.php");
 		
 		$nbMessages = 0;
-		$req = $bdd->prepare("SELECT COUNT(*) nb FROM utilisateur_messages WHERE lu = 'FALSE' AND utilisateur_id = ?");
+		$req = $bdd->prepare("SELECT COUNT(*) nb FROM utilisateur_messages_recus WHERE lu = 'FALSE' AND utilisateur_id = ?");
 		$req->execute(array($id));
 		if($data = $req->fetch())
 		{
@@ -86,15 +114,22 @@
 		include("connexionBdd.php");
 		
 		try{
-			$req = $bdd->prepare("INSERT INTO utilisateur_messages(utilisateur_id, sujet, message, date, correspondant_id) VALUES(?, ?, ?, NOW(), ?)");
-			$data = $req->execute(array($idUser, $sujet, $message, $idCorrespondant));
+			$req = $bdd->prepare("INSERT INTO message(sujet, message, date) VALUES(?, ?, NOW()) RETURNING id");
+			$req->execute(array($sujet, $message));
+			if($data = $req->fetch())
+			{
+				$req2 = $bdd->prepare("INSERT INTO utilisateur_messages_envoyes(utilisateur_id, correspondant_id, message_id) VALUES(?, ?, ?)");
+				$req2->execute(array($idUser, $idCorrespondant, $data["id"]));
+				$req3 = $bdd->prepare("INSERT INTO utilisateur_messages_recus(utilisateur_id, correspondant_id, message_id) VALUES(?, ?, ?)");
+				$reponse = $req3->execute(array($idCorrespondant, $idUser, $data["id"]));
+			}
 		}
 		catch(Exception $e)
 		{
-			$data = false;
+			$reponse = false;
 		}
 		
-		return json_encode($data);
+		return json_encode($reponse);
 	}
 
 	function getPieceJointeById($id)
