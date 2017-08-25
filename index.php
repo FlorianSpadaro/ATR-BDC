@@ -74,14 +74,6 @@
             <div class="row">
 
 
-                <!--notifications-->
-                <!--<form class="pull-right form-inline">
-                    <div class="form-group">
-                        <label for="notif">Notifications : </label>
-                        <input type="checkbox" name="notif" id="notif" checked data-toggle="toggle">
-                    </div>
-                </form>-->
-
 
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" id="listeActus">
 

@@ -52,7 +52,7 @@
 		$messages = null;
 		$i = 0;
 		$j = 0;
-		$req = $bdd->prepare("SELECT * FROM utilisateur_messages_recus umr JOIN message m ON m.id = umr.message_id WHERE umr.utilisateur_id = ? ORDER BY umr.lu, m.date DESC");
+		$req = $bdd->prepare("SELECT umr.id, umr.message_id, umr.utilisateur_id, umr.lu, umr.correspondant_id FROM utilisateur_messages_recus umr JOIN message m ON m.id = umr.message_id WHERE umr.utilisateur_id = ? ORDER BY umr.lu, m.date DESC");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
@@ -65,7 +65,7 @@
 			$i++;
 		}
 		
-		$req2 = $bdd->prepare("SELECT * FROM utilisateur_messages_envoyes ume JOIN message m ON m.id = ume.message_id WHERE ume.utilisateur_id = ? ORDER BY m.date DESC");
+		$req2 = $bdd->prepare("SELECT ume.id, ume.message_id, ume.utilisateur_id, ume.correspondant_id FROM utilisateur_messages_envoyes ume JOIN message m ON m.id = ume.message_id WHERE ume.utilisateur_id = ? ORDER BY m.date DESC");
 		$req2->execute(array($id));
 		while($data2 = $req2->fetch())
 		{

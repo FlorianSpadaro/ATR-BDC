@@ -67,14 +67,4 @@ $(function () {
     
     chargerActus(0, 5);
     
-    /*$("#notif").change(function(e){
-        $("#listeActus").html("");
-        if(e.target.checked)
-            {
-                chargerActus(0, 5, true);
-            }
-        else{
-            chargerActus(0, 5, false);
-        }
-    });*/
 });

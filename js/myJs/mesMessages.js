@@ -49,14 +49,14 @@ $(function () {
         $('#messageSuppression').modal('show');
         $("#confirmationSuppression").click(function(){
             tab.forEach(function(id){
-                $.post("API/deleteMessageById.php", {message_id: id}, function(){
+                $.post("API/deleteMessageRecuById.php", {message_recu_id: id}, function(){
+                    console.log(id);
                     $("#"+id).removeProp("checked");
                     $("#messageRecu"+id).hide();
                 });
             });
             $("#allMessagesRecus").removeProp("checked");
             $('#messageSuppression').modal('hide');
-            /*window.location.reload();*/
         });
     });
     
@@ -112,14 +112,13 @@ $(function () {
         $('#messageSuppression').modal('show');
         $("#confirmationSuppression").click(function(){
             tab2.forEach(function(id){
-                $.post("API/deleteMessageById.php", {message_id: id}, function(){
+                $.post("API/deleteMessageEnvoyeById.php", {message_envoye_id: id}, function(){
                     $("#"+id).removeProp("checked");
                     $("#messageEnvoye"+id).hide();
                 });
             });
             $("#allMessagesEnvoyes").removeProp("checked");
             $('#messageSuppression').modal('hide');
-            /*window.location.reload();*/
         });
     });
 

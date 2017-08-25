@@ -23,7 +23,7 @@
     $user = json_decode(getUtilisateurById($_GET["id"]));
     ?>
     
-    <input type="hidden" name="idUser" id="idUser" value="<?php $_GET["id"] ?>" />
+    <input type="hidden" name="idUser" id="idUser" value="<?php echo $_GET["id"] ?>" />
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -97,7 +97,7 @@
             
             $("#annulerMessage").click(function(e){
                 e.preventDefault();
-                $("#messageDiv").hide("fade");
+                $(".messageDiv").hide("fade");
                 $("#message").val("");
                 $("#sujet").val("");
             });
@@ -129,7 +129,7 @@
                     var reponse = JSON.parse(data);
                     if(reponse)
                         {
-                            $("#messageDiv").hide("fade");
+                            $(".messageDiv").hide("fade");
                             $("#message").val("");
                             $("#sujet").val("");
                             $("#succes").show("fade").delay(5000).hide("fade");
