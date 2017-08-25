@@ -1,12 +1,11 @@
 $(function () {
     
-    function chargerActus(numPremActu, nbActus, notifications) {
+    function chargerActus(numPremActu, nbActus) {
         $("#notif").prop("disabled", "true");
         $("#chargement").show();
         $.post("API/getActualitesByNum.php", {
             numPremActu: numPremActu,
-            nbActus: nbActus,
-            notifs: notifications
+            nbActus: nbActus
         }, function (data) {
             $("#chargement").hide();
             $("#notif").removeAttr("disabled");
@@ -66,9 +65,9 @@ $(function () {
         });
     };
     
-    chargerActus(0, 5, true);
+    chargerActus(0, 5);
     
-    $("#notif").change(function(e){
+    /*$("#notif").change(function(e){
         $("#listeActus").html("");
         if(e.target.checked)
             {
@@ -77,5 +76,5 @@ $(function () {
         else{
             chargerActus(0, 5, false);
         }
-    });
+    });*/
 });

@@ -189,7 +189,6 @@
 			$actualite["contrat"] = json_decode(getContratById($data["contrat_id"]));
 			$actualite["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
 			$actualite["description"] = $data["description"];
-			$actualite["notification"] = $data["notification"];
 			$actualite["pieces_jointes"] = json_decode(getPiecesJointesByActualiteId($data["id"]));
 		}
 		
@@ -347,14 +346,14 @@
 		return json_encode($secteur);
 	}
 
-	function getActualitesByNum($numPremActu, $nbActus, $notifs)
+	function getActualitesByNum($numPremActu, $nbActus)
 	{
 		include("connexionBdd.php");
 		
 		$actus = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT id, titre, date_creation, date_derniere_maj, secteur_id, sous_domaine_id, projet_id, contrat_id, utilisateur_id, domaine_id, notification, description FROM actualite WHERE notification = ? ORDER BY date_creation DESC LIMIT ? OFFSET ?");
-		$req->execute(array($notifs, $nbActus, $numPremActu));
+		$req = $bdd->prepare("SELECT id, titre, date_creation, date_derniere_maj, secteur_id, sous_domaine_id, projet_id, contrat_id, utilisateur_id, domaine_id, description FROM actualite ORDER BY date_creation DESC LIMIT ? OFFSET ?");
+		$req->execute(array($nbActus, $numPremActu));
 		while($data = $req->fetch())
 		{
 			$actus[$i]["id"] = $data["id"];
