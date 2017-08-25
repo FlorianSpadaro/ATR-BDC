@@ -367,8 +367,7 @@
 			$actus[$i]["projet"] = json_decode(getProjetById($data["projet_id"]));
 			$actus[$i]["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
 			$actus[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
-			$actus[$i]["id"] = $data["id"];
-			$actus[$i]["id"] = $data["id"];
+			$actus[$i]["description"] = $data["description"];
 			
 			$i++;
 		}

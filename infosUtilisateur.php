@@ -21,12 +21,12 @@
 
 <body>
 
-    <input type="hidden" name="idUser" id="idUser" value="<?php echo $_GET["id"] ?>" />
+    <input type="hidden" name="idUser" id="idUser" value="<?php echo urldecode($_GET["id"]) ?>" />
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <img src="<?php echo $_GET["photo"] ?>" width="100" height="130">
-        <b><?php echo strtoupper($_GET["nom"])." ".strtoupper(substr($_GET["prenom"], 0, 1)).strtolower(substr($_GET["prenom"], 1)) ?></b>
+        <img src="<?php echo urldecode($_GET["photo"]) ?>" width="100" height="130">
+        <b><?php echo strtoupper(urldecode($_GET["nom"]))." ".strtoupper(substr(urldecode($_GET["prenom"]), 0, 1)).strtolower(substr(urldecode($_GET["prenom"]), 1)) ?></b>
     </div>
     <div class="modal-body">
         <div id="test"></div>
@@ -34,19 +34,19 @@
             <tr>
                 <th class="th">Email : </th>
                 <td class="td">
-                    <?php echo $_GET["email"] ?>
+                    <?php echo urldecode($_GET["email"]) ?>
                 </td>
             </tr>
             <tr>
                 <th class="th">Fonction : </th>
                 <td class="td">
-                    <?php echo $_GET["fonction"] ?>
+                    <?php echo urldecode($_GET["fonction"]) ?>
                 </td>
             </tr>
             <tr>
                 <th class="th">Niveau : </th>
                 <td class="td">
-                    <?php echo $_GET["niveau"] ?>
+                    <?php echo urldecode($_GET["niveau"]) ?>
                 </td>
             </tr>
         </table>
