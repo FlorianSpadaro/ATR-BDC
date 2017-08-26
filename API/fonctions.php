@@ -1,4 +1,85 @@
 <?php
+	function deleteAllAnciennesNotificationsUtilisateur($idUser)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("DELETE FROM notification_utilisateur WHERE utilisateur_id = ? AND vu = TRUE");
+			$reponse = $req->execute(array($idUser));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		
+		return json_encode($reponse);
+	}
+
+	function deleteNotificationUtilisateurById($id)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("DELETE FROM notification_utilisateur WHERE id = ?");
+			$reponse = $req->execute(array($id));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		
+		return json_encode($reponse);
+	}
+
+	function updateAllNotificationsVues($idUser)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("UPDATE notification_utilisateur SET vu = TRUE WHERE utilisateur_id = ?");
+			$reponse = $req->execute(array($idUser));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		
+		return json_encode($reponse);
+	}
+
+	function getNotificationsByUtilisateurId($id)
+	{
+		include("connexionBdd.php");
+		
+		$i = 0;
+		$mesNotifs = null;
+		
+		$req = $bdd->prepare("SELECT nu.id, nu.vu, nu.notification_id FROM notification_utilisateur nu JOIN notification n ON n.id = nu.notification_id WHERE utilisateur_id = ? ORDER BY nu.vu, n.date DESC");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$mesNotifs[$i]["id"] = $data["id"];
+			$mesNotifs[$i]["vu"] = $data["vu"];
+			$mesNotifs[$i]["notification"] = json_decode(getNotificationById($data["notification_id"]));
+			
+			$i++;
+		}
+		return json_encode($mesNotifs);
+	}
+	
+	function getNotificationById($id)
+	{
+		include("connexionBdd.php");
+		
+		$notif = null;
+		$req = $bdd->prepare("SELECT * FROM notification WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$notif["id"] = $data["id"];
+			$notif["titre"] = $data["titre"];
+			$notif["description"] = $data["description"];
+			$notif["lien"] = $data["lien"];
+			$notif["date"] = json_decode(modifierDate($data["date"]));
+		}
+		
+		return json_encode($notif);
+	}
+
 	function addMessageRecu($idMessage, $idUser, $idCorrespondant)
 	{
 		include("connexionBdd.php");
@@ -172,7 +253,7 @@
 		include("connexionBdd.php");
 		
 		$nbNotifs = 0;
-		$req = $bdd->prepare("SELECT COUNT(*) nb FROM utilisateur_notifs WHERE vu = 'FALSE' AND utilisateur_id = ?");
+		$req = $bdd->prepare("SELECT COUNT(*) nb FROM notification_utilisateur WHERE vu = 'FALSE' AND utilisateur_id = ?");
 		$req->execute(array($id));
 		if($data = $req->fetch())
 		{
