@@ -3,6 +3,8 @@
     if(isset($_POST["deconnexion"]) && $_POST["deconnexion"] == "true")
     {
         session_destroy();
+        header('Location: index.php');
+        exit();
     }
     if(isset($_POST["user_id"]) && $_POST["user_id"] != null)
     {

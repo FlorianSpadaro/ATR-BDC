@@ -53,7 +53,9 @@
         
         <?php
             $tab = array();
-            foreach($messages->recus as $msgRecu)
+            if(isset($messages->recus) && ($messages->recus != null))
+            {
+                foreach($messages->recus as $msgRecu)
             {
                 $contient = false;
                 foreach($tab as $elt)
@@ -67,8 +69,11 @@
                 {
                     array_push($tab, $msgRecu->correspondant->id);
                 }
+                }
             }
-            foreach($messages->envoyes as $msgEnvoye)
+            if(isset($messages->envoyes) && ($messages->envoyes != null))
+            {
+                foreach($messages->envoyes as $msgEnvoye)
             {
                 $contient = false;
                 foreach($tab as $elt)
@@ -83,17 +88,23 @@
                     array_push($tab, $msgEnvoye->correspondant->id);
                 }
             }
-        
-        foreach($tab as $elt)
+            }
+            
+        if(sizeof($tab) > 0)
         {
-            ?>
-            <div class="modal fade" id="infos<?php echo $elt ?>">
-                <div class="modal-dialog">  
-                  <div class="modal-content"></div>  
-                </div> 
-              </div>
-            <?php
+            foreach($tab as $elt)
+            {
+                ?>
+                <div class="modal fade" id="infos<?php echo $elt ?>">
+                    <div class="modal-dialog">  
+                      <div class="modal-content"></div>  
+                    </div> 
+                  </div>
+                <?php 
+            }
         }
+        
+            
         ?>
         
         <ul class="nav nav-pills container">
@@ -144,7 +155,7 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                <?php echo $messageRecu->message->date->jour." à ".$messageRecu->message->date->heure ?>
+                                                <?php echo $messageRecu->message->date_derniere_reponse->jour." à ".$messageRecu->message->date_derniere_reponse->heure ?>
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="selectionMessageRecus" name="<?php echo $messageRecu->id ?>" id="<?php echo $messageRecu->id ?>" />

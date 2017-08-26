@@ -1,6 +1,7 @@
 <?php
     include("header.php");
     $message = json_decode(getMessageById($_GET["id"]));
+    updateMessageLu($_GET["id"], $_SESSION["user_id"]);
 ?>
 
 <!DOCTYPE html>
@@ -49,8 +50,19 @@
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                         <div class="site-heading">
-                            <h1>Message</h1>
+                            <h1><?php echo $message->sujet ?></h1>
+                            <h2 class="subheading"><?php
+                                if($message->envoyeur->id != $_SESSION["user_id"])
+                                {
+                                    echo strtoupper($message->envoyeur->nom)." ".strtoupper(substr($message->envoyeur->prenom, 0, 1)).strtolower(substr($message->envoyeur->prenom, 1));
+                                }
+                                else{
+                                    echo strtoupper($message->receveur->nom)." ".strtoupper(substr($message->receveur->prenom, 0, 1)).strtolower(substr($message->receveur->prenom, 1));
+                                }
+                                ?>
+                            </h2>
                         </div>
+                                                    
                     </div>
                 </div>
             </div>
@@ -59,7 +71,7 @@
         <div class="container">
             
             
-            <div class="panel panel-default row">
+            <div class="panel <?php if($message->envoyeur->id == $_SESSION["user_id"]){echo "panel-info";}else{echo "panel-default";} ?> row">
               <div class="panel-heading">
                 <h1 class="panel-title"><?php echo $message->sujet ?></h1>
               </div>
@@ -67,11 +79,33 @@
               <div class="panel-footer pull-right">Envoyé par <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $message->envoyeur->id ?>" data-target="#infos"><?php echo strtoupper($message->envoyeur->nom)." ".strtoupper(substr($message->envoyeur->prenom, 0, 1)).strtolower(substr($message->envoyeur->prenom, 1)) ?></a> le <?php echo $message->date->jour." à ".$message->date->heure ?></div>
             </div>
             
+            <?php
+            if(isset($message->reponse) && ($message->reponse !== null))
+            {
+                foreach($message->reponse as $reponse)
+                {
+                    ?>
+                    <div class="panel <?php if($reponse->utilisateur->id == $_SESSION["user_id"]){echo "panel-info";}else{echo "panel-default";} ?> row">
+                      <div class="panel-heading">
+                        <h1 class="panel-title"><?php echo $message->sujet ?></h1>
+                      </div>
+                      <div class="panel-body"><?php echo $reponse->reponse ?></div>
+                      <div class="panel-footer pull-right">Envoyé par <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $reponse->utilisateur->id ?>" data-target="#infos"><?php echo strtoupper($reponse->utilisateur->nom)." ".strtoupper(substr($reponse->utilisateur->prenom, 0, 1)).strtolower(substr($reponse->utilisateur->prenom, 1)) ?></a> le <?php echo $reponse->date->jour." à ".$reponse->date->heure ?></div>
+                    </div>
+                    <?php
+                }
+            }
+            ?>
             
-            <form class="row well">
+            
+            <form class="row well" id="formulaire">
+                <input type="hidden" name="idMessage" id="idMessage" value="<?php echo $_GET["id"] ?>" />
+                <input type="hidden" name="idReceveur" id="idReceveur" value="<?php echo $message->receveur->id ?>" />
+                <input type="hidden" name="idEnvoyeur" id="idEnvoyeur" value="<?php echo $message->envoyeur->id ?>" />
+                <input type="hidden" name="sujet" id="sujet" value="<?php echo $message->sujet ?>" />
                 <legend>Répondre</legend>
                 <div class="form-group">
-                    <textarea class="form-control" maxlength="249" id="reponse"></textarea>
+                    <textarea class="form-control" maxlength="250" id="reponse"></textarea>
                     <span class="badge"><span id="nbCarac">0</span>/250</span>
                 </div>
                 <button class="btn btn-info pull-right" id="envoyerReponse">Envoyer</button>

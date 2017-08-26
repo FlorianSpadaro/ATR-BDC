@@ -1,4 +1,62 @@
 <?php
+	function addMessageRecu($idMessage, $idUser, $idCorrespondant)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req2 = $bdd->prepare("SELECT id FROM utilisateur_messages_recus WHERE message_id = ? AND utilisateur_id = ?");
+			$req2->execute(array($idMessage, $idUser));
+			if($data = $req2->fetch())
+			{
+				$reponse = true;
+			}
+			else{
+				$req = $bdd->prepare("INSERT INTO utilisateur_messages_recus(utilisateur_id, correspondant_id, message_id) VALUES(?, ?, ?)");
+				$reponse = $req->execute(array($idUser, $idCorrespondant, $idMessage));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function updateMessageLu($id, $idUser)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("UPDATE utilisateur_messages_recus SET lu = TRUE WHERE message_id = ? AND utilisateur_id = ?");
+			$reponse = $req->execute(array($id, $idUser));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		
+		return json_encode($reponse);
+	}
+
+	function addReponseMessage($idMessage, $idUser, $reponse)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("INSERT INTO message_reponse(message_id, reponse, date, utilisateur_id) VALUES(?, ?, NOW(), ?) RETURNING date");
+			$req->execute(array($idMessage, $reponse, $idUser));
+			if($data = $req->fetch())
+			{
+				$req2 = $bdd->prepare("UPDATE message SET date_derniere_reponse = ? WHERE id = ?");
+				$rep = $req2->execute(array($data["date"], $idMessage));
+				if($rep)
+				{
+					$req3 = $bdd->prepare("UPDATE utilisateur_messages_recus SET lu = FALSE WHERE message_id = ? AND utilisateur_id != ?");
+					$reponse = $req3->execute(array($idMessage, $idUser));
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function deleteMessageEnvoyeById($id)
 	{
 		include("connexionBdd.php");
@@ -41,13 +99,33 @@
 			$message["sujet"] = $data["sujet"];
 			$message["message"] = $data["message"];
 			$message["date"] = json_decode(modifierDate($data["date"]));
-			
-			$req2 = $bdd->prepare("SELECT utilisateur_id receveur, correspondant_id envoyeur FROM utilisateur_messages_recus WHERE message_id = ?");
-			$req2->execute(array($id));
-			if($data = $req2->fetch())
+			if($data["date_derniere_reponse"] !== null)
 			{
-				$message["envoyeur"] = json_decode(getUtilisateurById($data["envoyeur"]));
-				$message["receveur"] = json_decode(getUtilisateurById($data["receveur"]));
+				$message["date_derniere_reponse"] = json_decode(modifierDate($data["date_derniere_reponse"]));
+			}
+			else{
+				$message["date_derniere_reponse"] = null;
+			}
+			
+			$req2 = $bdd->prepare("SELECT utilisateur_id envoyeur, correspondant_id receveur FROM utilisateur_messages_envoyes WHERE message_id = ?");
+			$req2->execute(array($id));
+			if($data2 = $req2->fetch())
+			{
+				$message["envoyeur"] = json_decode(getUtilisateurById($data2["envoyeur"]));
+				$message["receveur"] = json_decode(getUtilisateurById($data2["receveur"]));
+			}
+			
+			$i = 0;
+			$req3 = $bdd->prepare("SELECT * FROM message_reponse WHERE message_id = ? ORDER BY date");
+			$req3->execute(array($id));
+			while($data3 = $req3->fetch())
+			{
+				$message["reponse"][$i]["id"] = $data3["id"];
+				$message["reponse"][$i]["reponse"] = $data3["reponse"];
+				$message["reponse"][$i]["date"] = json_decode(modifierDate($data3["date"]));
+				$message["reponse"][$i]["utilisateur"] = json_decode(getUtilisateurById($data3["utilisateur_id"]));
+				
+				$i++;
 			}
 		}
 		
@@ -61,7 +139,7 @@
 		$messages = null;
 		$i = 0;
 		$j = 0;
-		$req = $bdd->prepare("SELECT umr.id, umr.message_id, umr.utilisateur_id, umr.lu, umr.correspondant_id FROM utilisateur_messages_recus umr JOIN message m ON m.id = umr.message_id WHERE umr.utilisateur_id = ? ORDER BY umr.lu, m.date DESC");
+		$req = $bdd->prepare("SELECT umr.id, umr.message_id, umr.utilisateur_id, umr.lu, umr.correspondant_id FROM utilisateur_messages_recus umr JOIN message m ON m.id = umr.message_id WHERE umr.utilisateur_id = ? ORDER BY umr.lu, m.date_derniere_reponse DESC");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
@@ -123,7 +201,7 @@
 		include("connexionBdd.php");
 		
 		try{
-			$req = $bdd->prepare("INSERT INTO message(sujet, message, date) VALUES(?, ?, NOW()) RETURNING id");
+			$req = $bdd->prepare("INSERT INTO message(sujet, message, date, date_derniere_reponse) VALUES(?, ?, NOW(), NOW()) RETURNING id");
 			$req->execute(array($sujet, $message));
 			if($data = $req->fetch())
 			{
