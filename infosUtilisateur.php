@@ -100,6 +100,7 @@
                 $(".messageDiv").hide("fade");
                 $("#message").val("");
                 $("#sujet").val("");
+                $("#nbCarac").text("0");
             });
             
             $(".buttonMessage").click(function(){

@@ -27,6 +27,7 @@
 		return json_encode($data);
 	}
 	
+	
 	function getMessageById($id)
 	{
 		include("connexionBdd.php");
@@ -40,6 +41,14 @@
 			$message["sujet"] = $data["sujet"];
 			$message["message"] = $data["message"];
 			$message["date"] = json_decode(modifierDate($data["date"]));
+			
+			$req2 = $bdd->prepare("SELECT utilisateur_id receveur, correspondant_id envoyeur FROM utilisateur_messages_recus WHERE message_id = ?");
+			$req2->execute(array($id));
+			if($data = $req2->fetch())
+			{
+				$message["envoyeur"] = json_decode(getUtilisateurById($data["envoyeur"]));
+				$message["receveur"] = json_decode(getUtilisateurById($data["receveur"]));
+			}
 		}
 		
 		return json_encode($message);

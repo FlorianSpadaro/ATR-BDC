@@ -50,6 +50,11 @@
     </head>
 
     <body>
+        <div class="modal fade" id="infos">
+            <div class="modal-dialog">  
+              <div class="modal-content"></div>  
+            </div> 
+          </div>
 
         <!-- Page Header -->
         <!-- Set your background image for this header on the line below. -->
@@ -60,7 +65,7 @@
                         <div class="post-heading">
                             <h1><?php echo $actualite->titre ?></h1>
                             <h2 class="subheading"><?php echo $actualite->description ?></h2>
-                            <span class="meta">Posté par <a href="#"><?php echo strtoupper($actualite->utilisateur->nom)." ".strtoupper(substr($actualite->utilisateur->prenom, 0, 1)).strtolower(substr($actualite->utilisateur->prenom, 1)) ?></a> le <?php $date = json_decode(modifierDate($actualite->date_creation)); echo $date->jour." à ".$date->heure ?> 
+                            <span class="meta">Posté par <a data-toggle="modal" href="infosUtilisateur.php?id=<?php echo $actualite->utilisateur->id ?>" data-target="#infos"><?php echo strtoupper($actualite->utilisateur->nom)." ".strtoupper(substr($actualite->utilisateur->prenom, 0, 1)).strtolower(substr($actualite->utilisateur->prenom, 1)) ?></a> le <?php $date = json_decode(modifierDate($actualite->date_creation)); echo $date->jour." à ".$date->heure ?> 
                             <?php
                             if($actualite->date_creation != $actualite->date_derniere_maj)
                             {
