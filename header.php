@@ -161,9 +161,9 @@
                                         foreach($secteur->domaines as $domaine)
                                         {
                                             ?>
-                                            <li class="dropdown-submenu" id="domaine<?php echo $domaine->id ?>">
-                                                <a tabindex="-1" href="#"><?php echo $domaine->libelle ?></a>
-                                                <ul class="dropdown-menu">
+                                            <li class="" id="domaine<?php echo $domaine->id ?>">
+                                                <a tabindex="-1" href="domaine.php?id=<?php echo $domaine->id ?>"><?php echo $domaine->libelle ?></a>
+                                                <ul class="dropdown-menu hidden-xs hidden-sm hidden-md hidden-lg">
                                                     <?php
                                                     if(isset($domaine->sous_domaines) && $domaine->sous_domaines != null)
                                                     {

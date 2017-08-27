@@ -74,6 +74,7 @@
                                 <?php
                             }
                             ?>
+                            <br/>
                             <b>Catégorie: </b><?php
                             if($actualite->secteur != null)
                             {
