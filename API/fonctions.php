@@ -1,4 +1,45 @@
 <?php
+	function getPiecesJointesByProjetId($id)
+	{
+		include("connexionBdd.php");
+		
+		$pj = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT piece_jointe_id FROM projet_pj WHERE projet_id = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$pj[$i] = json_decode(getPieceJointeById($data["piece_jointe_id"]));
+			$i++;
+		}
+		
+		return json_encode($pj);
+	}
+
+	function getSousDomainesDomainesSecteursByProjetId($id)
+	{
+		include("connexionBdd.php");
+		
+		$parents = null;
+		$req = $bdd->prepare("SELECT s.id secteur_id, s.libelle secteur_libelle, d.id domaine_id, d.libelle domaine_libelle, d.description domaine_description, sd.id sous_domaine_id, sd.libelle sous_domaine_libelle, sd.description sous_domaine_description FROM projet p JOIN sous_domaine sd ON sd.id = p.sous_domaine_id JOIN domaine d ON d.id = sd.domaine_id JOIN secteur s ON s.id = d.secteur_id WHERE p.id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$parents["sousDomaine"]["id"] = $data["sous_domaine_id"];
+			$parents["sousDomaine"]["libelle"] = $data["sous_domaine_libelle"];
+			$parents["sousDomaine"]["description"] = $data["sous_domaine_description"];
+			
+			$parents["domaine"]["id"] = $data["domaine_id"];
+			$parents["domaine"]["libelle"] = $data["domaine_libelle"];
+			$parents["domaine"]["description"] = $data["domaine_description"];
+			
+			$parents["secteur"]["id"] = $data["secteur_id"];
+			$parents["secteur"]["libelle"] = $data["secteur_libelle"];
+		}
+		
+		return json_encode($parents);
+	}
+
 	function getProjetsBySousDomaineByDomaineId($id)
 	{
 		include("connexionBdd.php");

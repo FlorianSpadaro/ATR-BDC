@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <head>
     <style>
         .th{
@@ -53,7 +57,19 @@
             </tr>
         </table>
     </div>
-    <div class="modal-footer">
+    <?php
+    if(isset($_SESSION["user_id"]) && ($_SESSION["user_id"] != null))
+    {
+        ?>
+        <div class="modal-footer">
+        <?php
+            if($_SESSION["user_id"] == $_GET["id"])
+            {
+                ?>
+                <button class="btn btn-link buttonMdp" id="buttonMdp"><span class="glyphicon glyphicon-wrench"></span> Modifier mot de passe</button>
+                <?php
+            }
+            ?>
         <div class="btn-group">
             <button class="btn btn-info buttonMessage" id="buttonMessage"><span class="glyphicon glyphicon-envelope"></span> Message</button>
         </div>
@@ -75,6 +91,10 @@
         </div>
         
     </div>
+        <?php
+    }
+    ?>
+    
     
     <!--<div id="message" class="modal fade">
         <div class="modal-dialog">

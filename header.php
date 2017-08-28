@@ -60,10 +60,18 @@
         if(isset($_SESSION["user_id"]))
         {
             ?>
+            <div class="modal fade" id="infos<?php echo $_SESSION["user_id"] ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    </div>
+                </div>
+            </div>
             <input type="hidden" name="user_id" id="user_id" value="<?php echo $_SESSION["user_id"] ?>" />
             <?php
         }
         ?>
+        <div>
+        </div>
         
         <div class="modal fade" id="connexion">
             <div class="modal-dialog">
@@ -112,7 +120,7 @@
                         <span class="dropdown">
                                 <a class="navbar-brand" id="monCompte" href="#" data-toggle="dropdown">Mon Compte <span id="totalNotif" class="label label-danger"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Informations Personnelles</a>
+                                    <li><a href="infosUtilisateur.php?id=<?php echo $_SESSION["user_id"] ?>" data-toggle='modal' data-target="#infos<?php echo $_SESSION["user_id"] ?>"><span class="glyphicon glyphicon-user"></span> Informations Personnelles</a>
                         </li>
                         <li class="divider"></li>
                         <li><a href="mesNotifications.php"><span class="glyphicon glyphicon-tags"></span> Notifications <span id="nbNotifs" class="badge">0</span></a></li>
