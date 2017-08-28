@@ -1,4 +1,36 @@
 <?php
+	function modifierMdpByUtilisateurId($idUser, $mdp)
+	{
+		include("connexionBdd.php");
+		
+		$mdp = json_decode(hashage($mdp));
+		try{
+			$req = $bdd->prepare("UPDATE connexion SET mdp = ? WHERE utilisateur_id = ?");
+			$reponse = $req->execute(array($mdp, $idUser));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		
+		return json_encode($reponse);
+	}
+
+	function verificationMdpByUtilisateurId($idUser, $mdp)
+	{
+		include("connexionBdd.php");
+		$mdp = json_decode(hashage($mdp));
+		$reponse = false;
+		$req = $bdd->prepare("SELECT mdp FROM connexion WHERE utilisateur_id = ?");
+		$req->execute(array($idUser));
+		if($data = $req->fetch())
+		{
+			if($mdp == $data["mdp"])
+			{
+				$reponse = true;
+			}
+		}
+		return json_encode($reponse);
+	}
+
 	function getPiecesJointesByProjetId($id)
 	{
 		include("connexionBdd.php");

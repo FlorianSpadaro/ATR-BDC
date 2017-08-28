@@ -10,12 +10,23 @@ session_start();
         .td{
             padding-left: 10px;
         }
-        .messageDiv{
+        .messageDiv, .mdpDiv{
             display: none;
         }
         #succes{
             display: none;
             color: green;
+        }#succesMdp{
+            display: none;
+            color: green;
+        }
+        #mdpErrone{
+            color: red;
+            display: none;
+        }
+        #mdpIdentiques{
+            color: red;
+            display: none;
         }
     </style>
 </head>
@@ -74,6 +85,7 @@ session_start();
             <button class="btn btn-info buttonMessage" id="buttonMessage"><span class="glyphicon glyphicon-envelope"></span> Message</button>
         </div>
         <div id="succes"><span class="glyphicon glyphicon-ok-circle"></span> Message envoyé avec succès</div>
+        <div id="succesMdp"><span class="glyphicon glyphicon-ok-circle"></span> Mot de passe modifié avec succès</div>
         
         <div class="messageDiv">
             <hr/>
@@ -86,6 +98,24 @@ session_start();
                 <div class="btn-group">
                     <button class="btn btn-default" type="submit" id="envoyerMessage" disabled><span class="glyphicon glyphicon-send"></span> Envoyer</button>
                     <button class="btn btn-danger" id="annulerMessage">Annuler</button>
+                </div>
+            </form>
+        </div>
+        <div class="mdpDiv">
+            <hr/>
+            <form id="mdpForm">
+                <div class="form-group" id="fg1">
+                    <label class="mdpActuel lbl">Mot de passe actuel</label><input type="password" id="mdpActuel" class="form-control" maxlength="250" required />
+                    <span id="mdpErrone" class="erreur meta">Mot de passe erroné</span>
+                </div>
+                <div class="form-group" id="fg2">
+                    <label class="nouveauMdp lbl">Nouveau mot de passe</label><input type="password" id="newMdp1" class="form-control" maxlength="250" required />
+                    <label class="nouveauMdp lbl">Confirmation nouveau mot de passe</label><input type="password" id="newMdp2" class="form-control" maxlength="250" required />
+                    <label id="mdpIdentiques" class="NouveauMdp erreur">Les mots de passe ne sont pas identiques</label>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-default" type="submit" id="changerMdp">Modifier</button>
+                    <button class="btn btn-danger" id="annulerMdp">Annuler</button>
                 </div>
             </form>
         </div>
@@ -115,6 +145,46 @@ session_start();
     <script>
         $(function(){
             
+            
+            $("#changerMdp").click(function(e){
+                $("#mdpErrone").hide();
+                $("#mdpIdentiques").hide();
+                $(".has-error").removeClass("has-error");
+                
+                e.preventDefault();
+                $.post("API/verificationMdpByUtilisateurId.php", {utilisateur_id: $("#user_id").val(), mdp: $("#mdpActuel").val()}, function(data){
+                    var reponse = JSON.parse(data);
+                    if(reponse)
+                        {
+                            if($("#newMdp1").val() == $("#newMdp2").val())
+                                {
+                                    $.post("API/modifierMdpByUtilisateurId.php", {utilisateur_id: $("#user_id").val(), mdp: $("#newMdp1").val()}, function(data){
+                                        var reponse = JSON.parse(data);
+                                        if(reponse)
+                                            {
+                                                $(".mdpDiv").hide("fade");
+                                                $("#mdpActuel").val("");
+                                                $("#newMdp1").val("");
+                                                $("#newMdp2").val("");
+                                                $("#succesMdp").show("fade").delay(5000).hide("fade");
+                                            }
+                                        else{
+                                            alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                                        }
+                                    });
+                                }
+                            else{
+                                $("#fg2").addClass("has-error");
+                                $("#mdpIdentiques").show();
+                            }
+                        }
+                    else{
+                        $("#fg1").addClass("has-error");
+                        $("#mdpErrone").show();
+                    }
+                });
+            });
+            
             $("#annulerMessage").click(function(e){
                 e.preventDefault();
                 $(".messageDiv").hide("fade");
@@ -123,8 +193,26 @@ session_start();
                 $("#nbCarac").text("0");
             });
             
+            $("#annulerMdp").click(function(e){
+                e.preventDefault();
+                $(".mdpDiv").hide("fade");
+                $("#mdpActuel").val("");
+                $("#newMdp1").val("");
+                $("#newMdp2").val("");
+                $(".has-error").removeClass("has-error");
+                $(".lbl").css("color", "black");
+                $(".erreur").hide();
+                
+            });
+            
             $(".buttonMessage").click(function(){
                 $(".messageDiv").show("fade");
+                $(".mdpDiv").hide("fade");
+            });
+            
+            $(".buttonMdp").click(function(){
+                $(".messageDiv").hide("fade");
+                $(".mdpDiv").show("fade");
             });
             
             $("#message").on("keyup", function(){
