@@ -125,7 +125,7 @@
                         <li class="divider"></li>
                         <li><a href="mesNotifications.php"><span class="glyphicon glyphicon-tags"></span> Notifications <span id="nbNotifs" class="badge">0</span></a></li>
                         <li><a href="mesMessages.php"><span class="glyphicon glyphicon-envelope"></span> Mes messages <span id="nbMessages" class="badge"></span></a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-heart-empty"></span> Mes abonnements</a></li>
+                        <li><a href="mesAbonnements.php"><span class="glyphicon glyphicon-heart-empty"></span> Mes abonnements</a></li>
                         <li><a href="#"><span class="fa fa-question-circle"></span> Mes suggestions</a></li>
                         <li class="divider"></li>
                         <li>

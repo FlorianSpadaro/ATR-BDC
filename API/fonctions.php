@@ -1,4 +1,123 @@
 <?php
+	function getAbonnementsByUtilisateurId($id)
+	{
+		include("connexionBdd.php");
+		
+		$abonnements = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT secteur_id, domaine_id, sous_domaine_id, projet_id, contrat_id FROM abonnement WHERE utilisateur_id = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$abonnements[$i]["secteur_id"] = $data["secteur_id"];
+			$abonnements[$i]["domaine_id"] = $data["domaine_id"];
+			$abonnements[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
+			$abonnements[$i]["projet_id"] = $data["projet_id"];
+			$abonnements[$i]["contrat_id"] = $data["contrat_id"];
+			
+			$i++;
+		}
+		
+		return json_encode($abonnements);
+	}
+
+	function getContrats()
+	{
+		include("connexionBdd.php");
+		$contrats = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM contrat");
+		while($data = $req->fetch())
+		{
+			$contrats[$i] = json_decode(getContratById($data["id"]));
+			$i++;
+		}
+		return json_encode($contrats);
+	}
+
+	function getSecteursDomainesSousDomainesProjets()
+	{
+		include("connexionBdd.php");
+		
+		$tab = array();
+		$req = $bdd->query("SELECT * FROM secteur");
+		while($data = $req->fetch())
+		{
+			$nbDomainesSecteur = 0;
+			$nbSousDomainesSecteur = 0;
+			$nbProjetsSecteur = 0;
+			
+			$secteur = (object)[];
+			$secteur->id = $data["id"];
+			$secteur->libelle = $data["libelle"];
+			$secteur->domaine = array();
+			
+			$req2 = $bdd->prepare("SELECT id, libelle, description FROM domaine WHERE secteur_id = ?");
+			$req2->execute(array($data["id"]));
+			while($data2 = $req2->fetch())
+			{
+				$nbSousDomainesDomaine = 0;
+				$nbProjetsDomaine = 0;
+				
+				$nbDomainesSecteur++;
+				
+				$domaine = (object)[];
+				$domaine->id = $data2["id"];
+				$domaine->libelle = $data2["libelle"];
+				$domaine->description = $data2["description"];
+				$domaine->sous_domaine = array();
+				
+				$req3 = $bdd->prepare("SELECT id, libelle, description FROM sous_domaine WHERE domaine_id = ?");
+				$req3->execute(array($data2["id"]));
+				while($data3 = $req3->fetch())
+				{
+					$nbProjetsSousDomaine = 0;
+					
+					$nbSousDomainesSecteur++;
+					$nbSousDomainesDomaine++;
+					
+					$sous_domaine = (object)[];
+					$sous_domaine->id = $data3["id"];
+					$sous_domaine->libelle = $data3["libelle"];
+					$sous_domaine->description = $data3["description"];
+					$sous_domaine->projet = array();
+					
+					$req4 = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ?");
+					$req4->execute(array($data3["id"]));
+					while($data4 = $req4->fetch())
+					{
+						$nbProjetsSecteur++;
+						$nbProjetsDomaine++;
+						$nbProjetsSousDomaine++;
+						
+						$projet = (object)[];
+						$projet->id = $data4["id"];
+						$projet->titre = $data4["titre"];
+						$projet->description = $data4["description"];
+						$projet->date_creation = json_decode(modifierDate($data4["date_creation"]));
+						$projet->date_derniere_maj = json_decode(modifierDate($data4["date_derniere_maj"]));
+						
+						array_push($sous_domaine->projet, $projet);
+					}
+					$sous_domaine->nbProjets = $nbProjetsSousDomaine;
+					
+					array_push($domaine->sous_domaine, $sous_domaine);
+				}
+				$domaine->nbSousDomaines = $nbSousDomainesDomaine;
+				$domaine->nbProjets = $nbProjetsDomaine;
+				
+				array_push($secteur->domaine, $domaine);
+			}
+			$secteur->nbDomaines = $nbDomainesSecteur;
+			$secteur->nbSousDomaines = $nbSousDomainesSecteur;
+			$secteur->nbProjets = $nbProjetsSecteur;
+			
+			array_push($tab, $secteur);
+		}
+		
+		return json_encode($tab);
+	}
+
 	function modifierMdpByUtilisateurId($idUser, $mdp)
 	{
 		include("connexionBdd.php");

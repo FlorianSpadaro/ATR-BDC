@@ -71,7 +71,9 @@
               <div id="monaccordeon" class="panel-group">
                 <h3>Sous-domaines</h3>
                   <?php
-                  foreach($sousDomaines as $sd)
+                  if(isset($sousDomaines) && ($sousDomaines != null))
+                  {
+                      foreach($sousDomaines as $sd)
                   {
                       ?>
                     <div class="panel panel-default">
@@ -115,6 +117,12 @@
                         </div>
                       </div>
                     </div>
+                    <?php
+                  }
+                  }
+                  else{
+                    ?>
+                    <label class="label label-default">Ce domaine ne contient aucun sous-domaine</label>
                     <?php
                   }
                   ?>
