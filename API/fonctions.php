@@ -1,14 +1,40 @@
 <?php
+	function removeAbonnementById($id)
+	{
+		include("connexionBdd.php");
+		try{
+			$req = $bdd->prepare("DELETE FROM abonnement WHERE id = ?");
+			$reponse = $req->execute(array($id));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addAbonnement($idUser, $idSecteur, $idDomaine, $idSousDomaine, $idProjet, $idContrat)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, secteur_id, domaine_id, sous_domaine_id, projet_id, contrat_id) VALUES(?, ?, ?, ?, ?, ?)");
+			$reponse = $req->execute(array($idUser, $idSecteur, $idDomaine, $idSousDomaine, $idProjet, $idContrat));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function getAbonnementsByUtilisateurId($id)
 	{
 		include("connexionBdd.php");
 		
 		$abonnements = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT secteur_id, domaine_id, sous_domaine_id, projet_id, contrat_id FROM abonnement WHERE utilisateur_id = ?");
+		$req = $bdd->prepare("SELECT id, secteur_id, domaine_id, sous_domaine_id, projet_id, contrat_id FROM abonnement WHERE utilisateur_id = ?");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
+			$abonnements[$i]["id"] = $data["id"];
 			$abonnements[$i]["secteur_id"] = $data["secteur_id"];
 			$abonnements[$i]["domaine_id"] = $data["domaine_id"];
 			$abonnements[$i]["sous_domaine_id"] = $data["sous_domaine_id"];

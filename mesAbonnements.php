@@ -3,7 +3,6 @@
 
     $secteurs = json_decode(getSecteursDomainesSousDomainesProjets());
     $contrats = json_decode(getContrats());
-    $abonnements = json_decode(getAbonnementsByUtilisateurId($_SESSION["user_id"]));
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +35,15 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+        
+        <style>
+            .abonner, .desabonner{
+                text-align: right;
+            }
+            .etiquettes{
+                margin-right: 10px;
+            }
+        </style>
 
     </head>
     
@@ -46,7 +54,7 @@
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                         <div class="site-heading">
                             <h1>Mes Abonnements</h1>
-                            <span class="meta">TEST</span>
+                            <span class="meta"></span>
                         </div>
                     </div>
                 </div>
@@ -63,16 +71,16 @@
                 foreach($secteurs as $secteur)
                 {
                     ?>
-                    <div class="panel panel-default">
+                    <div class="panel panel-default" id="enteteSecteur<?php echo $secteur->id ?>">
                         <div class="panel-heading">
                             <h3 class="panel-title">
                                 <a href="#panelSecteur<?php echo $secteur->id ?>" data-toggle="collapse" data-parent="#secteurs" class="lienPanel"> <?php echo $secteur->libelle ?> </a>
-                                    <span>
+                                <a href="#" class="pull-right abonner col-lg-2" id="secteur-<?php echo $secteur->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                    <span class="pull-right etiquettes">
                                         <span class="label label-default">Domaines <span>0</span>/<?php echo $secteur->nbDomaines ?></span>
                                         <span class="label label-default">Sous-Domaines <span>0</span>/<?php echo $secteur->nbSousDomaines ?></span>
                                         <span class="label label-default">Projets <span>0</span>/<?php echo $secteur->nbProjets ?></span>
                                     </span> 
-                                    <a href="#" class="pull-right">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                             </h3>
                         </div>
                         <div id="panelSecteur<?php echo $secteur->id ?>" class="panel-collapse collapse in">
@@ -90,15 +98,15 @@
                                         foreach($secteur->domaine as $domaine)
                                         {
                                             ?>
-                                            <div class="panel panel-default">
+                                            <div class="panel panel-default" id="enteteDomaine<?php echo $domaine->id ?>">
                                                 <div class="panel-heading">
                                                     <h3 class="panel-title">
-                                                        <a href="#panelDomaine<?php echo $domaine->id ?>" data-toggle="collapse" data-parent="#domainesSecteur<?php echo $secteur->id ?>" class="lienPanel"> <?php echo $domaine->libelle ?> </a>
-                                                        <span>
+                                                        <a href="#panelDomaine<?php echo $domaine->id ?>" data-toggle="collapse" data-parent="#domainesSecteur<?php echo $secteur->id ?>" class="lienPanel" title="<?php echo $domaine->description ?>"> <?php echo $domaine->libelle ?> </a>
+                                                        <a href="#" class="pull-right abonner col-lg-2" id="domaine-<?php echo $domaine->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                        <span class="pull-right etiquettes">
                                                             <span class="label label-default">Sous-Domaines <span>0</span>/<?php echo $domaine->nbSousDomaines ?></span>
                                                             <span class="label label-default">Projets <span>0</span>/<?php echo $domaine->nbProjets ?></span>
                                                         </span> 
-                                                        <a href="#" class="pull-right">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                                     </h3>
                                                 </div>
                                                 <div id="panelDomaine<?php echo $domaine->id ?>" class="panel-collapse collapse in">
@@ -116,14 +124,14 @@
                                                                 foreach($domaine->sous_domaine as $sousDomaine)
                                                                 {
                                                                     ?>
-                                                                    <div class="panel panel-default">
+                                                                    <div class="panel panel-default" id="enteteSousDomaine<?php echo $sousDomaine->id ?>">
                                                                         <div class="panel-heading">
                                                                             <h3 class="panel-title">
-                                                                                <a href="#panelSousDomaine<?php echo $sousDomaine->id ?>" data-toggle="collapse" data-parent="#sousDomainesDomaine<?php echo $domaine->id ?>" class="lienPanel"> <?php echo $sousDomaine->libelle ?> </a>
-                                                                                <span>
+                                                                                <a href="#panelSousDomaine<?php echo $sousDomaine->id ?>" data-toggle="collapse" data-parent="#sousDomainesDomaine<?php echo $domaine->id ?>" class="lienPanel" title="<?php echo $sousDomaine->description ?>"> <?php echo $sousDomaine->libelle ?> </a>
+                                                                                <a href="#" class="pull-right abonner col-lg-2" id="sousDomaine-<?php echo $sousDomaine->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                <span class="pull-right etiquettes">
                                                                                     <span class="label label-default">Projets <span>0</span>/<?php echo $sousDomaine->nbProjets ?></span>
                                                                                 </span> 
-                                                                                <a href="#" class="pull-right">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                                                             </h3>
                                                                         </div>
                                                                         <div id="panelSousDomaine<?php echo $sousDomaine->id ?>" class="panel-collapse collapse in">
@@ -140,11 +148,11 @@
                                                                                         foreach($sousDomaine->projet as $projet)
                                                                                         {
                                                                                             ?>
-                                                                                            <div class="list-group-item">
+                                                                                            <div class="list-group-item" id="enteteProjet<?php echo $projet->id ?>">
                                                                                                 <a href="#" title="<?php echo $projet->description ?>">
                                                                                                     <?php echo $projet->titre ?>
                                                                                                 </a>
-                                                                                                <a href="#" class="pull-right">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                                <a href="#" class="pull-right abonner col-lg-2" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                                                                             </div>
                                                                                             <?php
                                                                                         }
@@ -182,95 +190,47 @@
             ?>
             </div>
             
-<!--            
-           <div class="panel-group" id="accordeon">
-                <h3> Secteurs</h3>
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">
-                      <a href="#item1" data-toggle="collapse" data-parent="#accordeon"> Accordéon </a>
-                        <span>
-                            <span class="label label-default">Domaines <span>0</span>/100</span>
-                            <span class="label label-default">Sous-Domaines <span>0</span>/100</span>
-                            <span class="label label-default">Projets <span>0</span>/10000</span>
-                        </span> 
-                        <a href="#" class="pull-right">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
-                        
-                    </h3>
-                  </div>
-                  <div id="item1" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                        
-                        
- Premier conteneur enfant  
-                        
-                        <div class="panel-group">
-                            <h3> Domaines</h3>
-                            <div class="panel panel-default">
-                              <div class="panel-heading"> 
-                                <h3 class="panel-title">
-                                  <a href="#item11" data-toggle="collapse"> Accordéon </a> 
-                                </h3>
-                              </div>
-                              <div id="item11" class="panel-collapse collapse in">
-                                <div class="panel-body"> Ce plugin permet de créer des effets "accordéon" totalement paramétrables</div>
-                              </div>
-                            </div>
-                            <div class="panel panel-default">
-                              <div class="panel-heading"> 
-                                <h3 class="panel-title">
-                                  <a href="#item12" data-toggle="collapse"> Fenêtre modale </a> 
-                                </h3>
-                              </div>
-                              <div id="item12" class="panel-collapse collapse">
-                                <div class="panel-body"> Ce plugin permet de créer des fenêtres modales élégantes avec une grande simplicité. </div>
-                              </div>
-                            </div>
-                            <div class="panel panel-default">
-                              <div class="panel-heading"> 
-                                <h3 class="panel-title">
-                                  <a href="#item13" data-toggle="collapse"> Carousel </a>
-                                </h3>
-                              </div>
-                              <div id="item13" class="panel-collapse collapse">
-                                <div class="panel-body"> Ce plugin permet de faire défiler des images ou des vidéo, ou tout autre élément média avec une mise 
-                            en forme esthétique </div>
-                            </div>
-                          </div>
+            <div class="panel-group" id="contrats">
+                <h3> Contrats</h3>
+                <?php
+                if(isset($contrats) && ($contrats != null))
+                {
+                    ?>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a href="#listeContrats" data-toggle="collapse" data-parent="#contrats" class="lienPanel"> Liste des contrats </a>
+                            </h3>
                         </div>
-
-                        
-                        
-                        
+                        <div id="listeContrats" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <div class="list-group">
+                                    <?php
+                                    foreach($contrats as $contrat)
+                                    {
+                                        ?>
+                                        <div class="list-group-item" id="enteteContrat<?php echo $contrat->id ?>">
+                                            <img width="50" height="50" src="<?php echo $contrat->miniature->url ?>" />
+                                            <a href="#">
+                                                <?php echo $contrat->libelle ?>
+                                            </a>
+                                            <a href="#" class="pull-right abonner col-lg-2" id="contrat-<?php $contrat->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-                <div class="panel panel-success">
-                  <div class="panel-heading"> 
-                    <h3 class="panel-title">
-                      <a href="#item2" data-toggle="collapse" data-parent="#accordeon"> Fenêtre modale </a>
-                      <a href="#" class="pull-right">Se désabonner <span class="glyphicon glyphicon-ok-sign"></span></a>
-                    </h3>
-                  </div>
-                  <div id="item2" class="panel-collapse collapse">
-                    <div class="panel-body"> Ce plugin permet de créer des fenêtres modales élégantes avec une grande simplicité. </div>
-                  </div>
-                </div>
-                <div class="panel panel-default">
-                  <div class="panel-heading"> 
-                    <h3 class="panel-title">
-                      <a href="#item3" data-toggle="collapse" data-parent="#accordeon"> Carousel </a> 
-                    </h3>
-                  </div>
-                  <div id="item3" class="panel-collapse collapse">
-                    <div class="panel-body"> Ce plugin permet de faire défiler des images ou des vidéo, ou tout autre élément média avec une mise 
-                en forme esthétique </div>
-                </div>
-              </div>
-            </div>-->
-            
+                    <?php
+                }
+                ?>
+            </div>
             
         </div>
+        <br/>
+        <br/>
         
         <!--  Footer -->
 
