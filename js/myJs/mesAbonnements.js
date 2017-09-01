@@ -114,7 +114,6 @@ $(function(){
                 }
                 
                 $.post("API/addAbonnement.php", objet, function(data){
-                    
                     var reponse = JSON.parse(data);
                     $("#imageAttente").replaceWith(elt);
                     if(reponse){

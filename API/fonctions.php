@@ -101,6 +101,7 @@
 			{
 				if($data["secteur_id"] != null)
 				{
+					
 					$req2 = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
 					$req2->execute(array($data["secteur_id"]));
 					while($data2 = $req2->fetch())
@@ -125,6 +126,14 @@
 				}
 				else if($data["domaine_id"] != null)
 				{
+					$req2 = $bdd->prepare("SELECT secteur_id FROM domaine WHERE id = ?");
+					$req2->execute(array($data["domaine_id"]));
+					if($data2 = $req2->fetch())
+					{
+						$req3 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND secteur_id = ?");
+						$req3->execute(array($idUser, $data2["secteur_id"]));
+					}
+					
 					$req2 = $bdd->prepare("SELECT id FROM sous_domaine WHERE domaine_id = ?");
 					$req2->execute(array($data["domaine_id"]));
 					while($data2 = $req2->fetch())
@@ -143,12 +152,51 @@
 				}
 				else if($data["sous_domaine_id"] != null)
 				{
+					$req2 = $bdd->prepare("SELECT domaine_id FROM sous_domaine WHERE id = ?");
+					$req2->execute(array($data["sous_domaine_id"]));
+					if($data2 = $req2->fetch())
+					{
+						$req3 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND domaine_id = ?");
+						$req3->execute(array($idUser, $data2["domaine_id"]));
+						$req3 = $bdd->prepare("SELECT secteur_id id FROM domaine WHERE id = ?");
+						$req3->execute(array($data2["domaine_id"]));
+						if($data3 = $req3->fetch())
+						{
+							$req4 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND secteur_id = ?");
+							$req4->execute(array($idUser, $data3["id"]));
+						}
+					}
+					
 					$req2 = $bdd->prepare("SELECT id FROM projet WHERE sous_domaine_id = ?");
 					$req2->execute(array($data["sous_domaine_id"]));
 					while($data2 = $req2->fetch())
 					{
 						$req3 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND projet_id = ?");
 						$req3->execute(array($idUser, $data2["id"]));
+					}
+				}
+				else if($data["projet_id"] != null)
+				{
+					$req2 = $bdd->prepare("SELECT sous_domaine_id FROM projet WHERE id = ?");
+					$req2->execute(array($data["projet_id"]));
+					if($data2 = $req2->fetch())
+					{
+						$req3 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND sous_domaine_id = ?");
+						$req3->execute(array($idUser, $data2["sous_domaine_id"]));
+						$req3 = $bdd->prepare("SELECT domaine_id FROM sous_domaine WHERE id = ?");
+						$req3->execute(array($data2["sous_domaine_id"]));
+						if($data3 = $req3->fetch())
+						{
+							$req4 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND domaine_id = ?");
+							$req4->execute(array($idUser, $data3["domaine_id"]));
+							$req4 = $bdd->prepare("SELECT secteur_id FROM domaine WHERE id = ?");
+							$req4->execute(array($data3["domaine_id"]));
+							if($data4 = $req4->fetch())
+							{
+								$req5 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND secteur_id = ?");
+								$req5->execute(array($idUser, $data4["secteur_id"]));
+							}
+						}
 					}
 				}
 			}
@@ -191,6 +239,34 @@
 				}
 			}
 			else if($idDomaine != null){
+				$req = $bdd->prepare("SELECT secteur_id FROM domaine WHERE id = ?");
+				$req->execute(array($idDomaine));
+				if($data = $req->fetch())
+				{
+					
+					$verif = true;
+					$req2 = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
+					$req2->execute(array($data["secteur_id"]));
+					while($data2 = $req2->fetch())
+					{
+						if($data2["id"] != $idDomaine)
+						{
+							$req3 = $bdd->prepare("SELECT id FROM abonnement WHERE utilisateur_id = ? AND domaine_id = ?");
+							$req3->execute(array($idUser, $data2["id"]));
+							if(!$data3 = $req3->fetch())
+							{
+								$verif = false;
+							}
+						}
+					}
+					
+					if($verif)
+					{
+						$req2 = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, secteur_id) VALUES(?, ?)");
+						$req2->execute(array($idUser, $data["secteur_id"]));
+					}
+				}
+				
 				$req = $bdd->prepare("SELECT id FROM sous_domaine WHERE domaine_id = ?");
 				$req->execute(array($idDomaine));
 				while($data = $req->fetch())
@@ -207,12 +283,135 @@
 				}
 			}
 			else if($idSousDomaine != null){
+				$req = $bdd->prepare("SELECT domaine_id FROM sous_domaine WHERE id = ?");
+				$req->execute(array($idSousDomaine));
+				if($data = $req->fetch())
+				{
+					$verif = true;
+					$req2 = $bdd->prepare("SELECT id FROM sous_domaine WHERE domaine_id = ?");
+					$req2->execute(array($data["domaine_id"]));
+					while($data2 = $req2->fetch())
+					{
+						if($data2["id"] != $idSousDomaine)
+						{
+							$req3 = $bdd->prepare("SELECT id FROM abonnement WHERE utilisateur_id = ? AND sous_domaine_id = ?");
+							$req3->execute(array($idUser, $data2["id"]));
+							if(!$data3 = $req3->fetch())
+							{
+								$verif = false;
+							}
+						}
+					}
+					if($verif)
+					{
+						$req2 = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, domaine_id) VALUES(?, ?)");
+						$req2->execute(array($idUser, $data["domaine_id"]));
+						
+						$req2 = $bdd->prepare("SELECT secteur_id FROM domaine WHERE id = ?");
+						$req2->execute(array($data["domaine_id"]));
+						if($data2 = $req2->fetch())
+						{
+							$verif2 = true;
+							$req3 = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
+							$req3->execute(array($data2["secteur_id"]));
+							while($data3 = $req3->fetch())
+							{
+								$req4 = $bdd->prepare("SELECT id FROM abonnement WHERE utilisateur_id = ? AND domaine_id = ?");
+								$req4->execute(array($idUser, $data3["id"]));
+								if(!$data4 = $req4->fetch())
+								{
+									$verif2 = false;
+								}
+							}
+							if($verif2)
+							{
+								$req3 = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, secteur_id) VALUES(?, ?)");
+								$req3->execute(array($idUser, $data2["secteur_id"]));
+							}
+						}
+					}
+				}
+				
 				$req = $bdd->prepare("SELECT id FROM projet WHERE sous_domaine_id = ?");
 				$req->execute(array($idSousDomaine));
 				while($data = $req->fetch())
 				{
 					$req2 = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, projet_id) VALUES(?, ?)");
 					$req2->execute(array($idUser, $data["id"]));
+				}
+			}
+			if($idProjet != null)
+			{
+				$req = $bdd->prepare("SELECT sous_domaine_id FROM projet WHERE id = ?");
+				$req->execute(array($idProjet));
+				if($data = $req->fetch())
+				{
+					$verif = true;
+					$req2 = $bdd->prepare("SELECT id FROM projet WHERE sous_domaine_id = ?");
+					$req2->execute(array($data["sous_domaine_id"]));
+					while($data2 = $req2->fetch())
+					{
+						if($idProjet != $data2["id"])
+						{
+							$req3 = $bdd->prepare("SELECT id FROM abonnement WHERE utilisateur_id = ? AND projet_id = ?");
+							$req3->execute(array($idUser, $data2["id"]));
+							if(!$data3 = $req3->fetch())
+							{
+								$verif = false;
+							}
+						}
+					}
+					if($verif)
+					{
+						$req2 = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, sous_domaine_id) VALUES(?, ?)");
+						$req2->execute(array($idUser, $data["sous_domaine_id"]));
+						
+						$req2 = $bdd->prepare("SELECT domaine_id FROM sous_domaine WHERE id = ?");
+						$req2->execute(array($data["sous_domaine_id"]));
+						if($data2 = $req2->fetch())
+						{
+							$verif2 = true;
+							$req3 = $bdd->prepare("SELECT id FROM sous_domaine WHERE domaine_id = ?");
+							$req3->execute(array($data2["domaine_id"]));
+							while($data3 = $req3->fetch())
+							{
+								$req4 = $bdd->prepare("SELECT id FROM abonnement WHERE utilisateur_id = ? AND sous_domaine_id = ?");
+								$req4->execute(array($idUser, $data3["id"]));
+								if(!$data4 = $req4->fetch())
+								{
+									$verif2 = false;
+								}
+							}
+							if($verif2)
+							{
+								$req3 = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, domaine_id) VALUES(?, ?)");
+								$req3->execute(array($idUser, $data2["domaine_id"]));
+								
+								$req3 = $bdd->prepare("SELECT secteur_id FROM domaine WHERE id = ?");
+								$req3->execute(array($data2["domaine_id"]));
+								if($data3 = $req3->fetch())
+								{
+									$verif3 = true;
+									$req4 = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
+									$req4->execute(array($data3["secteur_id"]));
+									while($data4 = $req4->fetch())
+									{
+										$req5 = $bdd->prepare("SELECT id FROM abonnement WHERE utilisateur_id = ? AND domaine_id = ?");
+										$req5->execute(array($idUser, $data4["id"]));
+										if(!$data5 = $req5->fetch())
+										{
+											$verif3 = false;
+										}
+									}
+									if($verif3)
+									{
+										$req4 = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, secteur_id) VALUES(?, ?)");
+										$req4->execute(array($idUser, $data3["secteur_id"]));
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 			$req = $bdd->prepare("INSERT INTO abonnement(utilisateur_id, secteur_id, domaine_id, sous_domaine_id, projet_id, contrat_id) VALUES(?, ?, ?, ?, ?, ?)");
