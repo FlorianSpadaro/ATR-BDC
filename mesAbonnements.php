@@ -1,7 +1,7 @@
 <?php
     include("header.php");
 
-    $secteurs = json_decode(getSecteursDomainesSousDomainesProjets());
+    $secteurs = json_decode(getSecteursDomainesSousDomainesProjets($_SESSION["user_id"]));
     $contrats = json_decode(getContrats());
 ?>
 
@@ -77,9 +77,9 @@
                                 <a href="#panelSecteur<?php echo $secteur->id ?>" data-toggle="collapse" data-parent="#secteurs" class="lienPanel"> <?php echo $secteur->libelle ?> </a>
                                 <a href="#" class="pull-right abonner col-lg-2" id="secteur-<?php echo $secteur->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                     <span class="pull-right etiquettes">
-                                        <span class="label label-default">Domaines <span>0</span>/<?php echo $secteur->nbDomaines ?></span>
-                                        <span class="label label-default">Sous-Domaines <span>0</span>/<?php echo $secteur->nbSousDomaines ?></span>
-                                        <span class="label label-default">Projets <span>0</span>/<?php echo $secteur->nbProjets ?></span>
+                                        <span class="label label-default">Domaines <span class="nbAbo nbAboDomaine" id="domainesAboSecteur<?php echo $secteur->id ?>"><?php echo $secteur->nbDomainesAbo ?></span>/<?php echo $secteur->nbDomaines ?></span>
+                                        <span class="label label-default">Sous-Domaines <span  id="sousDomainesAboSecteur<?php echo $secteur->id ?>" class="nbAbo nbAboSousDomaine"><?php echo $secteur->nbSousDomainesAbo ?></span>/<?php echo $secteur->nbSousDomaines ?></span>
+                                        <span class="label label-default">Projets <span id="projetsAboSecteur<?php echo $secteur->id ?>" class="nbAbo nbAboProjet"><?php echo $secteur->nbProjetsAbo ?></span>/<?php echo $secteur->nbProjets ?></span>
                                     </span> 
                             </h3>
                         </div>
@@ -104,8 +104,8 @@
                                                         <a href="#panelDomaine<?php echo $domaine->id ?>" data-toggle="collapse" data-parent="#domainesSecteur<?php echo $secteur->id ?>" class="lienPanel" title="<?php echo $domaine->description ?>"> <?php echo $domaine->libelle ?> </a>
                                                         <a href="#" class="pull-right abonner col-lg-2" id="domaine-<?php echo $domaine->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                                         <span class="pull-right etiquettes">
-                                                            <span class="label label-default">Sous-Domaines <span>0</span>/<?php echo $domaine->nbSousDomaines ?></span>
-                                                            <span class="label label-default">Projets <span>0</span>/<?php echo $domaine->nbProjets ?></span>
+                                                            <span class="label label-default">Sous-Domaines <span id="sousDomainesAboDomaine<?php echo $domaine->id ?>" class="nbAbo nbAboSousDomaine"><?php echo $domaine->nbSousDomainesAbo ?></span>/<?php echo $domaine->nbSousDomaines ?></span>
+                                                            <span class="label label-default">Projets <span id="projetsAboDomaine<?php echo $domaine->id ?>" class="nbAbo nbAboProjet"><?php echo $domaine->nbProjetsAbo ?></span>/<?php echo $domaine->nbProjets ?></span>
                                                         </span> 
                                                     </h3>
                                                 </div>
@@ -130,7 +130,7 @@
                                                                                 <a href="#panelSousDomaine<?php echo $sousDomaine->id ?>" data-toggle="collapse" data-parent="#sousDomainesDomaine<?php echo $domaine->id ?>" class="lienPanel" title="<?php echo $sousDomaine->description ?>"> <?php echo $sousDomaine->libelle ?> </a>
                                                                                 <a href="#" class="pull-right abonner col-lg-2" id="sousDomaine-<?php echo $sousDomaine->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                                                                 <span class="pull-right etiquettes">
-                                                                                    <span class="label label-default">Projets <span>0</span>/<?php echo $sousDomaine->nbProjets ?></span>
+                                                                                    <span class="label label-default">Projets <span id="projetsAboSousDomaine<?php echo $sousDomaine->id ?>" class="nbAbo nbAboProjet"><?php echo $sousDomaine->nbProjetsAbo ?></span>/<?php echo $sousDomaine->nbProjets ?></span>
                                                                                 </span> 
                                                                             </h3>
                                                                         </div>
@@ -152,7 +152,7 @@
                                                                                                 <a href="#" title="<?php echo $projet->description ?>">
                                                                                                     <?php echo $projet->titre ?>
                                                                                                 </a>
-                                                                                                <a href="#" class="pull-right abonner col-lg-2" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                                <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                                                                             </div>
                                                                                             <?php
                                                                                         }
@@ -214,7 +214,7 @@
                                             <a href="#">
                                                 <?php echo $contrat->libelle ?>
                                             </a>
-                                            <a href="#" class="pull-right abonner col-lg-2" id="contrat-<?php $contrat->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                            <a href="#" class="pull-right abonner" id="contrat-<?php echo $contrat->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
                                         </div>
                                         <?php
                                     }

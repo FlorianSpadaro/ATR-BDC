@@ -1,4 +1,96 @@
 <?php
+	function getSousDomaineIdByProjetId($id)
+	{
+		include("connexionBdd.php");
+		
+		$idSousDomaine = null;
+		$req = $bdd->prepare("SELECT sous_domaine_id id FROM projet WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$idSousDomaine = $data["id"];
+		}
+		return json_encode($idSousDomaine);
+	}
+
+	function getDomaineIdByProjetId($id)
+	{
+		include("connexionBdd.php");
+		
+		$idProjet = null;
+		$req = $bdd->prepare("SELECT sous_domaine_id id FROM projet WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$idProjet = json_decode(getDomaineIdBySousDomaineId($data["id"]));
+		}
+		
+		return json_encode($idProjet);
+	}
+
+	function getDomaineIdBySousDomaineId($id)
+	{
+		include("connexionBdd.php");
+		
+		$idDomaine = null;
+		$req = $bdd->prepare("SELECT domaine_id id FROM sous_domaine WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$idDomaine = $data["id"];
+		}
+		return json_encode($idDomaine);
+	}
+
+	function getSecteurIdByProjetId($id)
+	{
+		include("connexionBdd.php");
+		
+		$idProjet = null;
+		
+		$req = $bdd->prepare("SELECT sous_domaine_id id FROM projet WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$idProjet = json_decode(getSecteurIdBySousDomaineId($data["id"]));
+		}
+		
+		return json_encode($idProjet);
+	}
+
+	function getSecteurIdBySousDomaineId($id)
+	{
+		include("connexionBdd.php");
+		
+		$idSecteur = null;
+		$req = $bdd->prepare("SELECT domaine_id id FROM sous_domaine WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$req2 = $bdd->prepare("SELECT secteur_id id FROM domaine WHERE id = ?");
+			$req2->execute(array($data["id"]));
+			if($data2 = $req2->fetch())
+			{
+				$idSecteur = $data2["id"];
+			}
+		}
+		return json_encode($idSecteur);
+	}
+	
+	function getSecteurIdByDomaineId($id)
+	{
+		include("connexionBdd.php");
+		
+		$idSecteur = null;
+		$req = $bdd->prepare("SELECT secteur_id id FROM domaine WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$idSecteur = $data["id"];
+		}
+		return json_encode($idSecteur);
+	}
+
 	function removeAbonnementById($id)
 	{
 		include("connexionBdd.php");
@@ -61,17 +153,60 @@
 		return json_encode($contrats);
 	}
 
-	function getSecteursDomainesSousDomainesProjets()
+	function getSecteursDomainesSousDomainesProjets($idUser)
 	{
 		include("connexionBdd.php");
+		
+		$abonnements = json_decode(getAbonnementsByUtilisateurId($idUser));
+		$secteursAbo = array(); 
+		$domainesAbo = array();
+		$sousDomainesAbo = array();
+		$projetsAbo = array();
+		if($abonnements != null)
+		{
+			foreach($abonnements as $abo)
+			{
+				if(isset($abo->secteur_id) && ($abo->secteur_id != null))
+				{
+					array_push($secteursAbo, $abo->secteur_id);
+				}
+				if(isset($abo->domaine_id) && ($abo->domaine_id != null))
+				{
+					$domaine = (object)[];
+					$domaine->id = $abo->domaine_id;
+					$domaine->secteur_id = json_decode(getSecteurIdByDomaineId($domaine->id));
+					array_push($domainesAbo, $domaine);
+				}
+				if(isset($abo->sous_domaine_id) && ($abo->sous_domaine_id != null))
+				{
+					$sousDomaine = (object)[];
+					$sousDomaine->id = $abo->sous_domaine_id;
+					$sousDomaine->domaine_id = json_decode(getDomaineIdBySousDomaineId($sousDomaine->id));
+					$sousDomaine->secteur_id = json_decode(getSecteurIdBySousDomaineId($sousDomaine->id));
+					array_push($sousDomainesAbo, $sousDomaine);
+				}
+				if(isset($abo->projet_id) && ($abo->projet_id != null))
+				{
+					$projet = (object)[];
+					$projet->id = $abo->projet_id;
+					$projet->sous_domaine_id = json_decode(getSousDomaineIdByProjetId($projet->id));
+					$projet->domaine_id = json_decode(getDomaineIdByProjetId($projet->id));
+					$projet->secteur_id = json_decode(getSecteurIdByProjetId($projet->id));
+					array_push($projetsAbo, $projet);
+				}
+			}
+		}
 		
 		$tab = array();
 		$req = $bdd->query("SELECT * FROM secteur");
 		while($data = $req->fetch())
 		{
 			$nbDomainesSecteur = 0;
+			$nbDomainesSecteurAbo = 0;
 			$nbSousDomainesSecteur = 0;
+			$nbSousDomainesSecteurAbo = 0;
 			$nbProjetsSecteur = 0;
+			$nbProjetsSecteurAbo = 0;
 			
 			$secteur = (object)[];
 			$secteur->id = $data["id"];
@@ -83,9 +218,22 @@
 			while($data2 = $req2->fetch())
 			{
 				$nbSousDomainesDomaine = 0;
+				$nbSousDomainesDomaineAbo = 0;
 				$nbProjetsDomaine = 0;
+				$nbProjetsDomaineAbo = 0;
 				
 				$nbDomainesSecteur++;
+				
+				if(sizeof($domainesAbo) > 0)
+				{
+					foreach($domainesAbo as $domAbo)
+					{
+						if($domAbo->id == $data2["id"])
+						{
+							$nbDomainesSecteurAbo++;
+						}
+					}
+				}
 				
 				$domaine = (object)[];
 				$domaine->id = $data2["id"];
@@ -98,9 +246,22 @@
 				while($data3 = $req3->fetch())
 				{
 					$nbProjetsSousDomaine = 0;
+					$nbProjetsSousDomaineAbo = 0;
 					
 					$nbSousDomainesSecteur++;
 					$nbSousDomainesDomaine++;
+					
+					if(sizeof($sousDomainesAbo) > 0)
+					{
+						foreach($sousDomainesAbo as $sdAbo)
+						{
+							if($sdAbo->id == $data3["id"])
+							{
+								$nbSousDomainesDomaineAbo++;
+								$nbSousDomainesSecteurAbo++;
+							}
+						}
+					}
 					
 					$sous_domaine = (object)[];
 					$sous_domaine->id = $data3["id"];
@@ -116,6 +277,19 @@
 						$nbProjetsDomaine++;
 						$nbProjetsSousDomaine++;
 						
+						if($projetsAbo != null)
+						{
+							foreach($projetsAbo as $proAbo)
+							{
+								if($proAbo->id == $data4["id"])
+								{
+									$nbProjetsSecteurAbo++;
+									$nbProjetsDomaineAbo++;
+									$nbProjetsSousDomaineAbo++;
+								}
+							}
+						}
+						
 						$projet = (object)[];
 						$projet->id = $data4["id"];
 						$projet->titre = $data4["titre"];
@@ -126,17 +300,23 @@
 						array_push($sous_domaine->projet, $projet);
 					}
 					$sous_domaine->nbProjets = $nbProjetsSousDomaine;
+					$sous_domaine->nbProjetsAbo = $nbProjetsSousDomaineAbo;
 					
 					array_push($domaine->sous_domaine, $sous_domaine);
 				}
 				$domaine->nbSousDomaines = $nbSousDomainesDomaine;
+				$domaine->nbSousDomainesAbo = $nbSousDomainesDomaineAbo;
 				$domaine->nbProjets = $nbProjetsDomaine;
+				$domaine->nbProjetsAbo = $nbProjetsDomaineAbo;
 				
 				array_push($secteur->domaine, $domaine);
 			}
 			$secteur->nbDomaines = $nbDomainesSecteur;
+			$secteur->nbDomainesAbo = $nbDomainesSecteurAbo;
 			$secteur->nbSousDomaines = $nbSousDomainesSecteur;
+			$secteur->nbSousDomainesAbo = $nbSousDomainesSecteurAbo;
 			$secteur->nbProjets = $nbProjetsSecteur;
+			$secteur->nbProjetsAbo = $nbProjetsSecteurAbo;
 			
 			array_push($tab, $secteur);
 		}
