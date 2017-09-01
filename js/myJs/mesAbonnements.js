@@ -66,7 +66,7 @@ $(function(){
                 var id = tab[1];
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");
                 
-                $.post("API/removeAbonnementById.php", {abonnement_id: id}, function(data){
+                $.post("API/removeAbonnementById.php", {abonnement_id: id, utilisateur_id: $("#user_id").val()}, function(data){
                     var reponse = JSON.parse(data);
                     $("#imageAttente").replaceWith(elt);
                     if(reponse){
