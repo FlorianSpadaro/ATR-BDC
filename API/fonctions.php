@@ -1,4 +1,39 @@
 <?php
+	function getNbProjets()
+	{
+		include("connexionBdd.php");
+		$nb = 0;
+		$req = $bdd->query("SELECT COUNT(*) nb FROM projet");
+		if($data = $req->fetch())
+		{
+			$nb = $data["nb"];
+		}
+		return json_encode($nb);
+	}
+
+	function getProjetsByNum($nb, $debut)
+	{
+		include("connexionBdd.php");
+		
+		$projets = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj, contrat_id FROM projet ORDER BY date_creation DESC LIMIT ? OFFSET ?");
+		$req->execute(array($nb, $debut));
+		while($data = $req->fetch())
+		{
+			$projets[$i]["id"] = $data["id"];
+			$projets[$i]["titre"] = $data["titre"];
+			$projets[$i]["description"] = $data["description"];
+			$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
+			$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
+			$projets[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
+			
+			$i++;
+		}
+		
+		return json_encode($projets);
+	}
+
 	function getSousDomaineIdByProjetId($id)
 	{
 		include("connexionBdd.php");

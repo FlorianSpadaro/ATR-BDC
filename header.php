@@ -204,7 +204,7 @@
                             <a href="contact.html">Vie de l'entreprise</a>
                         </li>-->
                                 <li>
-                                    <a href="contact.html">Projets</a>
+                                    <a href="projets.php">Projets</a>
                                 </li>
                     </ul>
                 </div>
