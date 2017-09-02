@@ -5,9 +5,9 @@
     {
         $_GET["p"] = 1;
     }
-    $debutProjets = ($_GET["p"]*10)-10;
+    $nbProjetsAfficher = 5;
+    $debutProjets = ($_GET["p"]*$nbProjetsAfficher)-$nbProjetsAfficher;
     $nbProjets = json_decode(getNbProjets());
-    $nbProjetsAfficher = 10;
     $projets = json_decode(getProjetsByNum($nbProjetsAfficher, $debutProjets));
     $nbPages = ceil($nbProjets/$nbProjetsAfficher);
 ?>
@@ -44,10 +44,22 @@
             .panel-footer{
                 text-align: right;
             }
+            #formNumPage{
+                display: none;
+            }
+            #btnNum{
+                width: 50px;
+                height: 50px;
+                border-radius: 25px;
+                text-align: left;
+            }
         </style>
         
     </head>
     <body>
+        
+        <input type="hidden" id="nbPages" value="<?php echo $nbPages ?>" />
+        
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
             <div class="container">
                 <div class="row">
@@ -119,6 +131,12 @@
             
             <div class="pull-right">
                 <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a id="btnNum" href="#" class="btn btn-lg btn-info">N°</a>
+                        <form class="form-inline" id="formNumPage">
+                            <input class="form-control" type="number" placeholder="n° page" id="numPage" required />
+                        </form>
+                    </li>
                     <?php
                     if($_GET["p"] != 1)
                     {
@@ -133,13 +151,50 @@
                     }
                     ?>
                     <?php
-                    for($i = 1; $i <= $nbPages; $i++)
+                    if($nbPages < 12)
                     {
-                        ?>
-                        <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                            <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
-                        </li>
-                        <?php
+                        for($i = 1; $i <= $nbPages; $i++)
+                        {
+                            ?>
+                            <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
+                                <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                            </li>
+                            <?php
+                        }
+                    }
+                    else{
+                        if($_GET["p"] < 6)
+                        {
+                            for($i = 1; $i <= 10; $i++)
+                            {
+                                ?>
+                                <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
+                                    <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                                </li>
+                                <?php
+                            }
+                        }
+                        else if($_GET["p"] > ($nbPages-6))
+                        {
+                            for($i = ($nbPages-10); $i <= $nbPages; $i++)
+                            {
+                                ?>
+                                <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
+                                    <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                                </li>
+                                <?php
+                            }
+                        }
+                        else{
+                            for($i = ($_GET["p"]-5); $i <= ($_GET["p"]+5); $i++)
+                            {
+                                ?>
+                                <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
+                                    <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                                </li>
+                                <?php
+                            }
+                        }
                     }
                     ?>
                     <?php
@@ -149,13 +204,14 @@
                         <li class="nav-item">
                             <div class="btn-group">
                                 <a href="projets.php?p=<?php echo ($_GET["p"]+1) ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></button></a>
-                                <a href="projets.php"?p=<?php echo $nbPages ?>><button class="btn btn-default"><span class="glyphicon glyphicon-fast-forward"></span></button></a>
+                                <a href="projets.php?p=<?php echo $nbPages ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-forward"></span></button></a>
                             </div>
                         </li>
                         <?php
                     }
                     ?>
                 </ul>
+                <br/>
             </div>
         </div>
         
@@ -164,6 +220,7 @@
         <!--  Footer -->
 
         <?php include("footer.php"); ?>
+        <script src="js/myJs/projets.js"></script>
         
         
     </body>
