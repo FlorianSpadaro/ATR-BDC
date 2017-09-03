@@ -48,9 +48,6 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
         <style>
-            #divFiltres{
-                display: none;
-            }
             .panel-footer{
                 text-align: right;
             }
@@ -95,15 +92,14 @@
         
         <div class="container">
             <h3>
-                <a href="#" class="btn btn-info" id="btnRechercheProjet">Rechercher un projet <span class="glyphicon glyphicon-search"></span></a>
+                <button id="btnFiltres" class="btn btn-info">Filtres <span class="glyphicon glyphicon-filter"></span></button>
                 <form class="form-horizontal" id="rechercheProjet">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input id="inputRechercheProjet" type="search" class="form-control" placeholder="Rechercher..."><a id="validerRechercheProjet" class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
-                        </div>
-                    </div>
-                    <button id="btnFiltres" class="btn btn-info">Filtres <span class="glyphicon glyphicon-filter"></span></button>
                     <div id="divFiltres" class="jumbotron">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input id="inputRechercheProjet" type="search" class="form-control" placeholder="Rechercher..."><a id="validerRechercheProjet" class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <legend>Zones de recherche</legend>
                             <fieldset>
@@ -141,14 +137,30 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active in fade" id="filtreSecteurs">
                                         <div class="list-group" id="filtreListeSecteurs">
-                                          
+                                          <label class="label label-info" id="labelSecteurFiltre">Aucun Secteur</label>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="filtreDomaines">Tous les livres</div>
-                                    <div class="tab-pane fade" id="filtreSousDomaines">Tous les temoignages</div>
-                                    <div class="tab-pane fade" id="filtreContrats">Tous les temoignages</div>
+                                    <div class="tab-pane fade" id="filtreDomaines">
+                                        <div class="list-group" id="filtreListeDomaines">
+                                            <label class="label label-info" id="labelDomaineFiltre">Aucun domaine ne correspond aux secteurs sélectionnés</label>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="filtreSousDomaines">
+                                        <div class="list-group" id="filtreListeSousDomaines">
+                                            <label class="label label-info" id="labelSousDomaineFiltre">Aucun sous-domaine ne correspond aux secteurs et domaines sélectionnés</label>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="filtreContrats">
+                                        <div class="list-group" id="filtreListeContrats">
+                                            <label class="label label-info" id="labelContratFiltre">Aucun contrat</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </fieldset>
+                            <div class="btn-group pull-right">
+                                <button type="reset" class="btn btn-danger" id="annulerFiltre">Annuler</button>
+                                <button class="btn btn-default" id="validerFiltre">Valider</button>
+                            </div>
                         </div>
                     </div>
                     <hr>
