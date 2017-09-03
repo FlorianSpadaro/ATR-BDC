@@ -11,26 +11,167 @@
 		return json_encode($nb);
 	}
 
-	function getProjetsByNum($nb, $debut)
+	function getProjetsByNum($nb, $debut, $params)
 	{
 		include("connexionBdd.php");
 		
 		$projets = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj, contrat_id FROM projet ORDER BY date_creation DESC LIMIT ? OFFSET ?");
-		$req->execute(array($nb, $debut));
-		while($data = $req->fetch())
-		{
-			$projets[$i]["id"] = $data["id"];
-			$projets[$i]["titre"] = $data["titre"];
-			$projets[$i]["description"] = $data["description"];
-			$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
-			$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
-			$projets[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
-			
-			$i++;
-		}
 		
+		if($params == null)
+		{
+			$req = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj, contrat_id FROM projet ORDER BY date_creation DESC LIMIT ? OFFSET ?");
+			$req->execute(array($nb, $debut));
+			while($data = $req->fetch())
+			{
+				$projets[$i]["id"] = $data["id"];
+				$projets[$i]["titre"] = $data["titre"];
+				$projets[$i]["description"] = $data["description"];
+				$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
+				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
+				$projets[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
+				
+				$i++;
+			}
+		}
+		else{
+			$tabTexte = array();
+			$txt = strtoupper($params->texte->texte);
+			if($params->texte->titre)
+			{
+				array_push($tabTexte, "UPPER(p.titre) LIKE '%".$txt."%'");
+			}
+			if($params->texte->description)
+			{
+				array_push($tabTexte, "UPPER(p.description) LIKE '%".$txt."%'");
+			}
+			if($params->texte->contenu)
+			{
+				array_push($tabTexte, "UPPER(p.contenu) LIKE '%".$txt."%'");
+			}
+			
+			$requete = "SELECT p.id projet_id, p.titre projet_titre, p.description projet_description, p.date_creation projet_date_creation, p.date_derniere_maj projet_date_derniere_maj, p.contrat_id FROM projet p JOIN sous_domaine sd ON sd.id = p.sous_domaine_id JOIN domaine d ON d.id = sd.domaine_id JOIN secteur s ON s.id = d.secteur_id WHERE";
+			if(sizeof($tabTexte) > 0)
+			{
+				$i = 0;
+				foreach($tabTexte as $ajout)
+				{
+					if($i == 0)
+					{
+						$requete = $requete." (".$ajout;
+					}
+					else{
+						$requete = $requete." OR ".$ajout;
+					}
+					if($i == (sizeof($tabTexte)-1))
+					{
+						$requete = $requete.")";
+					}
+					$i++;
+				}
+			}
+			
+			$tabFiltre = array();
+			if(isset($params->filtre->contrats) && ($params->filtre->contrats != null) && (sizeof($params->filtre->contrats) > 0))
+			{
+				$requeteContrats = "";
+				$i = 0;
+				foreach($params->filtre->contrats as $contrat)
+				{
+					if($i != 0)
+					{
+						$requeteContrats = $requeteContrats." OR ";
+					}
+					$requeteContrats = $requeteContrats."p.contrat_id = ".$contrat;
+					
+					$i++;
+				}
+				array_push($tabFiltre, $requeteContrats);
+			}
+			if(isset($params->filtre->secteurs) && ($params->filtre->secteurs != null) && (sizeof($params->filtre->secteurs) > 0))
+			{
+				$requeteSecteurs = "";
+				$i = 0;
+				foreach($params->filtre->secteurs as $secteur)
+				{
+					if($i != 0)
+					{
+						$requeteSecteurs = $requeteSecteurs." OR ";
+					}
+					$requeteSecteurs = $requeteSecteurs."s.id = ".$secteur;
+					
+					$i++;
+				}
+				array_push($tabFiltre, $requeteSecteurs);
+			}
+			if(isset($params->filtre->domaines) && ($params->filtre->domaines != null) && (sizeof($params->filtre->domaines) > 0))
+			{
+				$requeteDomaines = "";
+				$i = 0;
+				foreach($params->filtre->domaines as $domaine)
+				{
+					if($i != 0)
+					{
+						$requeteDomaines = $requeteDomaines." OR ";
+					}
+					$requeteDomaines = $requeteDomaines."d.id = ".$domaine;
+					
+					$i++;
+				}
+				array_push($tabFiltre, $requeteDomaines);
+			}
+			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
+			{
+				$requeteSousDomaines = "";
+				$i = 0;
+				foreach($params->filtre->domaines as $sd)
+				{
+					if($i != 0)
+					{
+						$requeteSousDomaines = $requeteSousDomaines." OR ";
+					}
+					$requeteSousDomaines = $requeteSousDomaines."sd.id = ".$sd;
+					
+					$i++;
+				}
+				array_push($tabFiltre, $requeteSousDomaines);
+			}
+			if(sizeof($tabFiltre) > 0)
+			{
+				$i = 0;
+				$requete = $requete." AND (";
+				foreach($tabFiltre as $filtre)
+				{
+					if($i != 0)
+					{
+						$requete = $requete." OR ";
+					}
+					$requete = $requete.$filtre;
+					if($i == (sizeof($tabFiltre)-1))
+					{
+						$requete = $requete.")";
+					}
+					$i++;
+				}
+			}
+			$requete = $requete." ORDER BY date_creation DESC LIMIT ? OFFSET ?";
+			
+			$req = $bdd->prepare($requete);
+			$req->execute(array($nb, $debut));
+			$i = 0;
+			while($data = $req->fetch())
+			{
+				$projets[$i]["id"] = $data["projet_id"];
+				$projets[$i]["titre"] = $data["projet_titre"];
+				$projets[$i]["description"] = $data["projet_description"];
+				$projets[$i]["date_creation"] = json_decode(modifierDate($data["projet_date_creation"]));
+				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["projet_date_derniere_maj"]));
+				$projets[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
+				
+				$i++;
+			}
+			
+		}
 		return json_encode($projets);
 	}
 

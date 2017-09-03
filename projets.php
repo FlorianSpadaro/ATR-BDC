@@ -1,15 +1,20 @@
 <?php
     include("header.php");
 
-    if((!isset($_GET["p"])) || ($_GET["p"] == null) || ($_GET["p"]== ""))
+    $nbProjetsAfficher = 10;
+    $nbProjets = json_decode(getNbProjets());
+    $nbPages = ceil($nbProjets/$nbProjetsAfficher);
+    
+    if((!isset($_GET["p"])) || ($_GET["p"] == null) || ($_GET["p"]== "") || ($_GET["p"] < 1))
     {
         $_GET["p"] = 1;
     }
-    $nbProjetsAfficher = 5;
+    else if(isset($_GET["p"]) && ($_GET["p"] > $nbPages))
+    {
+        $_GET["p"] = $nbPages;
+    }
     $debutProjets = ($_GET["p"]*$nbProjetsAfficher)-$nbProjetsAfficher;
-    $nbProjets = json_decode(getNbProjets());
-    $projets = json_decode(getProjetsByNum($nbProjetsAfficher, $debutProjets));
-    $nbPages = ceil($nbProjets/$nbProjetsAfficher);
+    $projets = json_decode(getProjetsByNum($nbProjetsAfficher, $debutProjets, null));
 ?>
 <html>
     <head>
@@ -53,6 +58,9 @@
                 border-radius: 25px;
                 text-align: left;
             }
+            #rechercheProjet{
+                display: none;
+            }
         </style>
         
     </head>
@@ -81,6 +89,16 @@
         </header>
         
         <div class="container">
+            <h3>
+                <a href="#" class="btn btn-info" id="btnRechercheProjet">Rechercher un projet <span class="glyphicon glyphicon-search"></span></a>
+                <form class="form-horizontal" id="rechercheProjet">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input id="inputRechercheProjet" type="search" class="form-control" placeholder="Rechercher..." required><a id="validerRechercheProjet" class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
+                        </div>
+                    </div>
+                </form>
+            </h3>
             <?php
             if($projets != null)
             {

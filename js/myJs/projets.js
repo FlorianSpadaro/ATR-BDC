@@ -1,4 +1,7 @@
 $(function(){
+    var hauteur = $("#btnSubmitRechercheProjet").css("height");
+    var largeur = $("#btnSubmitRechercheProjet").css("width");;
+    
     $("#btnNum").click(function(e){
         e.preventDefault();
         $(this).hide();
@@ -22,4 +25,37 @@ $(function(){
             document.location.href = "projets.php?p=" + numPage;
         });
     });
+    
+    $("#btnRechercheProjet").click(function(e){
+        e.preventDefault();
+        $(this).hide("fade");
+        $("#rechercheProjet").show("fade");
+        $("#inputRechercheProjet").focus();
+        $("#validerRechercheProjet").click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            $("#rechercheProjet").submit();
+        });
+        $(document.body).click(function(e){
+            if(($(e.target).attr("id") != "inputRechercheProjet") && ($(e.target).attr("id") != "btnRechercheProjet"))
+                {
+                    $("#rechercheProjet").hide("fade");
+                    $("#btnRechercheProjet").show("fade");
+                }
+        });
+        /*$("#rechercheProjet").focusout(function(){
+            $("#rechercheProjet").hide("fade");
+            $("#btnRechercheProjet").show("fade");
+        })*/;
+    });
+    
+    $("#rechercheProjet").submit(function(e){
+        e.preventDefault();
+        console.log("OK");
+    });
+    
+    /*$(document.body).click(function(e){
+        console.log($(e.target).attr("id"));
+    });
+    */
 });
