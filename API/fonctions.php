@@ -1,4 +1,48 @@
 <?php
+	function getSecteursDomainesSousdomainesContrats()
+	{
+		include("connexionBdd.php");
+		
+		$tab = (object)[];
+		$tab->secteurs = array();
+		$tab->domaines = array();
+		$tab->sousDomaines = array();
+		$tab->contrats = array();
+		
+		$req = $bdd->query("SELECT id FROM secteur");
+		while($data = $req->fetch())
+		{
+			$secteur = json_decode(getSecteurById($data["id"]));
+			
+			array_push($tab->secteurs, $secteur);
+		}
+		
+		$req = $bdd->query("SELECT id FROM domaine");
+		while($data = $req->fetch())
+		{
+			$domaine = json_decode(getDomaineById($data["id"]));
+			
+			array_push($tab->domaines, $domaine);
+		}
+		
+		$req = $bdd->query("SELECT id FROM sous_domaine");
+		while($data = $req->fetch())
+		{
+			$sousDomaine = json_decode(getSousDomaineById($data["id"]));
+			
+			array_push($tab->sousDomaines, $sousDomaine);
+		}
+		$req = $bdd->query("SELECT id FROM contrat");
+		while($data = $req->fetch())
+		{
+			$contrat = json_decode(getContratById($data["id"]));
+			
+			array_push($tab->contrats, $contrat);
+		}
+		
+		return json_encode($tab);
+	}
+
 	function getNbProjets()
 	{
 		include("connexionBdd.php");
@@ -1385,7 +1429,6 @@
 			$contrat["id"] = $data["id"];
 			$contrat["libelle"] = $data["libelle"];
 			$contrat["miniature"] = json_decode(getMiniatureById($data["miniature_id"]));
-			$contrat["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
 		}
 		
 		return json_encode($contrat);
@@ -1427,7 +1470,6 @@
 			$domaine["libelle"] = $data["libelle"];
 			$domaine["description"] = $data["description"];
 			$domaine["secteur"] = json_decode(getSecteurById($data["secteur_id"]));
-			$domaine["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
 		}
 		
 		return json_encode($domaine);
@@ -1446,7 +1488,7 @@
 			$sousDomaine["libelle"] = $data["libelle"];
 			$sousDomaine["description"] = $data["description"];
 			$sousDomaine["domaine"] = json_decode(getDomaineById($data["domaine_id"]));
-			$sousDomaine["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
+			$sousDomaine["secteur"] = json_decode(getSecteurById(json_decode(getSecteurIdBySousDomaineId($data["id"]))));
 		}
 		
 		return json_encode($sousDomaine);

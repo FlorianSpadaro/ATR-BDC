@@ -1,4 +1,29 @@
 $(function(){
+    $.post("API/getSecteursDomainesSousdomainesContrats.php", function(data){
+        var tab = JSON.parse(data);
+        if(tab.secteurs != null)
+            {
+                tab.secteurs.forEach(function(secteur){
+                    var aElt = document.createElement("a");
+                    aElt.href = "#";
+                    aElt.classList += "list-group-item active";
+                    aElt.textContent = secteur.libelle;
+                    $(aElt).click(function(e){
+                        e.preventDefault();
+                        if($(this).hasClass("active"))
+                            {
+                                $(this).removeClass("active");
+                            }
+                        else{
+                            $(this).addClass("active");
+                        }
+                    });
+                    $(aElt).css("border", "1px solid black");
+                    document.getElementById("filtreListeSecteurs").appendChild(aElt);
+                });
+            }
+    });
+    
     var hauteur = $("#btnSubmitRechercheProjet").css("height");
     var largeur = $("#btnSubmitRechercheProjet").css("width");;
     
@@ -36,26 +61,22 @@ $(function(){
             e.stopPropagation();
             $("#rechercheProjet").submit();
         });
-        $(document.body).click(function(e){
+        /*$(document.body).click(function(e){
             if(($(e.target).attr("id") != "inputRechercheProjet") && ($(e.target).attr("id") != "btnRechercheProjet"))
                 {
                     $("#rechercheProjet").hide("fade");
                     $("#btnRechercheProjet").show("fade");
                 }
-        });
-        /*$("#rechercheProjet").focusout(function(){
-            $("#rechercheProjet").hide("fade");
-            $("#btnRechercheProjet").show("fade");
-        })*/;
+        });*/
     });
     
     $("#rechercheProjet").submit(function(e){
         e.preventDefault();
-        console.log("OK");
+        
     });
     
-    /*$(document.body).click(function(e){
-        console.log($(e.target).attr("id"));
+    $("#btnFiltres").click(function(){
+        $("#btnFiltres").hide("fade");
+        $("#divFiltres").show("fade");
     });
-    */
 });

@@ -1,5 +1,7 @@
 <?php
     include("header.php");
+    
+    //$tab = json_decode(getSecteursDomainesSousdomainesContrats());
 
     $nbProjetsAfficher = 10;
     $nbProjets = json_decode(getNbProjets());
@@ -46,6 +48,9 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
         <style>
+            #divFiltres{
+                display: none;
+            }
             .panel-footer{
                 text-align: right;
             }
@@ -94,9 +99,59 @@
                 <form class="form-horizontal" id="rechercheProjet">
                     <div class="form-group">
                         <div class="input-group">
-                            <input id="inputRechercheProjet" type="search" class="form-control" placeholder="Rechercher..." required><a id="validerRechercheProjet" class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
+                            <input id="inputRechercheProjet" type="search" class="form-control" placeholder="Rechercher..."><a id="validerRechercheProjet" class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
                         </div>
                     </div>
+                    <button id="btnFiltres" class="btn btn-info">Filtres <span class="glyphicon glyphicon-filter"></span></button>
+                    <div id="divFiltres" class="jumbotron">
+                        <div class="form-group">
+                            <legend>Zones de recherche</legend>
+                            <fieldset>
+                                <span class="checkbox col-lg-3 well">
+                                    <label for="filtreTitreProjet" class="checkbox">
+                                        <input type="checkbox" name="filtreTitreProjet" id="filtreTitreProjet" checked />
+                                        Titre
+                                    </label>
+                                </span>
+                                <span class="checkbox col-lg-3 col-lg-offset-1 well">
+                                    <label for="filtreDescriptionProjet" class="checkbox">
+                                        <input type="checkbox" name="filtreDescriptionProjet" id="filtreDescriptionProjet" checked />
+                                        Description
+                                    </label>
+                                </span>
+                                <span class="checkbox col-lg-3 col-lg-offset-1 well">
+                                    <label for="filtreContenuProjet" class="checkbox">
+                                        <input type="checkbox" name="filtreContenuProjet" id="filtreContenuProjet" checked />
+                                        Contenu
+                                    </label>
+                                </span>
+                            </fieldset>
+                        </div>
+                        <div class="form-group">
+                            <legend>Filtres</legend>
+                            <p class="help-block">Note: Par défaut, tous les filtres sont activés. Cliquez dessus pour les désactiver</p>
+                            <fieldset>
+                                <ul class="nav nav-pills">
+                                    <li class="active"><a href="#filtreSecteurs" data-toggle="tab">Secteurs</a></li>
+                                    <li><a href="#filtreDomaines" data-toggle="tab">Domaines</a></li>
+                                    <li><a href="#filtreSousDomaines" data-toggle="tab">Sous-Domaines</a></li>
+                                    <li><a href="#filtreContrats" data-toggle="tab">Contrats</a></li>
+                                </ul>
+                                <br/>
+                                <div class="tab-content">
+                                    <div class="tab-pane active in fade" id="filtreSecteurs">
+                                        <div class="list-group" id="filtreListeSecteurs">
+                                          
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="filtreDomaines">Tous les livres</div>
+                                    <div class="tab-pane fade" id="filtreSousDomaines">Tous les temoignages</div>
+                                    <div class="tab-pane fade" id="filtreContrats">Tous les temoignages</div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <hr>
                 </form>
             </h3>
             <?php
