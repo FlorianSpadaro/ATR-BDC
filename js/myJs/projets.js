@@ -1,4 +1,71 @@
 $(function(){
+    $("#inputRechercheProjet").on("keydown", function(e){
+        if(e.keyCode == 13)
+            {
+                e.preventDefault();
+                $("#validerFiltre").click();
+            }
+    });
+    
+    $("#validerRechercheProjet").click(function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $("#validerFiltre").click();
+    });
+    
+    $("#validerFiltre").click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var params = {};
+            params.texte = {};
+            params.texte.texte = $("#inputRechercheProjet").val();
+            if($("#filtreTitreProjet").is(":checked"))
+                {
+                    params.texte.titre = true;
+                }
+            else{
+                params.texte.titre = false;
+            }
+            if($("#filtreContenuProjet").is(":checked"))
+                {
+                    params.texte.contenu = true;
+                }
+            else{
+                params.texte.contenu = false;
+            }
+            if($("#filtreDescriptionProjet").is(":checked"))
+                {
+                    params.texte.description = true;
+                }
+            else{
+                params.texte.description = false;
+            }
+            params.filtre = {};
+            params.filtre.contrats = [];
+            params.filtre.secteurs = [];
+            params.filtre.domaines = [];
+            params.filtre.sousDomaines = [];
+
+            $("#rechercheProjet .active").each(function(e, elt){
+                var tab = elt.id.split("-");
+                switch(tab[0])
+                {
+                    case "secteur": params.filtre.secteurs.push(tab[1]);
+                        break;
+                    case "domaine": params.filtre.domaines.push(tab[1]);
+                        break;
+                    case "contrat": params.filtre.contrats.push(tab[1]);
+                        break;
+                    case "sousDomaine": params.filtre.sousDomaines.push(tab[1]);
+                        break;
+                }
+            });
+            $("#params").val(JSON.stringify(params));    
+        
+            $("#rechercheProjet").submit();
+        });
+    
     $("#annulerFiltre").click(function(){
         $("#divFiltres").hide("fade");
         $("#btnFiltres").show("fade");
@@ -176,24 +243,8 @@ $(function(){
         $(this).hide("fade");
         $("#rechercheProjet").show("fade");
         $("#inputRechercheProjet").focus();
-        $("#validerRechercheProjet").click(function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            $("#rechercheProjet").submit();
-        });
-        /*$(document.body).click(function(e){
-            if(($(e.target).attr("id") != "inputRechercheProjet") && ($(e.target).attr("id") != "btnRechercheProjet"))
-                {
-                    $("#rechercheProjet").hide("fade");
-                    $("#btnRechercheProjet").show("fade");
-                }
-        });*/
     });
-    
-    $("#rechercheProjet").submit(function(e){
-        e.preventDefault();
-        console.log("OK");
-    });
+
     
     $("#btnFiltres").click(function(){
         $("#btnFiltres").hide("fade");

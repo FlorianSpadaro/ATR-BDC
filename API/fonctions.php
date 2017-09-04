@@ -43,14 +43,152 @@
 		return json_encode($tab);
 	}
 
-	function getNbProjets()
+	function getNbProjets($params)
 	{
 		include("connexionBdd.php");
 		$nb = 0;
-		$req = $bdd->query("SELECT COUNT(*) nb FROM projet");
-		if($data = $req->fetch())
+		
+		if($params == null)
 		{
-			$nb = $data["nb"];
+			$req = $bdd->query("SELECT COUNT(*) nb FROM projet");
+			if($data = $req->fetch())
+			{
+				$nb = $data["nb"];
+			}
+		}
+		else{
+		$tabTexte = array();
+			$txt = strtoupper($params->texte->texte);
+			if($params->texte->titre)
+			{
+				array_push($tabTexte, "UPPER(p.titre) LIKE '%".$txt."%'");
+			}
+			if($params->texte->description)
+			{
+				array_push($tabTexte, "UPPER(p.description) LIKE '%".$txt."%'");
+			}
+			if($params->texte->contenu)
+			{
+				array_push($tabTexte, "UPPER(p.contenu) LIKE '%".$txt."%'");
+			}
+			
+			$requete = "SELECT COUNT(*) nb FROM projet p JOIN sous_domaine sd ON sd.id = p.sous_domaine_id JOIN domaine d ON d.id = sd.domaine_id JOIN secteur s ON s.id = d.secteur_id WHERE";
+			if(sizeof($tabTexte) > 0)
+			{
+				$i = 0;
+				foreach($tabTexte as $ajout)
+				{
+					if($i == 0)
+					{
+						$requete = $requete." (".$ajout;
+					}
+					else{
+						$requete = $requete." OR ".$ajout;
+					}
+					if($i == (sizeof($tabTexte)-1))
+					{
+						$requete = $requete.")";
+					}
+					$i++;
+				}
+			}
+			
+			if(isset($params->filtre->contrats) && ($params->filtre->contrats != null) && (sizeof($params->filtre->contrats) > 0))
+			{
+				$i = 0;
+				foreach($params->filtre->contrats as $contrat)
+				{
+					if($i == 0)
+					{
+						$requete = $requete." AND (";
+					}
+					if($i != 0)
+					{
+						$requete = $requete." OR ";
+					}
+					$requete = $requete."p.contrat_id = ".$contrat;
+					
+					$i++;
+					if($i == sizeof($params->filtre->contrats))
+					{
+						$requete = $requete.")";
+					}
+				}
+			}
+			
+			$tabFiltre = array();
+			if(isset($params->filtre->secteurs) && ($params->filtre->secteurs != null) && (sizeof($params->filtre->secteurs) > 0))
+			{
+				$requeteSecteurs = "";
+				$i = 0;
+				foreach($params->filtre->secteurs as $secteur)
+				{
+					if($i != 0)
+					{
+						$requeteSecteurs = $requeteSecteurs." OR ";
+					}
+					$requeteSecteurs = $requeteSecteurs."s.id = ".$secteur;
+					
+					$i++;
+				}
+				array_push($tabFiltre, $requeteSecteurs);
+			}
+			if(isset($params->filtre->domaines) && ($params->filtre->domaines != null) && (sizeof($params->filtre->domaines) > 0))
+			{
+				$requeteDomaines = "";
+				$i = 0;
+				foreach($params->filtre->domaines as $domaine)
+				{
+					if($i != 0)
+					{
+						$requeteDomaines = $requeteDomaines." OR ";
+					}
+					$requeteDomaines = $requeteDomaines."d.id = ".$domaine;
+					
+					$i++;
+				}
+				array_push($tabFiltre, $requeteDomaines);
+			}
+			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
+			{
+				$requeteSousDomaines = "";
+				$i = 0;
+				foreach($params->filtre->domaines as $sd)
+				{
+					if($i != 0)
+					{
+						$requeteSousDomaines = $requeteSousDomaines." OR ";
+					}
+					$requeteSousDomaines = $requeteSousDomaines."sd.id = ".$sd;
+					
+					$i++;
+				}
+				array_push($tabFiltre, $requeteSousDomaines);
+			}
+			if(sizeof($tabFiltre) > 0)
+			{
+				$i = 0;
+				$requete = $requete." AND (";
+				foreach($tabFiltre as $filtre)
+				{
+					if($i != 0)
+					{
+						$requete = $requete." OR ";
+					}
+					$requete = $requete.$filtre;
+					if($i == (sizeof($tabFiltre)-1))
+					{
+						$requete = $requete.")";
+					}
+					$i++;
+				}
+			}
+			$req = $bdd->query($requete);
+			while($data = $req->fetch())
+			{
+				$nb = $data["nb"];
+			}
+		
 		}
 		return json_encode($nb);
 	}
@@ -115,23 +253,30 @@
 				}
 			}
 			
-			$tabFiltre = array();
 			if(isset($params->filtre->contrats) && ($params->filtre->contrats != null) && (sizeof($params->filtre->contrats) > 0))
 			{
-				$requeteContrats = "";
 				$i = 0;
 				foreach($params->filtre->contrats as $contrat)
 				{
+					if($i == 0)
+					{
+						$requete = $requete." AND (";
+					}
 					if($i != 0)
 					{
-						$requeteContrats = $requeteContrats." OR ";
+						$requete = $requete." OR ";
 					}
-					$requeteContrats = $requeteContrats."p.contrat_id = ".$contrat;
+					$requete = $requete."p.contrat_id = ".$contrat;
 					
 					$i++;
+					if($i == sizeof($params->filtre->contrats))
+					{
+						$requete = $requete.")";
+					}
 				}
-				array_push($tabFiltre, $requeteContrats);
 			}
+			
+			$tabFiltre = array();
 			if(isset($params->filtre->secteurs) && ($params->filtre->secteurs != null) && (sizeof($params->filtre->secteurs) > 0))
 			{
 				$requeteSecteurs = "";

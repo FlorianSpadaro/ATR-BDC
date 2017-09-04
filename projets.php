@@ -1,10 +1,17 @@
 <?php
     include("header.php");
     
-    //$tab = json_decode(getSecteursDomainesSousdomainesContrats());
+    $params = null;
+    if(isset($_POST["params"]) && ($_POST["params"] != null))
+    {
+        $params = json_decode($_POST["params"]);
+    }
+    else if(isset($_GET["params"]) && ($_GET["params"] != null)){
+        $params = json_decode(urldecode($_GET["params"]));
+    }
 
     $nbProjetsAfficher = 10;
-    $nbProjets = json_decode(getNbProjets());
+    $nbProjets = json_decode(getNbProjets($params));
     $nbPages = ceil($nbProjets/$nbProjetsAfficher);
     
     if((!isset($_GET["p"])) || ($_GET["p"] == null) || ($_GET["p"]== "") || ($_GET["p"] < 1))
@@ -16,7 +23,7 @@
         $_GET["p"] = $nbPages;
     }
     $debutProjets = ($_GET["p"]*$nbProjetsAfficher)-$nbProjetsAfficher;
-    $projets = json_decode(getProjetsByNum($nbProjetsAfficher, $debutProjets, null));
+    $projets = json_decode(getProjetsByNum($nbProjetsAfficher, $debutProjets, $params));
 ?>
 <html>
     <head>
@@ -93,7 +100,10 @@
         <div class="container">
             <h3>
                 <button id="btnFiltres" class="btn btn-info">Filtres <span class="glyphicon glyphicon-filter"></span></button>
-                <form class="form-horizontal" id="rechercheProjet">
+                <form href="projets.php" method="post" class="form-horizontal" id="rechercheProjet">
+                    <div id="listeHidden">
+                        <input type="hidden" id="params" name="params" />
+                    </div>
                     <div id="divFiltres" class="jumbotron">
                         <div class="form-group">
                             <div class="input-group">
@@ -228,8 +238,8 @@
                         ?>
                         <li class="nav-item">
                             <div class="btn-group">
-                                <a href="projets.php?p=1"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-backward"></span></button></a>
-                                <a href="projets.php?p=<?php echo ($_GET["p"]-1) ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-backward"></span></button></a>
+                                <a href="projets.php?p=1<?php if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-backward"></span></button></a>
+                                <a href="projets.php?p=<?php echo ($_GET["p"]-1); if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-backward"></span></button></a>
                             </div>
                         </li>
                         <?php
@@ -242,7 +252,7 @@
                         {
                             ?>
                             <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                                <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                                <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
                             </li>
                             <?php
                         }
@@ -254,7 +264,7 @@
                             {
                                 ?>
                                 <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                                    <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                                    <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
                                 </li>
                                 <?php
                             }
@@ -265,7 +275,7 @@
                             {
                                 ?>
                                 <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                                    <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                                    <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
                                 </li>
                                 <?php
                             }
@@ -275,7 +285,7 @@
                             {
                                 ?>
                                 <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                                    <a class="nav-link" href="projets.php?p=<?php echo $i ?>"><?php echo $i ?></a>
+                                    <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
                                 </li>
                                 <?php
                             }
@@ -288,8 +298,8 @@
                         ?>
                         <li class="nav-item">
                             <div class="btn-group">
-                                <a href="projets.php?p=<?php echo ($_GET["p"]+1) ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></button></a>
-                                <a href="projets.php?p=<?php echo $nbPages ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-forward"></span></button></a>
+                                <a href="projets.php?p=<?php echo ($_GET["p"]+1); if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></button></a>
+                                <a href="projets.php?p=<?php echo $nbPages; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-forward"></span></button></a>
                             </div>
                         </li>
                         <?php
