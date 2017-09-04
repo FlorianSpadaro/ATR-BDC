@@ -67,14 +67,18 @@ $(function(){
         });
     
     $("#annulerFiltre").click(function(){
+        $("#enteteSecteurFiltre").click();
         $("#divFiltres").hide("fade");
         $("#btnFiltres").show("fade");
+        $(".contrat").removeClass("active");
+        $(".in").removeClass("in");
         $(".cacher").addClass("visible").removeClass("cacher").show();
         $(".visible").each(function(){
-            if(!$(this).hasClass("active"))
+            if(!$(this).hasClass("active") && !$(this).hasClass("contrat"))
                 {
                     $(this).addClass("active");
                 }
+        
         });
         $("#labelDomaineFiltre").hide();
         $("#labelSousDomaineFiltre").hide();
@@ -134,7 +138,7 @@ $(function(){
                     var aElt = document.createElement("a");
                     aElt.href = "#";
                     aElt.id = "contrat-" + contrat.id;
-                    aElt.classList += "list-group-item visible";
+                    aElt.classList += "list-group-item visible contrat";
                     aElt.textContent = contrat.libelle;
                     $(aElt).click(function(e){
                         e.preventDefault();

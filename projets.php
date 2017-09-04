@@ -138,8 +138,8 @@
                             <legend>Filtres</legend>
                             <p class="help-block">Note: Par défaut, tous les filtres sont activés (sauf les contrats). Cliquez dessus pour les désactiver</p>
                             <fieldset>
-                                <ul class="nav nav-pills">
-                                    <li class="active"><a href="#filtreSecteurs" data-toggle="tab">Secteurs</a></li>
+                                <ul id="entetesOnglets" class="nav nav-pills">
+                                    <li class="active"><a id="enteteSecteurFiltre" href="#filtreSecteurs" data-toggle="tab">Secteurs</a></li>
                                     <li><a href="#filtreDomaines" data-toggle="tab">Domaines</a></li>
                                     <li><a href="#filtreSousDomaines" data-toggle="tab">Sous-Domaines</a></li>
                                     <li><a href="#filtreContrats" data-toggle="tab">Contrats</a></li>
