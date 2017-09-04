@@ -134,7 +134,7 @@ $(function(){
                     var aElt = document.createElement("a");
                     aElt.href = "#";
                     aElt.id = "contrat-" + contrat.id;
-                    aElt.classList += "list-group-item active visible";
+                    aElt.classList += "list-group-item visible";
                     aElt.textContent = contrat.libelle;
                     $(aElt).click(function(e){
                         e.preventDefault();

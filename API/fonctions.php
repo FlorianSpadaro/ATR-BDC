@@ -61,18 +61,18 @@
 			$txt = strtoupper($params->texte->texte);
 			if($params->texte->titre)
 			{
-				array_push($tabTexte, "UPPER(p.titre) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(titre) LIKE '%".$txt."%'");
 			}
 			if($params->texte->description)
 			{
-				array_push($tabTexte, "UPPER(p.description) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(description) LIKE '%".$txt."%'");
 			}
 			if($params->texte->contenu)
 			{
-				array_push($tabTexte, "UPPER(p.contenu) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
 			}
 			
-			$requete = "SELECT COUNT(*) nb FROM projet p JOIN sous_domaine sd ON sd.id = p.sous_domaine_id JOIN domaine d ON d.id = sd.domaine_id JOIN secteur s ON s.id = d.secteur_id WHERE";
+			$requete = "SELECT COUNT(*) nb FROM projet WHERE";
 			if(sizeof($tabTexte) > 0)
 			{
 				$i = 0;
@@ -106,7 +106,7 @@
 					{
 						$requete = $requete." OR ";
 					}
-					$requete = $requete."p.contrat_id = ".$contrat;
+					$requete = $requete."contrat_id = ".$contrat;
 					
 					$i++;
 					if($i == sizeof($params->filtre->contrats))
@@ -117,7 +117,7 @@
 			}
 			
 			$tabFiltre = array();
-			if(isset($params->filtre->secteurs) && ($params->filtre->secteurs != null) && (sizeof($params->filtre->secteurs) > 0))
+			/*if(isset($params->filtre->secteurs) && ($params->filtre->secteurs != null) && (sizeof($params->filtre->secteurs) > 0))
 			{
 				$requeteSecteurs = "";
 				$i = 0;
@@ -148,18 +148,18 @@
 					$i++;
 				}
 				array_push($tabFiltre, $requeteDomaines);
-			}
+			}*/
 			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
 			{
 				$requeteSousDomaines = "";
 				$i = 0;
-				foreach($params->filtre->domaines as $sd)
+				foreach($params->filtre->sousDomaines as $sd)
 				{
 					if($i != 0)
 					{
 						$requeteSousDomaines = $requeteSousDomaines." OR ";
 					}
-					$requeteSousDomaines = $requeteSousDomaines."sd.id = ".$sd;
+					$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
 					
 					$i++;
 				}
@@ -183,6 +183,9 @@
 					$i++;
 				}
 			}
+			
+			//echo $requete;
+			
 			$req = $bdd->query($requete);
 			while($data = $req->fetch())
 			{
@@ -221,18 +224,18 @@
 			$txt = strtoupper($params->texte->texte);
 			if($params->texte->titre)
 			{
-				array_push($tabTexte, "UPPER(p.titre) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(titre) LIKE '%".$txt."%'");
 			}
 			if($params->texte->description)
 			{
-				array_push($tabTexte, "UPPER(p.description) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(description) LIKE '%".$txt."%'");
 			}
 			if($params->texte->contenu)
 			{
-				array_push($tabTexte, "UPPER(p.contenu) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
 			}
 			
-			$requete = "SELECT p.id projet_id, p.titre projet_titre, p.description projet_description, p.date_creation projet_date_creation, p.date_derniere_maj projet_date_derniere_maj, p.contrat_id FROM projet p JOIN sous_domaine sd ON sd.id = p.sous_domaine_id JOIN domaine d ON d.id = sd.domaine_id JOIN secteur s ON s.id = d.secteur_id WHERE";
+			$requete = "SELECT id projet_id, titre projet_titre, description projet_description, date_creation projet_date_creation, date_derniere_maj projet_date_derniere_maj, contrat_id FROM projet  WHERE";
 			if(sizeof($tabTexte) > 0)
 			{
 				$i = 0;
@@ -266,7 +269,7 @@
 					{
 						$requete = $requete." OR ";
 					}
-					$requete = $requete."p.contrat_id = ".$contrat;
+					$requete = $requete."contrat_id = ".$contrat;
 					
 					$i++;
 					if($i == sizeof($params->filtre->contrats))
@@ -277,7 +280,7 @@
 			}
 			
 			$tabFiltre = array();
-			if(isset($params->filtre->secteurs) && ($params->filtre->secteurs != null) && (sizeof($params->filtre->secteurs) > 0))
+			/*if(isset($params->filtre->secteurs) && ($params->filtre->secteurs != null) && (sizeof($params->filtre->secteurs) > 0))
 			{
 				$requeteSecteurs = "";
 				$i = 0;
@@ -308,18 +311,18 @@
 					$i++;
 				}
 				array_push($tabFiltre, $requeteDomaines);
-			}
+			}*/
 			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
 			{
 				$requeteSousDomaines = "";
 				$i = 0;
-				foreach($params->filtre->domaines as $sd)
+				foreach($params->filtre->sousDomaines as $sd)
 				{
 					if($i != 0)
 					{
 						$requeteSousDomaines = $requeteSousDomaines." OR ";
 					}
-					$requeteSousDomaines = $requeteSousDomaines."sd.id = ".$sd;
+					$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
 					
 					$i++;
 				}
@@ -344,6 +347,8 @@
 				}
 			}
 			$requete = $requete." ORDER BY date_creation DESC LIMIT ? OFFSET ?";
+			
+			//echo $requete;
 			
 			$req = $bdd->prepare($requete);
 			$req->execute(array($nb, $debut));

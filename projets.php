@@ -12,6 +12,7 @@
 
     $nbProjetsAfficher = 10;
     $nbProjets = json_decode(getNbProjets($params));
+    
     $nbPages = ceil($nbProjets/$nbProjetsAfficher);
     
     if((!isset($_GET["p"])) || ($_GET["p"] == null) || ($_GET["p"]== "") || ($_GET["p"] < 1))
@@ -135,7 +136,7 @@
                         </div>
                         <div class="form-group">
                             <legend>Filtres</legend>
-                            <p class="help-block">Note: Par défaut, tous les filtres sont activés. Cliquez dessus pour les désactiver</p>
+                            <p class="help-block">Note: Par défaut, tous les filtres sont activés (sauf les contrats). Cliquez dessus pour les désactiver</p>
                             <fieldset>
                                 <ul class="nav nav-pills">
                                     <li class="active"><a href="#filtreSecteurs" data-toggle="tab">Secteurs</a></li>

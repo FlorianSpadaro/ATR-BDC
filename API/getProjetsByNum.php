@@ -19,6 +19,6 @@
 	$params->filtre->contrats = array(1, 2);
 	$params->filtre->secteurs = array(1, 2);
 	$params->filtre->domaines = array(1, 2, 3);
-	$params->filtre->sousDomaines = array(1, 2, 3);
+	$params->filtre->sousDomaines = array(1, 2, 3, 4);
 	echo getProjetsByNum(10, 0, $params);*/
 ?>
