@@ -1,4 +1,23 @@
 <?php
+	function getNomPrenomUtilisateurBySearch($search)
+	{
+		include("connexionBdd.php");
+		
+		$search = strtoupper($search);
+		$users = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id, nom, prenom FROM utilisateur WHERE UPPER(prenom) LIKE ? OR UPPER(nom) LIKE ? ORDER BY nom, prenom LIMIT 5 OFFSET 0");
+		$req->execute(array($search."%", $search."%"));
+		while($data = $req->fetch())
+		{
+			$users[$i]["id"] = $data["id"];
+			$users[$i]["nom"] = strtoupper($data["nom"]);
+			$users[$i]["prenom"] = ucfirst(strtolower($data["prenom"]));
+			$i++;
+		}
+		return json_encode($users);
+	}
+
 	function getSecteursDomainesSousdomainesContrats()
 	{
 		include("connexionBdd.php");

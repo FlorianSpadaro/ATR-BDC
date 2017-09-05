@@ -22,6 +22,7 @@
 
         <!-- Theme CSS -->
         <link href="css/clean-blog.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
         <!-- Custom Fonts -->
         <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -35,7 +36,12 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+        <style>
+            #erreurDestinataires{
+                display: none;
+                color: red;
+            }
+        </style>
     </head>
 
     <body>
@@ -106,7 +112,44 @@
         
             
         ?>
+        <div class="container">
+            <button data-toggle="modal" data-backdrop="false" href="#formulaireMessage" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span> Rédiger un message</button>
+        </div>
         
+        <div class="modal fade" id="formulaireMessage">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">x</button>
+                  <h4 class="modal-title">Message : </h4>
+                </div>
+                <div class="modal-body">
+                  <form id="formNouveauMessage">
+                    <div class="form-group">
+                      <label for="destinataires">Destinataire(s)</label>
+                      <input type="text" class="form-control" name ="destinataires" id="destinataires">
+                        <div id="listeDestinataires">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Sujet</label><input type="text" id="nouveauSujet" class="form-control" maxlength="50" required />
+                        <label>Message</label><textarea class="form-control" name="message" maxlength="250" id="nouveauMessage" required></textarea>
+                        <span class="badge"><span id="nbCaracNw">0</span>/250</span>
+                    </div>
+                    <button type="submit" id="envoyerNouveauMessage" class="btn btn-default">Envoyer</button>
+                      <div id="erreurDestinataires">
+                            Vous devez choisir au moins un destinataire
+                        </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button id="annulerRedigerNouveauMessage" class="btn btn-info" data-dismiss="modal">Annuler</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <br/>
         <ul class="nav nav-pills container">
             <li class="active"><a href="#messagesRecus" data-toggle="tab">Messages reçus</a></li>
             <li><a href="#messagesEnvoyes" data-toggle="tab">Messages envoyés</a></li>

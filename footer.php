@@ -5,7 +5,12 @@
     </head>
     <body>
         <!-- jQuery -->
-        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"
+  integrity="sha256-7LkWEzqTdpEfELxcZZlS6wAx5Ff13zZ83lYO2/ujj7g="
+  crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"
+  integrity="sha256-UOoxwEUqhp5BSFFwqzyo2Qp4JLmYYPTHB8l+1yhZij8="
+  crossorigin="anonymous"></script>
 
         <!-- Bootstrap Core JavaScript -->
         <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
