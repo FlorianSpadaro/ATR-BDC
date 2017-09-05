@@ -1,5 +1,6 @@
 <?php
     session_start();
+    include("API/fonctions.php");
     if(isset($_POST["deconnexion"]) && $_POST["deconnexion"] == "true")
     {
         session_destroy();
@@ -9,9 +10,8 @@
     if(isset($_POST["user_id"]) && $_POST["user_id"] != null)
     {
         $_SESSION["user_id"] = $_POST["user_id"];
+        $_SESSION["niveau"] = json_decode(getNiveauByUtilisateurId($_POST["user_id"]));
     }
-    
-    include("API/fonctions.php");
     $secteurs = json_decode(getSousDomainesByDomainesBySecteurs());
 ?>
 
@@ -206,6 +206,16 @@
                                 <li>
                                     <a href="projets.php">Projets</a>
                                 </li>
+                        <?php
+                        if((isset($_SESSION["niveau"])) && ($_SESSION["niveau"]->niveau == 3))
+                        {
+                            ?>
+                            <li>
+                                <a href="contrats.php">Contrats</a>
+                            </li>
+                            <?php
+                        }
+                        ?>
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->

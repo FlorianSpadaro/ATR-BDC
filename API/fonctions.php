@@ -1,4 +1,80 @@
 <?php
+	function addContrat($libelle, $idMiniature, $idUser)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO contrat(libelle, miniature_id, utilisateur_id) VALUES(?, ?, ?)");
+			$reponse = $req->execute(array($libelle, $idMiniature, $idUser));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function modifierContrat($idContrat, $libelle, $idMiniature)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE contrat SET libelle = ?, miniature_id = ? WHERE id = ?");
+			$reponse = $req->execute(array($libelle, $idMiniature, $idContrat));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function getMiniatures()
+	{
+		include("connexionBdd.php");
+		
+		$miniatures = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM miniature");
+		while($data = $req->fetch())
+		{
+			$miniatures[$i] = json_decode(getMiniatureById($data["id"]));
+			$i++;
+		}
+		return json_encode($miniatures);
+	}
+
+	function removeContratById($id)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM contrat WHERE id = ?");
+			$reponse = $req->execute(array($id));
+			
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function getNiveauByUtilisateurId($id)
+	{
+		include("connexionBdd.php");
+		$niveau = null;
+		$req = $bdd->prepare("SELECT fonction_id FROM utilisateur WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$req2 = $bdd->prepare("SELECT niveau_id FROM fonction WHERE id = ?");
+			$req2->execute(array($data["fonction_id"]));
+			if($data2 = $req2->fetch())
+			{
+				$niveau = json_decode(getNiveauById($data2["niveau_id"]));
+			}
+		}
+		return json_encode($niveau);
+	}
+
 	function getNomPrenomUtilisateurBySearch($search)
 	{
 		include("connexionBdd.php");
@@ -839,7 +915,7 @@
 		include("connexionBdd.php");
 		$contrats = null;
 		$i = 0;
-		$req = $bdd->query("SELECT id FROM contrat");
+		$req = $bdd->query("SELECT id FROM contrat ORDER BY libelle");
 		while($data = $req->fetch())
 		{
 			$contrats[$i] = json_decode(getContratById($data["id"]));
