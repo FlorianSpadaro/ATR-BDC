@@ -127,6 +127,14 @@
                         <li><a href="mesMessages.php"><span class="glyphicon glyphicon-envelope"></span> Mes messages <span id="nbMessages" class="badge"></span></a></li>
                         <li><a href="mesAbonnements.php"><span class="glyphicon glyphicon-heart-empty"></span> Mes abonnements</a></li>
                         <li><a href="#"><span class="fa fa-question-circle"></span> Mes suggestions</a></li>
+                        <?php
+                        if((isset($_SESSION["niveau"])) && ($_SESSION["niveau"]->niveau == 3))
+                        {
+                            ?>
+                            <li><a href="listeUtilisateurs.php"><span class="glyphicon glyphicon-list-alt"></span> Liste des utilisateurs</a></li>
+                            <?php
+                        }
+                        ?>
                         <li class="divider"></li>
                         <li>
                             <form method="post">

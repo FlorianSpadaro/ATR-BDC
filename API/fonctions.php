@@ -1,4 +1,18 @@
 <?php
+	function getUtilisateurs()
+	{
+		include("connexionBdd.php");
+		 $utilisateurs = null;
+		 $i = 0;
+		 $req = $bdd->query("SELECT id FROM utilisateur ORDER BY nom, prenom");
+		 while($data = $req->fetch())
+		 {
+			 $utilisateurs[$i] = json_decode(getUtilisateurById($data["id"]));
+			 $i++;
+		 }
+		 return json_encode($utilisateurs);
+	}
+
 	function addMiniature($nom, $url)
 	{
 		include("connexionBdd.php");
