@@ -1,4 +1,196 @@
 $(function(){
+   $("#ajouterNouvelleMiniatureNC").click(function(e){
+        e.preventDefault();
+        
+        $(".erreurNouvelleMiniatureNC").hide();
+        
+        if($("#nomNouvelleMiniatureNC").val() == "")
+            {
+                $("#erreurNomMiniatureNC").show();
+            }
+        else if($("#fichierMiniatureNC").val() == "")
+            {
+                $("#erreurFichierMiniatureNC").show();
+            }
+        else{
+            var fichier = document.getElementById("fichierMiniatureNC").files[0];
+            if(fichier.type.split("/")[0] != "image")
+                {
+                    $("#fichierMiniatureNC").val("");
+                    alert("Veuillez choisir une image");
+                }
+            else{
+                if(fichier.size <= 1000000)
+                    {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "API/addMiniature.php");
+
+                        var form = new FormData();
+                        form.append("nom", $("#nomNouvelleMiniatureNC").val());
+                        form.append("miniature", fichier);
+
+                        xhr.send(form);
+                        
+                        xhr.addEventListener('load', function() {
+                            $.post("API/getMiniatures.php", {}, function(data){
+                                var miniatures = JSON.parse(data);
+                                if(miniatures != null)
+                                    {
+                                        document.getElementById("listeMiniaturesNouveauContrat").innerHTML = "";
+                                        miniatures.forEach(function(miniature){
+                                            var divElt = document.createElement("div");
+                                            divElt.classList += "radio";
+
+                                            var labelElt = document.createElement("label");
+                                            labelElt.classList += "radio";
+                                            labelElt.setAttribute("for", "miniature-" + miniature.id);
+
+                                            var inputElt = document.createElement("input");
+                                            inputElt.type = "radio";
+                                            inputElt.setAttribute("name", "miniature");
+                                            inputElt.value = "miniature-" + miniature.id;
+                                            inputElt.id = inputElt.value;
+
+                                            var imgElt = document.createElement("img");
+                                            imgElt.setAttribute("width", "50px");
+                                            imgElt.setAttribute("height", "50px");
+                                            imgElt.src = miniature.url;
+
+
+                                            labelElt.appendChild(inputElt);
+                                            labelElt.appendChild(imgElt);
+
+                                            divElt.appendChild(labelElt);
+
+                                            document.getElementById("listeMiniaturesNouveauContrat").appendChild(divElt);
+                                            $(labelElt).click();
+                                        });
+                                    }
+                                $("#annulerAjoutMiniatureNC").click();
+                            });
+                        });
+                    }
+                else{
+                    $("#fichierMiniatureNC").val("");
+                    alert("Veuillez choisir un fichier de 1 Mo ou moins");
+                }
+            }
+        }
+    });
+    
+    $("#annulerAjoutMiniatureNC").click(function(e){
+        e.preventDefault();
+        $("#divAjouterMiniatureNC").hide("fade");
+        $("#btnAjouterMiniatureNC").show("fade");
+        $("#fichierMiniatureNC").val("");
+        $("#nomNouvelleMiniatureNC").val("");
+        $(".erreurNouvelleMiniatureNC").hide();
+    });
+    
+    $("#btnAjouterMiniatureNC").click(function(e){
+        e.preventDefault();
+        $(this).hide("fade");
+        $("#divAjouterMiniatureNC").show("fade");
+    });
+    
+    
+    
+    //ANCIEN
+    
+    $("#ajouterNouvelleMiniature").click(function(e){
+        e.preventDefault();
+        
+        $(".erreurNouvelleMiniature").hide();
+        
+        if($("#nomNouvelleMiniature").val() == "")
+            {
+                $("#erreurNomMiniature").show();
+            }
+        else if($("#fichierMiniature").val() == "")
+            {
+                $("#erreurFichierMiniature").show();
+            }
+        else{
+            var fichier = document.getElementById("fichierMiniature").files[0];
+            if(fichier.type.split("/")[0] != "image")
+                {
+                    $("#fichierMiniature").val("");
+                    alert("Veuillez choisir une image");
+                }
+            else{
+                if(fichier.size <= 1000000)
+                    {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "API/addMiniature.php");
+
+                        var form = new FormData();
+                        form.append("nom", $("#nomNouvelleMiniature").val());
+                        form.append("miniature", fichier);
+
+                        xhr.send(form);
+                        
+                        xhr.addEventListener('load', function() {
+                            $.post("API/getMiniatures.php", {}, function(data){
+                                var miniatures = JSON.parse(data);
+                                if(miniatures != null)
+                                    {
+                                        document.getElementById("listeMiniatures").innerHTML = "";
+                                        miniatures.forEach(function(miniature){
+                                            var divElt = document.createElement("div");
+                                            divElt.classList += "radio";
+
+                                            var labelElt = document.createElement("label");
+                                            labelElt.classList += "radio";
+                                            labelElt.setAttribute("for", "miniature-" + miniature.id);
+
+                                            var inputElt = document.createElement("input");
+                                            inputElt.type = "radio";
+                                            inputElt.setAttribute("name", "miniature");
+                                            inputElt.value = "miniature-" + miniature.id;
+                                            inputElt.id = inputElt.value;
+
+                                            var imgElt = document.createElement("img");
+                                            imgElt.setAttribute("width", "50px");
+                                            imgElt.setAttribute("height", "50px");
+                                            imgElt.src = miniature.url;
+
+
+                                            labelElt.appendChild(inputElt);
+                                            labelElt.appendChild(imgElt);
+
+                                            divElt.appendChild(labelElt);
+
+                                            document.getElementById("listeMiniatures").appendChild(divElt);
+                                            $(labelElt).click();
+                                        });
+                                    }
+                                $("#annulerAjoutMiniature").click();
+                            });
+                        });
+                    }
+                else{
+                    $("#fichierMiniature").val("");
+                    alert("Veuillez choisir un fichier de 1 Mo ou moins");
+                }
+            }
+        }
+    });
+    
+    $("#annulerAjoutMiniature").click(function(e){
+        e.preventDefault();
+        $("#divAjouterMiniature").hide("fade");
+        $("#btnAjouterMiniature").show("fade");
+        $("#fichierMiniature").val("");
+        $("#nomNouvelleMiniature").val("");
+        $(".erreurNouvelleMiniature").hide();
+    });
+    
+    $("#btnAjouterMiniature").click(function(e){
+        e.preventDefault();
+        $(this).hide("fade");
+        $("#divAjouterMiniature").show("fade");
+    });
+    
     $('input[name=miniatureNC]:first').click();
     $("#validerNouveauContrat").prop("disabled", true);
     

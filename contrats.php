@@ -34,7 +34,12 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
         <style>
-            #btnModifierContrat, #btnSupprimerContrat{
+            .erreurNouvelleMiniature, .erreurNouvelleMiniatureNC{
+                color: red;
+                display: none;
+            }
+            
+            #btnModifierContrat, #btnSupprimerContrat, #divAjouterMiniature, #divAjouterMiniatureNC{
                 display: none;
             }
             #listeMiniatures, #listeMiniaturesNouveauContrat{
@@ -108,11 +113,6 @@
                                 $i = 0;
                                 foreach($miniatures as $miniature)
                                 {
-                                    if($i == 3)
-                                    {
-                                        $i = 0;
-                                        echo "<br/>";
-                                    }
                                     ?>
                                     <div class="radio">
                                         <label class="radio" for="miniature-<?php echo $miniature->id ?>"><input type="radio" name="miniature" value="miniature-<?php echo $miniature->id ?>" id="miniature-<?php echo $miniature->id ?>" /> <img width="50px" height="50px" src="<?php echo $miniature->url ?>" /></label>
@@ -123,6 +123,26 @@
                             }
                             ?>
                         </div>
+                        <button class="btn btn-link pull-right" id="btnAjouterMiniature"><span class="glyphicon glyphicon-plus"></span> Ajouter miniature</button>
+                        <div id="divAjouterMiniature" class="well">
+                            <h4>Nouvelle Miniature</h4>
+                            <div class="form-group">
+                                <label for="nomNouvelleMiniature">Nom: </label>
+                                <input type="text" id="nomNouvelleMiniature" name="nomNouvelleMiniature" class="form-control" />
+                                <span class="meta erreurNouvelleMiniature" id="erreurNomMiniature">Veuillez saisir un nom pour la miniature</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="fichierMiniature">Miniature: </label>
+                                <input type="file" name="fichierMiniature" id="fichierMiniature" class="form-control" />
+                                <span class="meta erreurNouvelleMiniature" id="erreurFichierMiniature">Veuillez choisir une image (1 Mo max)</span>
+                            </div>
+                            <div class="btn-group pull-right">
+                                <button class="btn-link" id="annulerAjoutMiniature">Annuler</button>
+                                <button class="btn-default" id="ajouterNouvelleMiniature">Ajouter</button>
+                            </div>
+                            <br/>
+                        </div>
+                        <br/>
                     </div>
                 </form>
               </div>
@@ -171,6 +191,26 @@
                             }
                             ?>
                         </div>
+                        <button class="btn btn-link pull-right" id="btnAjouterMiniatureNC"><span class="glyphicon glyphicon-plus"></span> Ajouter miniature</button>
+                        <div id="divAjouterMiniatureNC" class="well">
+                            <h4>Nouvelle Miniature</h4>
+                            <div class="form-group">
+                                <label for="nomNouvelleMiniatureNC">Nom: </label>
+                                <input type="text" id="nomNouvelleMiniatureNC" name="nomNouvelleMiniatureNC" class="form-control" />
+                                <span class="meta erreurNouvelleMiniatureNC" id="erreurNomMiniatureNC">Veuillez saisir un nom pour la miniature</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="fichierMiniatureNC">Miniature: </label>
+                                <input type="file" name="fichierMiniatureNC" id="fichierMiniatureNC" class="form-control" />
+                                <span class="meta erreurNouvelleMiniatureNC" id="erreurFichierMiniatureNC">Veuillez choisir une image (1 Mo max)</span>
+                            </div>
+                            <div class="btn-group pull-right">
+                                <button class="btn-link" id="annulerAjoutMiniatureNC">Annuler</button>
+                                <button class="btn-default" id="ajouterNouvelleMiniatureNC">Ajouter</button>
+                            </div>
+                            <br/>
+                        </div>
+                        <br/>
                     </div>
                 </form>
               </div>

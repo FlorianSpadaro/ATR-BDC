@@ -1,4 +1,17 @@
 <?php
+	function addMiniature($nom, $url)
+	{
+		include("connexionBdd.php");
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO miniature(nom, url) VALUES(?, ?)");
+			$reponse = $req->execute(array($nom, $url));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+	
 	function addContrat($libelle, $idMiniature, $idUser)
 	{
 		include("connexionBdd.php");
