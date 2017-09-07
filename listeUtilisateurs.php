@@ -1,6 +1,8 @@
 <?php
     include("header.php");
     $utilisateurs = json_decode(getUtilisateurs());
+    $fonctions = json_decode(getFonctions());
+    $niveaux = json_decode(getNiveaux());
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +35,15 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+        <style>
+            #divAjouterFonctionModif, #divAjouterFonctionNew{
+                display: none;
+            }
+            #erreurLibelleNouvelleFonctionModif, .erreurModifUser, #erreurLibelleNouvelleFonctionNew, .erreurNewUser{
+                color: red;
+                display: none;
+            }
+        </style>
         
     </head>
     
@@ -51,6 +62,8 @@
         </header>
         
         <div class="container">
+            <button data-toggle="modal" href="#nouvelUtilisateur" class="btn btn-success" id="btnNouvelUtilisateur"><span class="glyphicon glyphicon-plus"></span> Ajouter utilisateur</button>
+            <br/><br/>
             <table id="listeUtilisateurs" class="tablesorter table table-striped table-hover"> 
                 <thead> 
                 <tr> 
@@ -97,27 +110,186 @@
               </div>
               <div class="modal-body">
                 <form>
+                    <input type="hidden" name="idUtilisateurModif" id="idUtilisateurModif" />
+                    <div>
+                        <img width="100" height="130" id="photoUtilisateurModif" src="" />
+                        <input type="file" id="nouvellePhotoUtilisateurModif" />
+                    </div>
                     <div class="form-group">
                         <label>Nom : </label>
                         <input type="text" name="nomUtilisateurModif" id="nomUtilisateurModif" class="form-control" required />
+                        <div class="help-block erreurModifUser" id="erreurNomUserModif">Veuillez saisir un nom</div>
                     </div>
                     <div class="form-group">
                         <label>Prenom : </label>
-                        <input type="text" name="nomUtilisateurModif" id="nomUtilisateurModif" class="form-control" required />
+                        <input type="text" name="prenomUtilisateurModif" id="prenomUtilisateurModif" class="form-control" required />
+                        <div class="help-block erreurModifUser" id="erreurPrenomUserModif">Veuillez saisir un prénom</div>
                     </div>
                     <div class="form-group">
                         <label>Email : </label>
-                        <input type="email" name="nomUtilisateurModif" id="nomUtilisateurModif" class="form-control" required />
+                        <input type="email" name="emailUtilisateurModif" id="emailUtilisateurModif" class="form-control" required />
+                        <div class="help-block erreurModifUser" id="erreurEmailUserModif">Veuillez saisir un email</div>
                     </div>
                     <div class="form-group">
                         <label>Fonction : </label>
-                        <select class="form-control">
+                        <select class="form-control" name="fonctionUtilisateurModif" id="fonctionUtilisateurModif" required>
+                            <?php
+                            if($fonctions != null)
+                            {
+                                foreach($fonctions as $fonction)
+                                {
+                                    ?>
+                                    <option value="fonction-<?php echo $fonction->id ?>"><?php echo $fonction->libelle ?></option>
+                                    <?php
+                                }
+                            }
+                            ?>
                         </select>
+                        <button id="ajouterFonctionUtilisateurModif" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Ajouter fonction</button>
+                        <br/>
+                        <div id="divAjouterFonctionModif" class="well">
+                            <h4>Nouvelle Fonction</h4>
+                            <div class="form-group">
+                                <label>Libellé</label>
+                                <input type="text" class="form-control" id="libelleFonctionModif" />
+                                <span class="help-block" id="erreurLibelleNouvelleFonctionModif">Veuillez saisir un libellé</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Niveau</label>
+                                <select id="niveauNouvelleFonctionModif" name="niveauNouvelleFonctionModif" class="form-control">
+                                    <?php
+                                    if(niveaux != null)
+                                    {
+                                        foreach($niveaux as $niv)
+                                        {
+                                            ?>
+                                            <option value="niveau-<?php echo $niv->id ?>">
+                                                <?php echo $niv->libelle ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-link" id="annulerNouvelleFonctionModif">Annuler</button>
+                                <button class="btn btn-default" id="validerNouvelleFonctionModif">Valider</button>
+                            </div>
+                            <br/>
+                            <br/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Niveau : </label>
+                        <label id="niveauUtilisateurModif" class="label label-default" ></label>
+                        <div class="help-block">Info : Le niveau est lié à la fonction de l'utilisateur</div>
                     </div>
                 </form>
               </div>
               <div class="modal-footer">
-                <button class="btn btn-info" data-dismiss="modal">Fermer</button>
+                  <div class="btn-group">
+                      <button id="annulerModifUtilisateur" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                      <button id="validerModifUtilisateur" class="btn btn-info">Valider</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <!-- NOUVEL UTILISATEUR -->
+        
+        <div class="modal" id="nouvelUtilisateur">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h4 class="modal-title">Nouvel utilisateur</h4>
+              </div>
+              <div class="modal-body">
+                <form>
+                    <div>
+                        <img width="100" height="130" id="photoNouvelUtilisateur" src="images/photosUtilisateurs/inconnu.jpg" />
+                        <input type="file" id="nouvellePhotoUtilisateurNew" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nom : </label>
+                        <input type="text" name="nomUtilisateurNew" id="nomUtilisateurNew" class="form-control" required />
+                        <div class="help-block erreurNewUser" id="erreurNomUserNew">Veuillez saisir un nom</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Prenom : </label>
+                        <input type="text" name="prenomUtilisateurNew" id="prenomUtilisateurNew" class="form-control" required />
+                        <div class="help-block erreurNewUser" id="erreurPrenomUserNew">Veuillez saisir un prénom</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email : </label>
+                        <input type="email" name="emailUtilisateurNew" id="emailUtilisateurNew" class="form-control" required />
+                        <div class="help-block erreurNewUser" id="erreurEmailUserNew">Veuillez saisir un email</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Fonction : </label>
+                        <select class="form-control" name="fonctionUtilisateurNew" id="fonctionUtilisateurNew" required>
+                            <?php
+                            if($fonctions != null)
+                            {
+                                foreach($fonctions as $fonction)
+                                {
+                                    ?>
+                                    <option value="fonction-<?php echo $fonction->id ?>"><?php echo $fonction->libelle ?></option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                        <button id="ajouterFonctionUtilisateurNew" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Ajouter fonction</button>
+                        <br/>
+                        <div id="divAjouterFonctionNew" class="well">
+                            <h4>Nouvelle Fonction</h4>
+                            <div class="form-group">
+                                <label>Libellé</label>
+                                <input type="text" class="form-control" id="libelleFonctionNew" />
+                                <span class="help-block" id="erreurLibelleNouvelleFonctionNew">Veuillez saisir un libellé</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Niveau</label>
+                                <select id="niveauNouvelleFonctionNew" name="niveauNouvelleFonctionNew" class="form-control">
+                                    <?php
+                                    if(niveaux != null)
+                                    {
+                                        foreach($niveaux as $niv)
+                                        {
+                                            ?>
+                                            <option value="niveau-<?php echo $niv->id ?>">
+                                                <?php echo $niv->libelle ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-link" id="annulerNouvelleFonctionNew">Annuler</button>
+                                <button class="btn btn-default" id="validerNouvelleFonctionNew">Valider</button>
+                            </div>
+                            <br/>
+                            <br/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Niveau : </label>
+                        <label id="niveauUtilisateurNew" class="label label-default" ></label>
+                        <div class="help-block">Info : Le niveau est lié à la fonction de l'utilisateur</div>
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                  <div class="btn-group">
+                      <button id="annulerNewUtilisateur" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                      <button id="validerNewUtilisateur" class="btn btn-info">Valider</button>
+                  </div>
               </div>
             </div>
           </div>

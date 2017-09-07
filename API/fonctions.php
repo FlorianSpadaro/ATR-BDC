@@ -1,4 +1,104 @@
 <?php
+	function motDePasseAleatoire($nbr) 
+	{
+		$str = "";
+		$chaine = "abcdefghijklmnpqrstuvwxyABCDEFGHIJKLMNOPQRSUTVWXYZ0123456789";
+		$nb_chars = strlen($chaine);
+
+		for($i=0; $i<$nbr; $i++)
+		{
+			$str .= $chaine[ rand(0, ($nb_chars-1)) ];
+		}
+
+		return json_encode($str);
+	}
+
+	function addUtilisateur($nom, $prenom, $email, $idFonction) //login = prenom.nom (tout en minuscules) et mdp = (chaine de 10 caractères aléatoires) -> envoyé par mail à l'utilisateur
+	{
+		include("connexionBdd.php");
+		
+		$id = null;
+		$req = $bdd->prepare("INSERT INTO utilisateur(nom, prenom, email, fonction_id, photo) VALUES(?, ?, ?, ?, 'images/photosUtilisateurs/inconnu.jpg') RETURNING id");
+		$req->execute(array($nom, $prenom, $email, $idFonction));
+		if($data = $req->fetch())
+		{
+			$id = $data["id"];
+			$login = strtolower($prenom).".".strtoupper($nom);
+			$mdp = json_decode(motDePasseAleatoire(10));
+			mail($email, "Création de compte", "Bonjour,\n\nPour accéder à votre compte, merci d'utiliser ces identifiants:\n\nLogin: ".$login."\nMot de passe: ".$mdp."\n\nIl est conseillé de changer rapidement ce mot de passe en cliquant sur \"Mon Compte\" (tout en haut à gauche), puis \"Informations Personnelles\", et enfin cliquer sur \"Modifier mot de passe\"\n\nCeci est un mail automatique, merci de ne pas y répondre. ");
+		}
+		return json_encode($id);
+	}
+
+	function modifierPhotoUtilisateur($idUser, $url)
+	{
+		include("connexionBdd.php");
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE utilisateur SET photo = ? WHERE id = ?");
+			$reponse = $req->execute(array($url, $idUser));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function modifierUtilisateur($id, $nom, $prenom, $email, $fonction_id)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, email = ?, fonction_id = ? WHERE id = ?");
+			$reponse = $req->execute(array($nom, $prenom, $email, $fonction_id, $id));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addFonction($libelle, $niveau_id) //retourne l'id de la nouvelle fonction
+	{
+		include("connexionBdd.php");
+		$idFonction = null;
+		$req = $bdd->prepare("INSERT INTO fonction(libelle, niveau_id) VALUES(?, ?) RETURNING id");
+		$req->execute(array($libelle, $niveau_id));
+		if($data = $req->fetch())
+		{
+			$idFonction = $data["id"];
+		}
+		return json_encode($idFonction);
+	}
+
+	function getNiveaux()
+	{
+		include("connexionBdd.php");
+		$niveaux = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM niveau ORDER BY niveau");
+		while($data = $req->fetch())
+		{
+			$niveaux[$i] = json_decode(getNiveauById($data["id"]));
+			$i++;
+		}
+		return json_encode($niveaux);
+	}
+
+	function getFonctions()
+	{
+		include("connexionBdd.php");
+		
+		$fonctions = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM fonction ORDER BY libelle");
+		while($data = $req->fetch())
+		{
+			$fonctions[$i] = json_decode(getFonctionById($data["id"]));
+			$i++;
+		}
+		return json_encode($fonctions);
+	}
+
 	function getUtilisateurs()
 	{
 		include("connexionBdd.php");
