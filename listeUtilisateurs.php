@@ -64,6 +64,9 @@
         <div class="container">
             <button data-toggle="modal" href="#nouvelUtilisateur" class="btn btn-success" id="btnNouvelUtilisateur"><span class="glyphicon glyphicon-plus"></span> Ajouter utilisateur</button>
             <br/><br/>
+            <div class="help-block pull-right">
+                Vous ne pouvez supprimer que les utilisateurs inactifs (un utilisateur devient actif lors de sa première connexion)
+            </div>
             <table id="listeUtilisateurs" class="tablesorter table table-striped table-hover"> 
                 <thead> 
                 <tr> 
@@ -90,7 +93,14 @@
                                 <td><?php echo $user->fonction->niveau->libelle ?></td>
                                 <td>
                                     <a data-toggle="modal" href="#modificationsUtilisateur" class="modifierUser"><span class="glyphicon glyphicon-edit"></span></a>
-                                    <a href="#" class="supprimerUser"><span class="glyphicon glyphicon-remove-sign"></span></a>
+                                    <?php
+                                    if(!$user->actif)
+                                    {
+                                        ?>
+                                        <a href="#" class="supprimerUser"><span class="glyphicon glyphicon-remove-sign"></span></a>
+                                        <?php
+                                    }
+                                    ?>
                                 </td>
                             </tr>
                             <?php

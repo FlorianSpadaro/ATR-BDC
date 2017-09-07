@@ -5,6 +5,31 @@ $(function(){
         e.preventDefault();
     });
     
+    $(".supprimerUser").click(function(e){
+        e.preventDefault();
+        var id = $(this).closest("tr").attr("id").split("-")[1];
+        $.post("API/getUtilisateurById.php", {user_id: id}, function(data2){
+            var user = JSON.parse(data2);
+            if(user != null)
+                {
+                    var repUser = confirm("Voulez-vous vraiment supprimer l'utilisateur " + user.nom.toUpperCase() + " " + user.prenom.charAt(0).toUpperCase() + user.prenom.slice(1).toLocaleLowerCase() + " ?");
+                    if(repUser)
+                        {
+                            $.post("API/removeUtilisateurById.php", {utilisateur_id: id}, function(data){
+                                var reponse = JSON.parse(data);
+                                if(reponse)
+                                    {
+                                        document.location.href = "listeUtilisateurs.php";
+                                    }
+                                else{
+                                    alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                                }
+                            });
+                        }
+                }
+        });
+    });
+    
     $(".modifierUser").click(function(){
         var id = $(this).closest("tr").attr("id").split("-")[1];
         $("#idUtilisateurModif").val(id);
@@ -246,7 +271,7 @@ $(function(){
             
             $.post("API/addUtilisateur.php", {nom: nom, prenom: prenom, email: email, fonction_id: idFonction}, function(data){
                 var idUser = JSON.parse(data);
-                if(id != null)
+                if(idUser != null)
                     {
                         if($("#nouvellePhotoUtilisateurNew").val() != "")
                             {

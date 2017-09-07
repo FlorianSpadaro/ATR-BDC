@@ -1,4 +1,23 @@
 <?php
+	function removeUtilisateurById($id)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM connexion WHERE utilisateur_id = ?");
+			$reponse = $req->execute(array($id));
+			if($reponse)
+			{
+				$req2 = $bdd->prepare("DELETE FROM utilisateur WHERE id = ?");
+				$reponse = $req2->execute(array($id));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function motDePasseAleatoire($nbr) 
 	{
 		$str = "";
@@ -23,9 +42,12 @@
 		if($data = $req->fetch())
 		{
 			$id = $data["id"];
-			$login = strtolower($prenom).".".strtoupper($nom);
+			$login = strtolower($prenom).".".strtolower($nom);
 			$mdp = json_decode(motDePasseAleatoire(10));
 			mail($email, "Création de compte", "Bonjour,\n\nPour accéder à votre compte, merci d'utiliser ces identifiants:\n\nLogin: ".$login."\nMot de passe: ".$mdp."\n\nIl est conseillé de changer rapidement ce mot de passe en cliquant sur \"Mon Compte\" (tout en haut à gauche), puis \"Informations Personnelles\", et enfin cliquer sur \"Modifier mot de passe\"\n\nCeci est un mail automatique, merci de ne pas y répondre. ");
+			$mdpHasher = json_decode(hashage($mdp));
+			$req2 = $bdd->prepare("INSERT INTO connexion(login, mdp, utilisateur_id) VALUES(?, ?, ?)");
+			$req2->execute(array($login, $mdpHasher, $id));
 		}
 		return json_encode($id);
 	}
@@ -1959,6 +1981,7 @@
 			$user["email"] = $data["email"];
 			$user["fonction"] = json_decode(getFonctionById($data["fonction_id"]));
 			$user["photo"] = $data["photo"];
+			$user["actif"] = $data["actif"];
 		}
 		
 		return json_encode($user);
@@ -1983,6 +2006,11 @@
 		if($data = $req->fetch())
 		{
 			$user = json_decode(getUtilisateurById($data["utilisateur_id"]));
+			if($user->actif == false)
+			{
+				$req2 = $bdd->prepare("UPDATE utilisateur SET actif = TRUE WHERE id = ?");
+				$req2->execute(array($user->id));
+			}
 		}
 		
 		return json_encode($user);
