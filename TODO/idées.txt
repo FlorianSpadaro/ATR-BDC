@@ -1,2 +1,0 @@
-Envoyer des messages aux autres utilisateurs
-Recevoir des notifications

@@ -36,7 +36,7 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
         <style>
-            #divAjouterFonctionModif, #divAjouterFonctionNew{
+            #divAjouterFonctionModif, #divAjouterFonctionNew, #attenteReinitialiserMdp{
                 display: none;
             }
             #erreurLibelleNouvelleFonctionModif, .erreurModifUser, #erreurLibelleNouvelleFonctionNew, .erreurNewUser{
@@ -119,6 +119,9 @@
                 <h4 class="modal-title">Modifier utilisateur</h4>
               </div>
               <div class="modal-body">
+                  <button class="btn btn-info" id="reinitialiserMdpUser"><span class="glyphicon glyphicon-wrench"></span> Réinitialiser mot de passe</button>
+                  <img id="attenteReinitialiserMdp" src="img/wait.gif" />
+                  <hr>
                 <form>
                     <input type="hidden" name="idUtilisateurModif" id="idUtilisateurModif" />
                     <div>

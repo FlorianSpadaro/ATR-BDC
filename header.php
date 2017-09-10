@@ -51,6 +51,9 @@
             #totalNotif{
                 display: none;
             }
+            .newDomaine{
+                background-color: burlywood;
+            }
         </style>
 
     </head>
@@ -63,6 +66,7 @@
             <div class="modal fade" id="infos<?php echo $_SESSION["user_id"] ?>">
                 <div class="modal-dialog">
                     <div class="modal-content">
+                        
                     </div>
                 </div>
             </div>
@@ -71,6 +75,35 @@
         }
         ?>
         <div>
+        </div>
+        <div class="modal" id="divNouveauDomaine">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h4 class="modal-title">Nouveau domaine</h4>
+              </div>
+              <div class="modal-body">
+                <form>
+                    <input type="hidden" name="idSecteurNewDomaine" id="idSecteurNewDomaine"  />
+                    <div class="form-group">
+                        <label>Libellé</label>
+                        <input type="text" class="form-control" name="libelleNewDomaine" id="libelleNewDomaine" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Description (facultatif)</label>
+                        <input type="text" class="form-control" name="descriptionNewDomaine" id="descriptionNewDomaine" />
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                  <div class="btn-group">
+                      <button class="btn btn-danger" id="btnAnnulerNewDomaine" data-dismiss="modal">Annuler</button>
+                      <button class="btn btn-info" id="btnValiderNewDomaine" data-dismiss="modal">Valider</button>
+                  </div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div class="modal fade" id="connexion">
@@ -195,6 +228,14 @@
                                             </li>
                                             <?php
                                         }
+                                        if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                                            {
+                                                ?>
+                                                <li class="newDomaine" id="newDomaineSecteur-<?php echo $secteur->id ?>">
+                                                    <a data-toggle="modal" href="#divNouveauDomaine" tabindex="-1"><span class="glyphicon glyphicon-plus"></span> Ajouter domaine</a>
+                                                </li>
+                                                <?php
+                                            }
                                     }
                                     ?>
                                 </ul>

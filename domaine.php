@@ -2,6 +2,7 @@
     include("header.php");
     $domaine = json_decode(getDomaineById($_GET["id"]));
     $sousDomaines = json_decode(getProjetsBySousDomaineByDomaineId($_GET["id"]));
+    $contrats = json_decode(getContrats());
 ?>
     <!DOCTYPE html>
     <html>
@@ -36,7 +37,11 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+        <style>
+            #suppressionDomaine{
+                color: red;
+            }
+        </style>
     </head>
 
     <body>
@@ -60,12 +65,83 @@
                                 }
                                 ?>
                             </span>
+                            <?php
+                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                            {
+                                ?>
+                                <div class="btn-group">
+                                    <button class="btn btn-link">Modifier ce domaine</button>
+                                    <button class="btn btn-link" id="suppressionDomaine">Supprimer ce domaine</button>
+                                </div>
+                                <?php
+                            }
+                            ?>
                         </div>
 
                     </div>
                 </div>
             </div>
         </header>
+        
+        <div class="modal" id="divNouveauProjet">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h4 class="modal-title">Nouveau Projet</h4>
+              </div>
+              <div class="modal-body">
+                <form id="formNouveauProjet">
+                    <input type="hidden" id="utilisateur_id" name="utilisateur_id" value="<?php echo $_SESSION["user_id"] ?>" />
+                    <input type="hidden" id="sous_domaine_id" name="sous_domaine_id" />
+                    <div class="form-group">
+                        <label>Image d'entête (facultatif)</label>
+                        <input type="file" name="imageEntete" id="imageEntete"/>
+                        <div class="help-block">Il est conseillé de choisir une image de haute résolution</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input id="titreProjet" name="titreProjet" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Description (facultatif)</label>
+                        <input id="descriptionProjet" name="descriptionProjet" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Contrat</label>
+                        <select class="form-control" id="contratProjet" name="contratProjet" required>
+                            <option value="0">Aucun</option>
+                            <?php
+                            if($contrats != null)
+                            {
+                                foreach($contrats as $contrat)
+                                {
+                                    ?>
+                                    <option value="<?php echo $contrat->id ?>"><?php echo $contrat->libelle ?></option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Contenu (au format html ou htm)</label>
+                        <input type="file" name="contenuProjet" id="contenuProjet" required/>
+                        <div class="help-block">Pour créer un fichier au format htm ou html, créer un fichier sur Word, puis lorsque vous l'enregistrez en cliquant sur "Enregistrer sous", choisir comme type (en dessous du nom du fichier) "Page web (*.htm;*.html)"</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Pièces jointes</label>
+                        <input type="file" name="pjProjet" id="pjProjet" multiple />
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button id="btnValiderNewProjet" class="btn btn-success">Valider</button>
+                <button class="btn btn-info" data-dismiss="modal">Fermer</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
             <div class="container">
               <div id="monaccordeon" class="panel-group">
@@ -111,9 +187,19 @@
                                     <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?></a>
                                     <?php
                                 }
+                                ?>
+                                </div>
+                                <?php
                             }
                             ?>
-                            </div>
+                            <?php
+                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                            {
+                                ?>
+                                <button id="nouveauProjetSD-<?php echo $sd->id ?>" data-toggle="modal" href="#divNouveauProjet" class="btn btn-success pull-right newProjet"><span class="glyphicon glyphicon-plus"></span> Nouveau projet</button>
+                                <?php
+                            }
+                            ?>
                         </div>
                       </div>
                     </div>

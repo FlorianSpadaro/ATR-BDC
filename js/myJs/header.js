@@ -47,4 +47,45 @@ $(function () {
         e.stopPropagation();
         e.preventDefault();
     });
+    
+    $(".newDomaine").click(function(){
+        var idSecteur = $(this).attr("id").split("-")[1];
+        $("#idSecteurNewDomaine").val(idSecteur);
+    });
+    
+    $("#btnAnnulerNewDomaine").click(function(){
+        $("#libelleNewDomaine").val("");
+        $("#idSecteurNewDomaine").val("");
+        $("#descriptionNewDomaine").val("");
+    });
+    
+    $("#btnValiderNewDomaine").click(function(e){
+        e.preventDefault();
+        if($("#libelleNewDomaine").val() == "")
+            {
+                alert("Veuillez choisir un libellé");
+            }
+        else{
+            var libelle = $("#libelleNewDomaine").val();
+            var idSecteur = $("#idSecteurNewDomaine").val();
+            var idUser = $("#user_id").val();
+            if($("#descriptionNewDomaine").val() == "")
+                {
+                    var description = null;
+                }
+            else{
+                var description = $("#descriptionNewDomaine").val();
+            }
+            $.post("API/addDomaine.php", {libelle: libelle, utilisateur_id: idUser, description: description, secteur_id: idSecteur}, function(data){
+                var reponse = JSON.parse(data);
+                if(reponse){
+                    window.location.reload();
+                }
+                else{
+                    alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                }
+            });
+        }
+    });
+    
 });

@@ -1,6 +1,32 @@
 $(function(){
     $("#listeUtilisateurs").tablesorter();
     
+    $("#reinitialiserMdpUser").click(function(){
+        var repUser = confirm("Voulez-vous vraiment réinitialiser le mot de passe de cet utilisateur?\nUn nouveau mot de passe sera alors créé aléatoirement et envoyé par mail à l'utilisateur");
+        if(repUser)
+            {
+                $("#attenteReinitialiserMdp").show();
+                $("#reinitialiserMdpUser").prop("disabled", true);
+                
+                $.post("API/motDePasseAleatoire.php", {nb_caracteres: 10}, function(data){
+                    var mdp = JSON.parse(data);
+                    $.post("API/modifierMdpByUtilisateurId.php", {utilisateur_id: $("#idUtilisateurModif").val(), mdp: mdp}, function(data2){
+                        console.log(data2);
+                        var reponse = JSON.parse(data2);
+                        if(reponse)
+                            {
+                                alert("Mot de passe réinitialisé");
+                                $("#attenteReinitialiserMdp").hide();
+                                $("#reinitialiserMdpUser").prop("disabled", false);
+                            }
+                        else{
+                            alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                        }
+                    });
+                });
+            }
+    });
+    
     $(".titreTab").click(function(e){
         e.preventDefault();
     });

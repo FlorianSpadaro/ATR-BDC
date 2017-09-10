@@ -42,19 +42,24 @@
             #piecesJointes {
                 text-align: center;
             }
+            #supprimerProjet{
+                color: red;
+            }
 
         </style>
 
     </head>
     
     <body>
+        <input type="hidden" name="projet_id" id="projet_id" value="<?php echo $_GET["id"] ?>" />
+        
         <div class="modal fade" id="infos">
             <div class="modal-dialog">  
               <div class="modal-content"></div>  
             </div> 
           </div>
         
-         <header class="intro-header" style="background-image: url('img/Full-HD-Wallpapers-5A9.jpg')">
+         <header class="intro-header" style="background-image: url('<?php echo $projet->image_entete ?>')">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -71,6 +76,7 @@
                             <span class="meta">
                                 Projet (<?php echo $parents->secteur->libelle ?> <span class="glyphicon glyphicon-triangle-right"></span> <?php echo $parents->domaine->libelle ?> <span class="glyphicon glyphicon-triangle-right"></span> <?php echo $parents->sousDomaine->libelle ?>)
                             </span>
+                            <button id="supprimerProjet" class="btn btn-link">Supprimer projet</button>
                         </div>
                     </div>
                 </div>
@@ -81,6 +87,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                        <?php /*include($projet->contenu)*/ ?>
                         <?php echo $projet->contenu ?>
                     </div>
                 </div>
@@ -148,7 +155,7 @@
                                     else if(in_array($extension_upload, $image))
                                     {
                                         ?>
-                                                    <img src="<?php echo $pj->libelle ?>" width="50" height="50" class="imgPj" />
+                                                    <img src="<?php echo $pj->url ?>" width="50" height="50" class="imgPj" />
                                                     <br/>
                                                     <?php
                                         echo $pj->libelle;
@@ -175,6 +182,8 @@
                     ?>
         </footer>
         <?php include("footer.php") ?>
+        
+        <script src="js/myJs/projet.js"></script>
 
     </body>
 </html>

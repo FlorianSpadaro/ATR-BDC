@@ -1,4 +1,134 @@
 <?php
+
+	function removeProjetById($id)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT piece_jointe_id FROM projet_pj WHERE projet_id = ?");
+			$req->execute(array($id));
+			while($data = $req->fetch())
+			{
+				$req2 = $bdd->prepare("SELECT url FROM piece_jointe WHERE id = ?");
+				$req2->execute(array($data["piece_jointe_id"]));
+				if($data2 = $req2->fetch())
+				{
+					unlink("../".$data2["url"]);
+				}
+				$req3 = $bdd->prepare("DELETE FROM projet_pj WHERE piece_jointe_id = ?");
+				$req3->execute(array($data["piece_jointe_id"]));
+				$req2 = $bdd->prepare("DELETE FROM piece_jointe WHERE id = ?");
+				$req2->execute(array($data["piece_jointe_id"]));
+			}
+			
+			$req = $bdd->prepare("DELETE FROM projet WHERE id = ?");
+			$reponse = $req->execute(array($id));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function modifierImageEnteteProjet($idProjet, $url)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE projet SET image_entete = ? WHERE id = ?");
+			$reponse = $req->execute(array($url, $idProjet));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		json_encode($reponse);
+	}
+
+	function modifierContenuProjet($idProjet, $url)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE projet SET contenu = ? WHERE id = ?");
+			$reponse = $req->execute(array($url, $idProjet));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addPjProjet($libelle, $idProjet, $url)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO piece_jointe(libelle, url) VALUES(?, ?) RETURNING id");
+			$req->execute(array($libelle, $url));
+			if($data = $req->fetch())
+			{
+				$req2 = $bdd->prepare("INSERT INTO projet_pj(projet_id, piece_jointe_id) VALUES(?, ?)");
+				$reponse = $req2->execute(array($idProjet, $data["id"]));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addProjet($titre, $description, $idSousDomaine, $idContrat, $idUser)
+	{
+		include("connexionBdd.php");
+		
+		$id = null;
+			if($description == null && $idContrat == null)
+			{
+				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id) VALUES(?, NOW(), NOW(), ?, ?) RETURNING id");
+				$req->execute(array($titre, $idSousDomaine, $idUser));
+			}
+			else if($idContrat == null)
+			{
+				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id, description) VALUES(?, NOW(), NOW(), ?, ?, ?) RETURNING id");
+				$req->execute(array($titre, $idSousDomaine, $idUser, $description));
+			}
+			else if($description == null)
+			{
+				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id, contrat_id) VALUES(?, NOW(), NOW(), ?, ?, ?) RETURNING id");
+				$req->execute(array($titre, $idSousDomaine, $idUser, $idContrat));
+			}
+			else{
+				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id, description, contrat_id) VALUES(?, NOW(), NOW(), ?, ?, ?, ?) RETURNING id");
+				$req->execute(array($titre, $idSousDomaine, $idUser, $description, $idContrat));
+			}
+			if($data = $req->fetch())
+			{
+				$id = $data["id"];
+			}
+		return json_encode($id);
+	}
+
+	function addDomaine($libelle, $idSecteur, $idUser, $description)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			if($description != null)
+			{
+				$req = $bdd->prepare("INSERT INTO domaine(libelle, secteur_id, utilisateur_id, description) VALUES(?, ?, ?, ?)");
+				$reponse = $req->execute(array($libelle, $idSecteur, $idUser, $description));
+			}
+			else{
+				$req = $bdd->prepare("INSERT INTO domaine(libelle, secteur_id, utilisateur_id) VALUES(?, ?, ?)");
+				$reponse = $req->execute(array($libelle, $idSecteur, $idUser));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function removeUtilisateurById($id)
 	{
 		include("connexionBdd.php");
@@ -1244,14 +1374,34 @@
 		return json_encode($tab);
 	}
 
-	function modifierMdpByUtilisateurId($idUser, $mdp)
+	function modifierMdpByUtilisateurId($idUser, $motDePasse)
 	{
 		include("connexionBdd.php");
 		
-		$mdp = json_decode(hashage($mdp));
+		$reponse = false;
+		
+		$mdp = json_decode(hashage($motDePasse));
 		try{
-			$req = $bdd->prepare("UPDATE connexion SET mdp = ? WHERE utilisateur_id = ?");
-			$reponse = $req->execute(array($mdp, $idUser));
+			$req3 = $bdd->prepare("SELECT email FROM utilisateur WHERE id = ?");
+			$req3->execute(array($idUser));
+			if($data3 = $req3->fetch())
+			{
+				$email = $data3["email"];
+				
+				$req2 = $bdd->prepare("SELECT login FROM connexion WHERE utilisateur_id = ?");
+				$req2->execute(array($idUser));
+				if($data2 = $req2->fetch())
+				{
+					$login = $data2["login"];
+					$req = $bdd->prepare("UPDATE connexion SET mdp = ? WHERE utilisateur_id = ?");
+					$reponse = $req->execute(array($mdp, $idUser));
+					if($reponse)
+					{
+						mail($email, "Modification de mot de passe", "Bonjour,\n\nPour accéder à votre compte, merci d'utiliser ces identifiants:\n\nLogin: ".$login."\nMot de passe: ".$motDePasse."\n\nIl est conseillé de changer rapidement ce mot de passe en cliquant sur \"Mon Compte\" (tout en haut à gauche), puis \"Informations Personnelles\", et enfin cliquer sur \"Modifier mot de passe\"\n\nCeci est un mail automatique, merci de ne pas y répondre. ");
+					}
+				}
+			}
+			
 		}catch(Exception $e){
 			$reponse = false;
 		}
@@ -1846,6 +1996,7 @@
 			$projet["sous_domaine"] = json_decode(getSousDomaineById($data["sous_domaine_id"]));
 			$projet["contrat"] = json_decode(getContratById($data["contrat_id"]));
 			$projet["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
+			$projet["image_entete"] = $data["image_entete"];
 		}
 		
 		return json_encode($projet);

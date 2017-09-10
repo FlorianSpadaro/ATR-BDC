@@ -1,4 +1,7 @@
 $(function(){
+    $('#summernote').summernote();
+    
+    
     $("#inputRechercheProjet").on("keydown", function(e){
         if(e.keyCode == 13)
             {

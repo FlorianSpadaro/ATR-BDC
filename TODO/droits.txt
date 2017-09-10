@@ -1,2 +1,0 @@
-Administrateurs:
-	- actualite.php : modifier et supprimer l'actualité

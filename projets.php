@@ -55,6 +55,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+        <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
         <style>
             .panel-footer{
                 text-align: right;
@@ -99,6 +100,7 @@
         </header>
         
         <div class="container">
+            
             <h3>
                 <button id="btnFiltres" class="btn btn-info">Filtres <span class="glyphicon glyphicon-filter"></span></button>
                 <form href="projets.php" method="post" class="form-horizontal" id="rechercheProjet">
@@ -316,6 +318,7 @@
         <!--  Footer -->
 
         <?php include("footer.php"); ?>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
         <script src="js/myJs/projets.js"></script>
         
         
