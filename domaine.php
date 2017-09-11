@@ -3,6 +3,7 @@
     $domaine = json_decode(getDomaineById($_GET["id"]));
     $sousDomaines = json_decode(getProjetsBySousDomaineByDomaineId($_GET["id"]));
     $contrats = json_decode(getContrats());
+    $secteurs = json_decode(getSecteurs());
 ?>
     <!DOCTYPE html>
     <html>
@@ -45,6 +46,9 @@
     </head>
 
     <body>
+        
+        <input type="hidden" id="idDomaine" name="idDomaine" value="<?php echo $_GET["id"] ?>" />
+        
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
             <div class="container">
                 <div class="row">
@@ -69,8 +73,9 @@
                             if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
                             {
                                 ?>
+                                <br/>
                                 <div class="btn-group">
-                                    <button class="btn btn-link">Modifier ce domaine</button>
+                                    <button data-toggle="modal" href="#divModifierDomaine" class="btn btn-link" id="modificationDomaine">Modifier ce domaine</button>
                                     <button class="btn btn-link" id="suppressionDomaine">Supprimer ce domaine</button>
                                 </div>
                                 <?php
@@ -82,6 +87,80 @@
                 </div>
             </div>
         </header>
+
+        <div class="modal" id="divNouveauSousDomaine">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h4 class="modal-title">Nouveau Sous-Domaine</h4>
+              </div>
+              <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Libelle</label>
+                        <input type="text" name="libelleSousDomaineNew" id="libelleSousDomaineNew" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Description (facultatif)</label>
+                        <input type="text" name="domaineSousDomaineNew" id="domaineSousDomaineNew" class="form-control" />
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                  <div class="btn-group">
+                      <button class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                      <button id="btnValiderNewSousDomaine" class="btn btn-info">Valider</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal" id="divModifierDomaine">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h4 class="modal-title">Modifier Domaine</h4>
+              </div>
+              <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Libellé</label>
+                        <input type="text" class="form-control" name="libelleModifDomaine" id="libelleModifDomaine" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Description (facultatif)</label>
+                        <input type="text" class="form-control" name="descriptionModifDomaine" id="descriptionModifDomaine" />
+                    </div>
+                    <div class="form-group">
+                        <label>Secteur</label>
+                        <select id="secteurModifDomaine" name="secteurModifDomaine" class="form-control">
+                            <?php
+                            if($secteurs != null)
+                            {
+                                foreach($secteurs as $secteur)
+                                {
+                                    ?>
+                                    <option value="<?php echo $secteur->id ?>"><?php echo $secteur->libelle ?></option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                  <div class="btn-group">
+                      <button class="btn btn-danger" id="btnAnnulerModifDomaine" data-dismiss="modal">Annuler</button>
+                      <button class="btn btn-info" id="btnValiderModifDomaine">Valider</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
         
         <div class="modal" id="divNouveauProjet">
           <div class="modal-dialog modal-lg">
@@ -144,6 +223,11 @@
         </div>
 
             <div class="container">
+                
+                <div>
+                    <button data-toggle="modal" href="#divNouveauSousDomaine" id="btnNouveauSousDomaine" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Ajouter sous-domaine</button>
+                </div>
+                
               <div id="monaccordeon" class="panel-group">
                 <h3>Sous-domaines</h3>
                   <?php

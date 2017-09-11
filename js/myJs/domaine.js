@@ -2,6 +2,82 @@ $(function (){
    $('a').tooltip({ trigger: "hover" });
     $(".click").click();
     
+    $("#btnValiderNewSousDomaine").click(function(){
+        var libelle = $("#libelleSousDomaineNew").val();
+        var description = $("#domaineSousDomaineNew").val();
+        if(description == "")
+            {
+                description = null;
+            }
+        var idDomaine = $("#idDomaine").val();
+        var idUser = $("#user_id").val();
+        if(libelle == "")
+            {
+                alert("Veuillez saisir un libellé");
+            }
+        else{
+            $.post("API/addSousDomaine.php", {domaine_id: idDomaine, libelle, libelle, description: description, utilisateur_id: idUser}, function(data){
+                var reponse = JSON.parse(data);
+                if(reponse)
+                    {
+                        window.location.reload();
+                    }
+                else{
+                    alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                }
+            });
+        }
+    });
+    
+    $("#btnNouveauSousDomaine").click(function(){
+        $("#libelleSousDomaineNew").val("");
+        $("#domaineSousDomaineNew").val("");
+    });
+    
+    $("#btnValiderModifDomaine").click(function(e){
+        e.preventDefault();
+        if($("#libelleModifDomaine").val() == "")
+            {
+                alert("Veuilez saisir un libellé");
+            }
+        else{
+            var idDomaine = $("#idDomaine").val();
+            var libelle = $("#libelleModifDomaine").val();
+            var idSecteur = $("#secteurModifDomaine").val();
+            var description = $("#descriptionModifDomaine").val();
+            if(description == "")
+                {
+                    description = null;
+                }
+            
+            $.post("API/modifierDomaineById.php", {domaine_id: idDomaine, libelle: libelle, secteur_id: idSecteur, description: description}, function(data){
+                var reponse = JSON.parse(data);
+                if(reponse)
+                    {
+                        window.location.reload();
+                    }
+                else{
+                    alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                }
+            });
+        }
+    });
+    
+    $("#modificationDomaine").click(function(){
+        $("#descriptionModifDomaine").val("");
+        var idDomaine = $("#idDomaine").val();
+        $.post("API/getDomaineById.php", {domaine_id: idDomaine}, function(data){
+            var domaine = JSON.parse(data);
+        
+            $("#libelleModifDomaine").val(domaine.libelle);
+            if(domaine.description != null)
+                {
+                    $("#descriptionModifDomaine").val(domaine.description);
+                }
+            $("#secteurModifDomaine").val(domaine.secteur.id);
+        });
+    });
+    
     $("#suppressionDomaine").click(function(e){
         e.preventDefault();
         var repUser = confirm("Voulez-vous vraiment supprimer ce domaine? Cela supprimera également tous les projets et sous-domaines qui lui sont liés");

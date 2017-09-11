@@ -1,4 +1,60 @@
 <?php
+	function addSousDomaine($idDomaine, $libelle, $description, $idUser)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			if($description != null)
+			{
+				$req = $bdd->prepare("INSERT INTO sous_domaine(domaine_id, libelle, description, utilisateur_id) VALUES(?, ?, ?, ?)");
+				$reponse = $req->execute(array($idDomaine, $libelle, $description, $idUser));
+			}
+			else{
+				$req = $bdd->prepare("INSERT INTO sous_domaine(domaine_id, libelle, description, utilisateur_id) VALUES(?, ?, NULL, ?)");
+				$reponse = $req->execute(array($idDomaine, $libelle, $idUser));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function modifierDomaineById($idDomaine, $libelle, $secteur_id, $description)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			if($description != null)
+			{
+				$req = $bdd->prepare("UPDATE domaine SET libelle = ?, secteur_id = ?, description = ? WHERE id = ?");
+				$reponse = $req->execute(array($libelle, $secteur_id, $description, $idDomaine));
+			}
+			else{
+				$req = $bdd->prepare("UPDATE domaine SET libelle = ?, secteur_id = ?, description = NULL WHERE id = ?");
+				$reponse = $req->execute(array($libelle, $secteur_id, $idDomaine));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function getSecteurs()
+	{
+		include("connexionBdd.php");
+		
+		$secteurs = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM secteur");
+		while($data = $req->fetch())
+		{
+			$secteurs[$i] = json_decode(getSecteurById($data["id"]));
+			$i++;
+		}
+		return json_encode($secteurs);
+	}
 
 	function removeProjetById($id)
 	{
