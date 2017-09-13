@@ -4,3 +4,4 @@
 - créer, modifier et supprimer actualité
 - recherche actualites
 - gestion notifications
+* Problème enregistrement Actu/Nouveau contrat

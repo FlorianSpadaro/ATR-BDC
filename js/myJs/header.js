@@ -1,4 +1,11 @@
 $(function () {
+
+    
+    $(".contratSelectHeader").click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+    });
+    
     var userId = document.getElementById("user_id").value;
     $.post("API/getNbMessagesNonLuByUtilisateurId.php", {utilisateur_id: userId}, function(data){
         var nbNonLu = parseInt(JSON.parse(data));
