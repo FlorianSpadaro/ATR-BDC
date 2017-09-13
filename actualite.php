@@ -44,12 +44,18 @@
             #piecesJointes {
                 text-align: center;
             }
-
+            
+            #btnSupprimerActu{
+                color: red;
+            }
         </style>
 
     </head>
 
     <body>
+        
+        <input type="hidden" id="idActu" name="idActu" value="<?php echo $_GET["id"] ?>" />
+        
         <div class="modal fade" id="infos">
             <div class="modal-dialog">  
               <div class="modal-content"></div>  
@@ -75,8 +81,8 @@
                             }
                             ?>
                             <br/>
-                            <b>Catégorie: </b><?php
-                            if($actualite->secteur != null)
+                            <!--<b>Catégorie: </b><?php
+                            /*if($actualite->secteur != null)
                             {
                                 echo $actualite->secteur->libelle;
                             }
@@ -94,16 +100,20 @@
                                 echo "Aucun";
                             }
                             if($actualite->contrat != null)
-                            {
+                            {*/
                                 ?>
                                 <br/>
                                 <div>
-                                        <b>Contrat: </b><?php echo $actualite->contrat->libelle ?> <img src="<?php echo $actualite->contrat->miniature->url ?>" alt="<?php echo $actualite->contrat->libelle ?>" width="50" height="50" />
+                                        <b>Contrat: </b><?php/* echo $actualite->contrat->libelle*/ ?> <img src="<?php /*echo $actualite->contrat->miniature->url*/ ?>" alt="<?php /*echo $actualite->contrat->libelle*/ ?>" width="50" height="50" />
                                 </div>
                                 <?php
-                            }
-                            ?>
+                            //}
+                            ?>-->
                         </span>
+                        <div class="btn-group">
+                            <a href="modifierActualite.php?id=<?php echo $_GET["id"] ?>"><button class="btn btn-link">Modifier actualite</button></a>
+                            <button id="btnSupprimerActu" class="btn btn-link pull-right">Supprimer actualite</button>
+                        </div>
                         </div>
                     </div>
                 </div>

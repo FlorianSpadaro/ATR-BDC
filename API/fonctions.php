@@ -1,4 +1,133 @@
 <?php
+	function actualiserPiecesJointesActualite($idActu, $idsPj)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM actualite_pj WHERE actualite_id = ?");
+			$req->execute(array($idActu));
+			for($i = 0; $i < sizeof($idsPj); $i++)
+			{
+				if($i == 0 || $reponse == true)
+				{
+					$req2 = $bdd->prepare("INSERT INTO actualite_pj(actualite_id, piece_jointe_id) VALUES(?, ?)");
+					$reponse = $req2->execute(array($idActu, $idsPj[$i]));
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function removeImageEnteteActualite($idActu)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT image_entete FROM actualite WHERE id = ?");
+			$req->execute(array($idActu));
+			if($data = $req->fetch())
+			{
+				$reponse = unlink("../".$data["image_entete"]);
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function modifierActualiteById($idActu, $titre, $contenu, $description)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE actualite SET titre = ?, contenu = ?, description = ?, date_derniere_maj = NOW() WHERE id = ?");
+			$reponse = $req->execute(array($titre, $contenu, $description, $idActu));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function removePieceJointeActualite($idPj, $idActu)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT url FROM piece_jointe WHERE id = ?");
+			$req->execute(array($idPj));
+			if($data = $req->fetch())
+			{
+				$efface = unlink("../".$data["url"]);
+				if($efface)
+				{
+					$req2 = $bdd->prepare("DELETE FROM actualite_pj WHERE piece_jointe_id = ? AND actualite_id = ?");
+					$rep = $req2->execute(array($idPj, $idActu));
+					if($rep)
+					{
+						$req3 = $bdd->prepare("DELETE FROM piece_jointe WHERE id = ?");
+						$reponse = $req3->execute(array($idPj));
+					}
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function removeActualiteById($idActu)
+	{
+		include("connexionBdd.php");
+		
+		$rep = false;
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT piece_jointe_id FROM actualite_pj WHERE actualite_id = ?");
+			$req->execute(array($idActu));
+			while($data = $req->fetch())
+			{
+				$req2 = $bdd->prepare("SELECT url FROM piece_jointe WHERE id = ?");
+				$req2->execute(array($data["piece_jointe_id"]));
+				if($data2 = $req2->fetch())
+				{
+					$effacement = unlink("../".$data2["url"]);
+					if($effacement)
+					{
+						$req3 = $bdd->prepare("DELETE FROM actualite_pj WHERE actualite_id = ? AND piece_jointe_id = ?");
+						$req3->execute(array($idActu, $data["piece_jointe_id"]));
+						
+						$req3 = $bdd->prepare("DELETE FROM piece_jointe WHERE id = ?");
+						$rep = $req3->execute(array($data["piece_jointe_id"]));
+					}
+				}
+			}
+			
+			if($rep)
+			{
+				$req4 = $bdd->prepare("SELECT image_entete FROM actualite WHERE id = ?");
+				$req4->execute(array($idActu));
+				if($data4 = $req4->fetch())
+				{
+					if($data4 != "img/imageEnteteProjetDefault.jpg")
+					{
+						unlink("../".$data4["image_entete"]);
+					}
+					$req5 = $bdd->prepare("DELETE FROM actualite WHERE id = ?");
+					$reponse = $req5->execute(array($idActu));
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function modifierImageEnteteActualite($idActu, $url)
 	{
 		include("connexionBdd.php");

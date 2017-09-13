@@ -80,13 +80,7 @@
                 <button class="btn btn-link" id="btnReinitialiser">Réinitialiser</button>
                 <button class="btn btn-default" id="validerNouvelleActu">Valider</button>
             </div>
-            
-            <?php
-            if(isset($_FILES["file"]))
-            {
-                echo "OK";
-            }
-            ?>
+
         </div>
         
         
