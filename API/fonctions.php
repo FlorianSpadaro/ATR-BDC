@@ -1,4 +1,96 @@
 <?php
+	function modifierImageEnteteActualite($idActu, $url)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE actualite SET image_entete = ? WHERE id = ?");
+			$reponse = $req->execute(array($url, $idActu));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addPjActualite($libelle, $url, $idActu)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO piece_jointe(libelle, url) VALUES(?, ?) RETURNING id");
+			$req->execute(array($libelle, $url));
+			if($data = $req->fetch())
+			{
+				$req2 = $bdd->prepare("INSERT INTO actualite_pj(actualite_id, piece_jointe_id) VALUES(?, ?)");
+				$reponse = $req2->execute(array($idActu, $data["id"]));
+			}
+			
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addActualite($titre, $contenu, $idUser, $description)
+	{
+		include("connexionBdd.php");
+		
+		$id = null;
+		if($description != null)
+		{
+			$req = $bdd->prepare("INSERT INTO actualite(titre, contenu, utilisateur_id, description, date_creation, date_derniere_maj) VALUES(?, ?, ?, ?, NOW(), NOW()) RETURNING id");
+			$req->execute(array($titre, $contenu, $idUser, $description));
+			
+		}
+		else{
+			$req = $bdd->prepare("INSERT INTO actualite(titre, contenu, utilisateur_id, date_creation, date_derniere_maj) VALUES(?, ?, ?, NOW(), NOW()) RETURNING id");
+			$req->execute(array($titre, $contenu, $idUser));
+		}
+		if($data = $req->fetch())
+		{
+			$id = $data["id"];
+		}
+		return json_encode($id);
+	}
+
+	function modifierSousDomaineById($idSousDomaine, $libelle, $description, $idDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			if($description != null)
+			{
+				$req = $bdd->prepare("UPDATE sous_domaine SET libelle = ?, description = ?, domaine_id = ? WHERE id = ?");
+				$reponse = $req->execute(array($libelle, $description, $idDomaine, $idSousDomaine));
+			}
+			else{
+				$req = $bdd->prepare("UPDATE sous_domaine SET libelle = ?, description = NULL, domaine_id = ? WHERE id = ?");
+				$reponse = $req->execute(array($libelle, $idDomaine, $idSousDomaine));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function getDomaines()
+	{
+		include("connexionBdd.php");
+		
+		$domaines = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM domaine");
+		while($data = $req->fetch())
+		{
+			$domaines[$i] = json_decode(getDomaineById($data["id"]));
+			$i++;
+		}
+		return json_encode($domaines);
+	}
+
 	function addSousDomaine($idDomaine, $libelle, $description, $idUser)
 	{
 		include("connexionBdd.php");
@@ -1955,6 +2047,7 @@
 			$actualite["contrat"] = json_decode(getContratById($data["contrat_id"]));
 			$actualite["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
 			$actualite["description"] = $data["description"];
+			$actualite["image_entete"] = $data["image_entete"];
 			$actualite["pieces_jointes"] = json_decode(getPiecesJointesByActualiteId($data["id"]));
 		}
 		

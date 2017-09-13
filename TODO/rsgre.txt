@@ -1,0 +1,10 @@
+onglets du menu header.php: en haut du menu déroulant faire un select (avec les contrats)->filtre menu déroulant (utiliser plugin chosen)
+
+projets = rattachés à un sous domaine ou 1 à plusieurs domaines
+si le projet est rattaché à un domaine->c'est un générique
+
+On ne peut pas s'abonner à un contrat
+
+Actualite->simple article lié à aucun secteur/domaine/sd/projet/contrat
+
+Notification->envoi par mail aux utilisateurs

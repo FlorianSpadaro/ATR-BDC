@@ -58,7 +58,7 @@
 
         <!-- Page Header -->
         <!-- Set your background image for this header on the line below. -->
-        <header class="intro-header" style="background-image: url('img/Full-HD-Wallpapers-5A9.jpg')">
+        <header class="intro-header" style="background-image: url('<?php echo $actualite->image_entete ?>')">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -215,7 +215,7 @@
                                     else if(in_array($extension_upload, $image))
                                     {
                                         ?>
-                                                    <img src="<?php echo $pj->libelle ?>" width="50" height="50" class="imgPj" />
+                                                    <img src="<?php echo $pj->url ?>" width="50" height="50" class="imgPj" />
                                                     <br/>
                                                     <?php
                                         echo $pj->libelle;

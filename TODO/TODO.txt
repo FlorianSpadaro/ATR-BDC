@@ -1,5 +1,5 @@
 - supprimer domaines
-- modifier et supprimer sous-domaines
+- supprimer sous-domaines
 - créer (à améliorer), modifier et supprimer(supprimer contenu + image entete) projet
 - créer, modifier et supprimer actualité
 - recherche actualites

@@ -2,6 +2,50 @@ $(function (){
    $('a').tooltip({ trigger: "hover" });
     $(".click").click();
     
+    $("#btnValiderModifSousDomaine").click(function(e){
+        e.preventDefault();
+        if($("#libelleSousDomaineModif").val() == "")
+            {
+                alert("Veuillez saisir un libellé");
+            }
+        else{
+            var idSd = $("#idSousDomaine").val();
+            var libelle = $("#libelleSousDomaineModif").val();
+            var description = $("#descriptionSousDomaineModif").val();
+            var idDomaine = $("#domaineSousDomaineModif").val();
+            $.post("API/modifierSousDomaineById.php", {sous_domaine_id: idSd, libelle: libelle, domaine_id: idDomaine}, function(data){
+                console.log(data);
+                var reponse = JSON.parse(data);
+                if(reponse){
+                    window.location.reload();
+                }
+                else{
+                    alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                }
+            });
+        }
+    });
+    
+    $(".btnModifierSousDomaine").click(function(){
+        var idSd = $(this).attr("id").split("-")[1];
+        $("#idSousDomaine").val(idSd);
+        $.post("API/getSousDomaineById.php", {sous_domaine_id: idSd}, function(data){
+            var sd = JSON.parse(data);
+            if(sd != null)
+                {
+                    $("#libelleSousDomaineModif").val(sd.libelle);
+                    if(sd.description != null)
+                        {
+                            $("#descriptionSousDomaineModif").val(sd.description);
+                        }
+                    else{
+                        $("#descriptionSousDomaineModif").val("");
+                    }
+                    $("#domaineSousDomaineModif").val(sd.domaine.id);
+                }
+        });
+    });
+    
     $("#btnValiderNewSousDomaine").click(function(){
         var libelle = $("#libelleSousDomaineNew").val();
         var description = $("#domaineSousDomaineNew").val();

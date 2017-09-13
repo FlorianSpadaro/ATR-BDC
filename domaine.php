@@ -4,6 +4,7 @@
     $sousDomaines = json_decode(getProjetsBySousDomaineByDomaineId($_GET["id"]));
     $contrats = json_decode(getContrats());
     $secteurs = json_decode(getSecteurs());
+    $domaines = json_decode(getDomaines());
 ?>
     <!DOCTYPE html>
     <html>
@@ -87,6 +88,51 @@
                 </div>
             </div>
         </header>
+        
+        <div class="modal" id="divModifierSousDomaine">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h4 class="modal-title">Modifier Sous-Domaine</h4>
+              </div>
+              <div class="modal-body">
+                <form>
+                    <input type="hidden" name="idSousDomaine" id="idSousDomaine" />
+                    <div class="form-group">
+                        <label>Libelle</label>
+                        <input type="text" name="libelleSousDomaineModif" id="libelleSousDomaineModif" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Description (facultatif)</label>
+                        <input type="text" name="descriptionSousDomaineModif" id="descriptionSousDomaineModif" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <select id="domaineSousDomaineModif" name="domaineSousDomaineModif" class="form-control">
+                            <?php
+                            if($domaines != null)
+                            {
+                                foreach($domaines as $dom)
+                                {
+                                    ?>
+                                    <option value="<?php echo $dom->id ?>"><?php echo $dom->libelle ?></option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                  <div class="btn-group">
+                      <button class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                      <button id="btnValiderModifSousDomaine" class="btn btn-info">Valider</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="modal" id="divNouveauSousDomaine">
           <div class="modal-dialog">
@@ -223,10 +269,16 @@
         </div>
 
             <div class="container">
-                
-                <div>
-                    <button data-toggle="modal" href="#divNouveauSousDomaine" id="btnNouveauSousDomaine" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Ajouter sous-domaine</button>
-                </div>
+                <?php
+                if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                {
+                    ?>
+                    <div>
+                        <button data-toggle="modal" href="#divNouveauSousDomaine" id="btnNouveauSousDomaine" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Ajouter sous-domaine</button>
+                    </div>
+                    <?php
+                }
+                ?>
                 
               <div id="monaccordeon" class="panel-group">
                 <h3>Sous-domaines</h3>
@@ -260,6 +312,20 @@
                       <div id="sd<?php echo $sd->id ?>" class="panel-collapse collapse in">
                         <div class="panel-body">
                             <?php
+                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                            {
+                                ?>
+                                <div class="btn-group">
+                                    <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
+                                    <button class="btn btn-danger">Supprimer sous-domaine</button>
+                                    <button id="nouveauProjetSD-<?php echo $sd->id ?>" data-toggle="modal" href="#divNouveauProjet" class="btn btn-success pull-right newProjet"><span class="glyphicon glyphicon-plus"></span> Nouveau projet</button>
+                                </div>
+                                <br/>
+                                <br/>
+                                <?php
+                            }
+                            ?>
+                            <?php
                             if(isset($sd->projets) && ($sd->projets != null))
                             {
                                 ?>
@@ -273,14 +339,6 @@
                                 }
                                 ?>
                                 </div>
-                                <?php
-                            }
-                            ?>
-                            <?php
-                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
-                            {
-                                ?>
-                                <button id="nouveauProjetSD-<?php echo $sd->id ?>" data-toggle="modal" href="#divNouveauProjet" class="btn btn-success pull-right newProjet"><span class="glyphicon glyphicon-plus"></span> Nouveau projet</button>
                                 <?php
                             }
                             ?>
