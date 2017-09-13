@@ -13,6 +13,7 @@
         $_SESSION["niveau"] = json_decode(getNiveauByUtilisateurId($_POST["user_id"]));
     }
     $secteurs = json_decode(getSousDomainesByDomainesBySecteurs());
+    $contrats = json_decode(getContrats());
 ?>
 
     <!DOCTYPE html>
@@ -204,6 +205,29 @@
                             <li class="dropdown" id="secteur<?php echo $secteur->id ?>">
                                 <a href="#" class="secteur dropdown-toggle" data-toggle="dropdown"><?php echo $secteur->libelle ?></a>
                                 <ul class="dropdown-menu">
+                                    <?php
+                                    if($secteur->id == 2)
+                                    {
+                                        ?>
+                                    <li class="contratSelectHeader">
+                                        <label>Recherche avec:</label>
+                                        <select name="listContratHeader" id="listContratHeader" class="form-control">
+                                            
+                                            <option>Tout contrats</option>
+                                            <?php
+                                            foreach($contrats as $contrat)
+                                            {
+                                                ?>
+                                                
+                                                <option value="<?php echo $contrats->id; ?>"><?php echo $contrat->libelle; ?></option><?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </li>
+                                        <?php
+                                    }
+                                    ?>
+                                    
                                     <?php
                                     if($secteur->domaines != null)
                                     {
