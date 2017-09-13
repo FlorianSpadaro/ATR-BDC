@@ -1,5 +1,4 @@
 <?php
-//test
     session_start();
     include("API/fonctions.php");
     if(isset($_POST["deconnexion"]) && $_POST["deconnexion"] == "true")
