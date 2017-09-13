@@ -68,10 +68,16 @@
 
         <!-- Main Content -->
         <div class="container">
-            
-            <div class="col-lg-offset-8">
-                <a href="nouvelleActualite.php"><button class="btn btn-default">Nouvelle actualité</button></a>
-            </div>
+            <?php
+            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+            {
+                ?>
+                <div class="col-lg-offset-8">
+                    <a href="nouvelleActualite.php"><button class="btn btn-default">Nouvelle actualité</button></a>
+                </div>
+                <?php
+            }
+            ?>
             
             <div class="row">
 

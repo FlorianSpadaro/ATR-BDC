@@ -13,12 +13,6 @@ $(function(){
         dictRemoveFile: "Supprimer",
         init: function() {
         myDropzone = this;
-        
-        myDropzone.on("complete", function (file) {
-          if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-            document.location.href = "index.php";
-          }
-        });
             
         $("#validerNouvelleActu").click(function(){
             if($("#titreNouvelleActu").val() == "" || $("#summernote").summernote('code') == summerNoteVide || $("#summernote").summernote('code') == "<br>")
@@ -52,12 +46,24 @@ $(function(){
 
                                    xhr.send(form);
                                }
-                            myDropzone.on('sending', function(file, xhr, formData){
-                                formData.append('actualite_id', idActu);
-                                formData.append('libelle', image.name);
-                            });
-                            
-                            myDropzone.processQueue();
+                            if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
+                                {
+                                    document.location.href = "actualite.php?id=" + idActu;
+                                }
+                            else{
+                                myDropzone.on("complete", function (file) {
+                                  if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                                    document.location.href = "actualite.php?id=" + idActu;
+                                  }
+                                });
+
+
+                                myDropzone.on('sending', function(file, xhr, formData){
+                                    formData.append('actualite_id', idActu);
+                                });
+
+                                myDropzone.processQueue();
+                            }
                         }
                     else{
                         alert("Une erreur s'est produite, veuillez réessayer plus tard");
