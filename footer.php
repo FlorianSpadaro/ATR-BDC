@@ -25,5 +25,7 @@
         
         <script src="js/myJs/header.js"></script>
         <script src="js/jquery.dropdownPlain.js"></script>
+        <script src="js/chosen.jquery.min.js"></script>
+        <script>$('.chosen').chosen({width: "inherit",width:'100%',no_results_text: "Pas de résultat pour: "});</script>
     </body>
 </html>

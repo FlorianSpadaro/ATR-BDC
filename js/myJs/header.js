@@ -1,8 +1,9 @@
 $(function () {
+
+    
     $(".contratSelectHeader").click(function(e){
         e.stopPropagation();
         e.preventDefault();
-        console.log("OK");
     });
     
     var userId = document.getElementById("user_id").value;

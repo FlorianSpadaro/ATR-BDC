@@ -40,6 +40,9 @@
         <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="bootstrap-toggle-master/css/bootstrap-toggle.min.css" >
+         <link rel="stylesheet" href="css/chosen.min.css" >
+        
+       
 
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -210,10 +213,8 @@
                                     {
                                         ?>
                                     <li class="contratSelectHeader">
-                                        <label>Recherche avec:</label>
-                                        <select name="listContratHeader" id="listContratHeader" class="form-control">
-                                            
-                                            <option>Tout contrats</option>
+                                        <select name="listContratHeader" id="listContratHeader" class="chosen" multiple="true" data-placeholder="Tout contrats" >
+                                          
                                             <?php
                                             foreach($contrats as $contrat)
                                             {
