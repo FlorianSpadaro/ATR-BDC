@@ -1,6 +1,6 @@
 <?php
 	try{
-		$bdd = new PDO('pgsql:host=192.168.30.218;dbname=bdc_flo', 'CYRRIC', 'cyril');
+		$bdd = new PDO('pgsql:host=192.168.56.242;dbname=bdc', 'postgres', 'postgres');
 	}
 	catch (Exception $e){
 		die('Erreur : '.$e->getMessage());
