@@ -4,8 +4,11 @@ $(function(){
         lang: 'fr-FR'
     });
     
+    var tabSuppression = [];
+    
     $(".btnSuprPj").click(function(){
         var idPj = $(this).attr("id").split("-")[1];
+        tabSuppression.push(idPj);
         $("#pjConserve-" + idPj).remove();
         $(this).closest(".element").hide("fade");
         if($(".pjConserve").length == 0)
@@ -20,6 +23,7 @@ $(function(){
         anciennesPj.push(idPj);
     });
     
+    
     var idActu = $("#idActu").val();
     $.post("API/getActualiteById.php", {actualite_id: idActu}, function(data){
         var actu = JSON.parse(data);
@@ -32,6 +36,8 @@ $(function(){
     $("#summernote").summernote('code');
     
     Dropzone.options.form2 = {
+        parallelUploads: 10,
+        maxFiles: 10,
         autoProcessQueue: false,
         addRemoveLinks: true,
         dictDefaultMessage: 'Déplacer les fichiers ou cliquer ici pour upload',
@@ -75,43 +81,57 @@ $(function(){
 
                                    xhr.send(form);
                                }
-                            
-                            var tab = [];
-                            $(".pjConserve").each(function(){
-                                var idPj = $(this).attr("id").split("-")[1];
-                                tab.push(idPj);
-                            });
-                            
-                            anciennesPj.forEach(function(ancPj){
-                                if(tab.indexOf(ancPj) == -1)
-                                    {
-                                        alert("OK");
-                                        $.post("API/removePieceJointeActualite.php", {piece_jointe_id: ancPj, actualite_id: $("#idActu").val()}, function(data){
-                                        });
-                                    }
-                            });
-                            /*$.post("API/actualiserPiecesJointesActualite.php", {actualite_id: idActu, tab_pieces_jointes: tab}, function(data){
-                                
-                            });*/
-                            
-                            if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
+                            if(tabSuppression.length > 0)
                                 {
-                                    document.location.href = "actualite.php?id=" + idActu;
+                                    var i = 0;
+                                    tabSuppression.forEach(function(tbSuppr){
+                                        i++;
+                                        $.post("API/removePieceJointeActualite.php", {piece_jointe_id: tbSuppr, actualite_id: $("#idActu").val()}, function(data){
+                                            if(i == tabSuppression.length)
+                                                {
+                                                    if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
+                                                        {
+                                                            document.location.href = "actualite.php?id=" + idActu;
+                                                        }
+                                                    else{
+                                                        myDropzone.on("complete", function (file) {
+                                                          if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                                                            document.location.href = "actualite.php?id=" + idActu;
+                                                          }
+                                                        });
+
+
+                                                        myDropzone.on('sending', function(file, xhr, formData){
+                                                            formData.append('actualite_id', idActu);
+                                                        });
+
+                                                        myDropzone.processQueue();
+                                                    }
+                                                }
+                                        });
+                                    });
                                 }
                             else{
-                                myDropzone.on("complete", function (file) {
-                                  if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                                    document.location.href = "actualite.php?id=" + idActu;
-                                  }
-                                });
+                                if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
+                                    {
+                                        document.location.href = "actualite.php?id=" + idActu;
+                                    }
+                                else{
+                                    myDropzone.on("complete", function (file) {
+                                      if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                                        document.location.href = "actualite.php?id=" + idActu;
+                                      }
+                                    });
 
 
-                                myDropzone.on('sending', function(file, xhr, formData){
-                                    formData.append('actualite_id', idActu);
-                                });
+                                    myDropzone.on('sending', function(file, xhr, formData){
+                                        formData.append('actualite_id', idActu);
+                                    });
 
-                                myDropzone.processQueue();
+                                    myDropzone.processQueue();
+                                }
                             }
+                            
                         }
                     else{
                         alert("Une erreur s'est produite, veuillez réessayer plus tard");

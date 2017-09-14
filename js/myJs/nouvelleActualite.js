@@ -7,6 +7,8 @@ $(function(){
     var summerNoteVide = $("#summernote").summernote('code');
     
     Dropzone.options.form2 = {
+        parallelUploads: 10,
+        maxFiles: 10,
         autoProcessQueue: false,
         addRemoveLinks: true,
         dictDefaultMessage: 'Déplacer les fichiers ou cliquer ici pour upload',
