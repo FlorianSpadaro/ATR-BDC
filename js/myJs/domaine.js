@@ -13,7 +13,8 @@ $(function (){
             var libelle = $("#libelleSousDomaineModif").val();
             var description = $("#descriptionSousDomaineModif").val();
             var idDomaine = $("#domaineSousDomaineModif").val();
-            $.post("API/modifierSousDomaineById.php", {sous_domaine_id: idSd, libelle: libelle, domaine_id: idDomaine}, function(data){
+            var idContrat = $("#contratSousDomaineModif").val();
+            $.post("API/modifierSousDomaineById.php", {sous_domaine_id: idSd, libelle: libelle, domaine_id: idDomaine, contrat_id: idContrat}, function(data){
                 console.log(data);
                 var reponse = JSON.parse(data);
                 if(reponse){
@@ -33,7 +34,8 @@ $(function (){
             var sd = JSON.parse(data);
             if(sd != null)
                 {
-                    $("#libelleSousDomaineModif").val(sd.libelle);
+                    var libelle = sd.libelle.split("-")[1].slice(1);
+                    $("#libelleSousDomaineModif").val(libelle);
                     if(sd.description != null)
                         {
                             $("#descriptionSousDomaineModif").val(sd.description);
@@ -49,6 +51,7 @@ $(function (){
     $("#btnValiderNewSousDomaine").click(function(){
         var libelle = $("#libelleSousDomaineNew").val();
         var description = $("#domaineSousDomaineNew").val();
+        var idContrat = $("#contratSousDomaineNew").val();
         if(description == "")
             {
                 description = null;
@@ -60,7 +63,7 @@ $(function (){
                 alert("Veuillez saisir un libellé");
             }
         else{
-            $.post("API/addSousDomaine.php", {domaine_id: idDomaine, libelle, libelle, description: description, utilisateur_id: idUser}, function(data){
+            $.post("API/addSousDomaine.php", {domaine_id: idDomaine, libelle, libelle, description: description, utilisateur_id: idUser, contrat_id: idContrat}, function(data){
                 var reponse = JSON.parse(data);
                 if(reponse)
                     {

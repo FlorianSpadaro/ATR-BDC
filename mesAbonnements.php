@@ -190,10 +190,10 @@
             ?>
             </div>
             
-            <div class="panel-group" id="contrats">
+            <!--<div class="panel-group" id="contrats">
                 <h3> Contrats</h3>
                 <?php
-                if(isset($contrats) && ($contrats != null))
+                /*if(isset($contrats) && ($contrats != null))
                 {
                     ?>
                     <div class="panel panel-default">
@@ -224,9 +224,9 @@
                         </div>
                     </div>
                     <?php
-                }
+                }*/
                 ?>
-            </div>
+            </div>-->
             
         </div>
         <br/>

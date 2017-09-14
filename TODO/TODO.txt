@@ -1,7 +1,6 @@
 - supprimer domaines
 - supprimer sous-domaines
 - créer (à améliorer), modifier et supprimer(supprimer contenu + image entete) projet
-- créer, modifier et supprimer actualité
 - recherche actualites
 - gestion notifications
 * Problème enregistrement Actu/Nouveau contrat

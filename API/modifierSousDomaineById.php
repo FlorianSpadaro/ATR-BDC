@@ -6,5 +6,5 @@
 		$_POST["description"] = null;
 	}
 	
-	echo modifierSousDomaineById($_POST["sous_domaine_id"], $_POST["libelle"], $_POST["description"], $_POST["domaine_id"]);
+	echo modifierSousDomaineById($_POST["sous_domaine_id"], $_POST["libelle"], $_POST["description"], $_POST["domaine_id"], $_POST["contrat_id"]);
 ?>

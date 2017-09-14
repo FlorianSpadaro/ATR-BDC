@@ -102,12 +102,27 @@
                     <div class="form-group">
                         <label>Libelle</label>
                         <input type="text" name="libelleSousDomaineModif" id="libelleSousDomaineModif" class="form-control" />
+                        <div class="help-block">Info: ce libellé sera précédé du nom du contrat</div>
                     </div>
                     <div class="form-group">
                         <label>Description (facultatif)</label>
                         <input type="text" name="descriptionSousDomaineModif" id="descriptionSousDomaineModif" class="form-control" />
                     </div>
+                    <div class="form-gorup">
+                        <label>Contrat</label>
+                        <select class="form-control" id="contratSousDomaineModif" name="contratSousDomaineModif">
+                            <?php
+                            foreach($contrats as $contrat)
+                            {
+                                ?>
+                                <option value="<?php echo $contrat->id ?>"><?php echo $contrat->libelle ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
                     <div class="form-group">
+                        <label>Domaine</label>
                         <select id="domaineSousDomaineModif" name="domaineSousDomaineModif" class="form-control">
                             <?php
                             if($domaines != null)
@@ -146,10 +161,24 @@
                     <div class="form-group">
                         <label>Libelle</label>
                         <input type="text" name="libelleSousDomaineNew" id="libelleSousDomaineNew" class="form-control" />
+                        <div class="help-block">Info: ce libellé sera précédé du nom du contrat</div>
                     </div>
                     <div class="form-group">
                         <label>Description (facultatif)</label>
                         <input type="text" name="domaineSousDomaineNew" id="domaineSousDomaineNew" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Contrat</label>
+                        <select class="form-control" name="contratSousDomaineNew" id="contratSousDomaineNew">
+                            <?php
+                            foreach($contrats as $contrat)
+                            {
+                                ?>
+                                <option value="<?php echo $contrat->id ?>"><?php echo $contrat->libelle ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
                     </div>
                 </form>
               </div>
