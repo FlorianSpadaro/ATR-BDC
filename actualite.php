@@ -181,7 +181,7 @@
                         $powerpoint = array("ppt", "pptx");
                         $image = array("jpg", "jpeg", "gif", "png");
                         ?>
-                <div id="piecesJointes" class="container">
+                <div id="piecesJointes" class="container jumbotron">
                     <?php
                             foreach($piecesJointes as $pj)
                             {

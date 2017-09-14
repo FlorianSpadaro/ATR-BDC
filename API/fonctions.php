@@ -1,4 +1,22 @@
 <?php
+	function getDomainesBySecteurId($idSecteur)
+	{
+		include("connexionBdd.php");
+		
+		$domaines = null;
+		$i = 0;
+		
+		$req = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
+		$req->execute(array($idSecteur));
+		while($data = $req->fetch())
+		{
+			$domaines[$i] = json_decode(getDomaineById($data["id"]));
+			$i++;
+		}
+		
+		return json_encode($domaines);
+	}
+
 	function actualiserPiecesJointesActualite($idActu, $idsPj)
 	{
 		include("connexionBdd.php");
@@ -2289,6 +2307,15 @@
 			$projet["contrat"] = json_decode(getContratById($data["contrat_id"]));
 			$projet["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
 			$projet["image_entete"] = $data["image_entete"];
+			
+			$i = 0;
+			$req2 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+			$req2->execute(array($id));
+			while($data2 = $req2->fetch())
+			{
+				$projet["domaines"][$i] = json_decode(getDomaineById($data2["domaine_id"]));
+				$i++;
+			}
 		}
 		
 		return json_encode($projet);

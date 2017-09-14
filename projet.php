@@ -76,7 +76,15 @@
                             <span class="meta">
                                 Projet (<?php echo $parents->secteur->libelle ?> <span class="glyphicon glyphicon-triangle-right"></span> <?php echo $parents->domaine->libelle ?> <span class="glyphicon glyphicon-triangle-right"></span> <?php echo $parents->sousDomaine->libelle ?>)
                             </span>
-                            <button id="supprimerProjet" class="btn btn-link">Supprimer projet</button>
+                            <?php
+                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                            {
+                                ?>
+                                <button id="modifierProjet" class="btn btn-link">Modifier projet</button>
+                                <button id="supprimerProjet" class="btn btn-link">Supprimer projet</button>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -111,7 +119,7 @@
                         $powerpoint = array("ppt", "pptx");
                         $image = array("jpg", "jpeg", "gif", "png");
                         ?>
-                        <div id="piecesJointes" class="container">
+                        <div id="piecesJointes" class="container jumbotron">
                             <?php
                             foreach($piecesJointes as $pj)
                             {
