@@ -1,4 +1,22 @@
 <?php
+	function getDomainesBySecteurId($idSecteur)
+	{
+		include("connexionBdd.php");
+		
+		$domaines = null;
+		$i = 0;
+		
+		$req = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
+		$req->execute(array($idSecteur));
+		while($data = $req->fetch())
+		{
+			$domaines[$i] = json_decode(getDomaineById($data["id"]));
+			$i++;
+		}
+		
+		return json_encode($domaines);
+	}
+
 	function actualiserPiecesJointesActualite($idActu, $idsPj)
 	{
 		include("connexionBdd.php");
@@ -184,20 +202,27 @@
 		return json_encode($id);
 	}
 
-	function modifierSousDomaineById($idSousDomaine, $libelle, $description, $idDomaine)
+	function modifierSousDomaineById($idSousDomaine, $libelle, $description, $idDomaine, $idContrat)
 	{
 		include("connexionBdd.php");
 		
 		$reponse = false;
 		try{
+			$req = $bdd->prepare("SELECT libelle FROM contrat WHERE id = ?");
+			$req->execute(array($idContrat));
+			if($data = $req->fetch())
+			{
+				$libelle = $data["libelle"]." - ".$libelle;
+			}
+			
 			if($description != null)
 			{
-				$req = $bdd->prepare("UPDATE sous_domaine SET libelle = ?, description = ?, domaine_id = ? WHERE id = ?");
-				$reponse = $req->execute(array($libelle, $description, $idDomaine, $idSousDomaine));
+				$req = $bdd->prepare("UPDATE sous_domaine SET libelle = ?, description = ?, domaine_id = ?, contrat_id = ? WHERE id = ?");
+				$reponse = $req->execute(array($libelle, $description, $idDomaine, $idContrat, $idSousDomaine));
 			}
 			else{
-				$req = $bdd->prepare("UPDATE sous_domaine SET libelle = ?, description = NULL, domaine_id = ? WHERE id = ?");
-				$reponse = $req->execute(array($libelle, $idDomaine, $idSousDomaine));
+				$req = $bdd->prepare("UPDATE sous_domaine SET libelle = ?, description = NULL, domaine_id = ?, contrat_id = ? WHERE id = ?");
+				$reponse = $req->execute(array($libelle, $idDomaine, $idContrat, $idSousDomaine));
 			}
 		}catch(Exception $e){
 			$reponse = false;
@@ -220,20 +245,27 @@
 		return json_encode($domaines);
 	}
 
-	function addSousDomaine($idDomaine, $libelle, $description, $idUser)
+	function addSousDomaine($idDomaine, $libelle, $description, $idUser, $idContrat)
 	{
 		include("connexionBdd.php");
 		
 		$reponse = false;
 		try{
+			$req = $bdd->prepare("SELECT libelle FROM contrat WHERE id = ?");
+			$req->execute(array($idContrat));
+			if($data = $req->fetch())
+			{
+				$libelle = $data["libelle"]." - ".$libelle;
+			}
+			
 			if($description != null)
 			{
-				$req = $bdd->prepare("INSERT INTO sous_domaine(domaine_id, libelle, description, utilisateur_id) VALUES(?, ?, ?, ?)");
-				$reponse = $req->execute(array($idDomaine, $libelle, $description, $idUser));
+				$req = $bdd->prepare("INSERT INTO sous_domaine(domaine_id, libelle, description, utilisateur_id, contrat_id) VALUES(?, ?, ?, ?, ?)");
+				$reponse = $req->execute(array($idDomaine, $libelle, $description, $idUser, $idContrat));
 			}
 			else{
-				$req = $bdd->prepare("INSERT INTO sous_domaine(domaine_id, libelle, description, utilisateur_id) VALUES(?, ?, NULL, ?)");
-				$reponse = $req->execute(array($idDomaine, $libelle, $idUser));
+				$req = $bdd->prepare("INSERT INTO sous_domaine(domaine_id, libelle, description, utilisateur_id, contrat_id) VALUES(?, ?, NULL, ?, ?)");
+				$reponse = $req->execute(array($idDomaine, $libelle, $idUser, $idContrat));
 			}
 		}catch(Exception $e){
 			$reponse = false;
@@ -2275,6 +2307,15 @@
 			$projet["contrat"] = json_decode(getContratById($data["contrat_id"]));
 			$projet["utilisateur"] = json_decode(getUtilisateurById($data["utilisateur_id"]));
 			$projet["image_entete"] = $data["image_entete"];
+			
+			$i = 0;
+			$req2 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+			$req2->execute(array($id));
+			while($data2 = $req2->fetch())
+			{
+				$projet["domaines"][$i] = json_decode(getDomaineById($data2["domaine_id"]));
+				$i++;
+			}
 		}
 		
 		return json_encode($projet);
@@ -2312,6 +2353,7 @@
 			$sousDomaine["description"] = $data["description"];
 			$sousDomaine["domaine"] = json_decode(getDomaineById($data["domaine_id"]));
 			$sousDomaine["secteur"] = json_decode(getSecteurById(json_decode(getSecteurIdBySousDomaineId($data["id"]))));
+			$sousDomaine["contrat"] = json_decode(getContratById($data["contrat_id"]));
 		}
 		
 		return json_encode($sousDomaine);

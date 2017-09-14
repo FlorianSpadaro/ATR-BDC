@@ -6,5 +6,5 @@
 		$_POST["description"] = null;
 	}
 	
-	echo addSousDomaine($_POST["domaine_id"], $_POST["libelle"], $_POST["description"], $_POST["utilisateur_id"]);
+	echo addSousDomaine($_POST["domaine_id"], $_POST["libelle"], $_POST["description"], $_POST["utilisateur_id"], $_POST["contrat_id"]);
 ?>

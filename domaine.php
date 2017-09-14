@@ -43,6 +43,9 @@
             #suppressionDomaine{
                 color: red;
             }
+            #formNouveauProjet{
+                display: inline-block;
+            }
         </style>
     </head>
 
@@ -102,12 +105,27 @@
                     <div class="form-group">
                         <label>Libelle</label>
                         <input type="text" name="libelleSousDomaineModif" id="libelleSousDomaineModif" class="form-control" />
+                        <div class="help-block">Info: ce libellé sera précédé du nom du contrat</div>
                     </div>
                     <div class="form-group">
                         <label>Description (facultatif)</label>
                         <input type="text" name="descriptionSousDomaineModif" id="descriptionSousDomaineModif" class="form-control" />
                     </div>
+                    <div class="form-gorup">
+                        <label>Contrat</label>
+                        <select class="form-control" id="contratSousDomaineModif" name="contratSousDomaineModif">
+                            <?php
+                            foreach($contrats as $contrat)
+                            {
+                                ?>
+                                <option value="<?php echo $contrat->id ?>"><?php echo $contrat->libelle ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
                     <div class="form-group">
+                        <label>Domaine</label>
                         <select id="domaineSousDomaineModif" name="domaineSousDomaineModif" class="form-control">
                             <?php
                             if($domaines != null)
@@ -146,10 +164,24 @@
                     <div class="form-group">
                         <label>Libelle</label>
                         <input type="text" name="libelleSousDomaineNew" id="libelleSousDomaineNew" class="form-control" />
+                        <div class="help-block">Info: ce libellé sera précédé du nom du contrat</div>
                     </div>
                     <div class="form-group">
                         <label>Description (facultatif)</label>
                         <input type="text" name="domaineSousDomaineNew" id="domaineSousDomaineNew" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Contrat</label>
+                        <select class="form-control" name="contratSousDomaineNew" id="contratSousDomaineNew">
+                            <?php
+                            foreach($contrats as $contrat)
+                            {
+                                ?>
+                                <option value="<?php echo $contrat->id ?>"><?php echo $contrat->libelle ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
                     </div>
                 </form>
               </div>
@@ -318,7 +350,9 @@
                                 <div class="btn-group">
                                     <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
                                     <button class="btn btn-danger">Supprimer sous-domaine</button>
-                                    <button id="nouveauProjetSD-<?php echo $sd->id ?>" data-toggle="modal" href="#divNouveauProjet" class="btn btn-success pull-right newProjet"><span class="glyphicon glyphicon-plus"></span> Nouveau projet</button>
+                                    <form id="formNouveauProjet" action="nouveauProjet.php" method="post">
+                                        <button type="submit" id="nouveauProjetSD-<?php echo $sd->id ?>" class="btn btn-success pull-right newProjet"><span class="glyphicon glyphicon-plus"></span> Nouveau projet</button>
+                                    </form>
                                 </div>
                                 <br/>
                                 <br/>
