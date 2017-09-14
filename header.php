@@ -220,7 +220,7 @@
                                             {
                                                 ?>
                                                 
-                                                <option value="<?php echo $contrats->id; ?>"><?php echo $contrat->libelle; ?></option><?php
+                                                <option value="<?php echo $contrat->id; ?>"><?php echo $contrat->libelle; ?></option><?php
                                             }
                                             ?>
                                         </select>
