@@ -24,7 +24,7 @@
         <script src="js/clean-blog.min.js"></script>
         
         <script src="js/jquery.dropdownPlain.js"></script>
-        <script src="chosen/chosen.jquery.min.js"></script>
+        <script src="chosen/chosen.jquery.js"></script>
         <script src="js/myJs/header.js"></script>
     </body>
 </html>
