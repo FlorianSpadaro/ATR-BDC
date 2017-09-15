@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Modification actualité</title>
+        <title>Nouveau projet</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -54,7 +54,7 @@
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                         <div class="site-heading">
-                            <h1>Nouvelle actualité</h1>
+                            <h1>Nouveau projet</h1>
                             <hr class="small">
                         </div>
                     </div>
@@ -87,14 +87,14 @@
                         </div>
                     </div>
                     
-                    <div id="divProjetGenerique">
+                    <div id="divProjetGenerique" class="divRadio">
                         <div class="form-group">
                             <label>Sélectionner un ou plusieurs domaines</label>
                             <select name="domainesProjet" id="domainesProjet" class="form-control" multiple>
                             </select>
                         </div>
                     </div>
-                    <div id="divProjetSpecifique">
+                    <div id="divProjetSpecifique" class="divRadio">
                         <div class="form-group">
                             <label>Sélectionner un sous-domaine</label>
                             <select id="sousDomaineProjet" name="sousDomaineProjet" class="form-control">
@@ -122,12 +122,12 @@
                 </div>
             </form>
             <label>Pièces jointes (facultatif)</label>
-            <div action="API/addPjActualite.php" class="dropzone" id="form2">
+            <div action="API/addPjProjet.php" class="dropzone" id="form2">
             </div>
             <br/>
             <div class="form-group pull-right">
                 <button class="btn btn-link" id="btnReinitialiser">Réinitialiser</button>
-                <button class="btn btn-default" id="validerNouvelleActu">Valider</button>
+                <button class="btn btn-default" id="validerNouveauProjet">Valider</button>
             </div>
 
         </div>

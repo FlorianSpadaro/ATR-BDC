@@ -350,9 +350,6 @@
                                 <div class="btn-group">
                                     <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
                                     <button class="btn btn-danger">Supprimer sous-domaine</button>
-                                    <form id="formNouveauProjet" action="nouveauProjet.php" method="post">
-                                        <button type="submit" id="nouveauProjetSD-<?php echo $sd->id ?>" class="btn btn-success pull-right newProjet"><span class="glyphicon glyphicon-plus"></span> Nouveau projet</button>
-                                    </form>
                                 </div>
                                 <br/>
                                 <br/>

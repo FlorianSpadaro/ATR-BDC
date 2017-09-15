@@ -74,8 +74,29 @@
                                 ?>
                             </h2>
                             <span class="meta">
-                                Projet (<?php echo $parents->secteur->libelle ?> <span class="glyphicon glyphicon-triangle-right"></span> <?php echo $parents->domaine->libelle ?> <span class="glyphicon glyphicon-triangle-right"></span> <?php echo $parents->sousDomaine->libelle ?>)
-                            </span>
+                                <?php
+                                if($projet->sous_domaine == null)
+                                {
+                                    echo "Projet Générique (";
+                                    $i = 1;
+                                    foreach($projet->domaines as $domaine)
+                                    {
+                                        echo $domaine->libelle;
+                                        if($i != sizeof($projet->domaines))
+                                        {
+                                            echo ", ";
+                                        }
+                                        else{
+                                            echo ")";
+                                        }
+                                        $i++;
+                                    }
+                                }
+                                else{
+                                    echo "Projet Spécifique (".$projet->sous_domaine->libelle.")";
+                                }
+                                ?>
+                            </span><br/>
                             <?php
                             if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
                             {
