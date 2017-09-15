@@ -127,7 +127,20 @@ $(function (){
     
     $("#suppressionDomaine").click(function(e){
         e.preventDefault();
-        var repUser = confirm("Voulez-vous vraiment supprimer ce domaine? Cela supprimera également tous les projets et sous-domaines qui lui sont liés");
+        var repUser = confirm("Voulez-vous vraiment supprimer ce domaine? Cela supprimera également tous les sous-domaines qui lui sont liés");
+        if(repUser)
+            {
+                $.post("API/removeDomaineById.php", {domaine_id: $("#idDomaine").val()}, function(data){
+                    var reponse = JSON.parse(data);
+                    if(reponse)
+                        {
+                            document.location.href = "index.php";
+                        }
+                    else{
+                        alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                    }
+                });
+            }
     });
     
     $(".newProjet").click(function(){
@@ -152,6 +165,24 @@ $(function (){
             {
                 alert("Veuillez choisir un fichier au format .html ou .htm");
                 $("#contenuProjet").val("");
+            }
+    });
+    
+    $(".btnSupprimerSousDomaine").click(function(){
+        var repUser = confirm("Voulez-vous vraiment supprimer ce sous-domaine?");
+        if(repUser)
+            {
+                var idSd = $(this).attr("id").split("-")[1];
+                $.post("API/removeSousDomaineById.php", {sous_domaine_id: idSd}, function(data){
+                    var reponse = JSON.parse(data);
+                    if(reponse)
+                        {
+                            window.location.reload();
+                        }
+                    else{
+                        alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                    }
+                });
             }
     });
     

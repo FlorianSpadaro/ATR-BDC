@@ -1,4 +1,38 @@
 <?php
+	function removeDomaineById($idDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT id FROM sous_domaine WHERE domaine_id = ?");
+			$req->execute(array($idDomaine));
+			while($data = $req->fetch())
+			{
+				removeSousDomaineById($data["id"]);
+			}
+			$req = $bdd->prepare("DELETE FROM domaine WHERE id = ?");
+			$reponse = $req->execute(array($idDomaine));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function removeSousDomaineById($idSousDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM sous_domaine WHERE id = ?");
+			$reponse = $req->execute(array($idSousDomaine));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function removePiecesJointesProjet($idProjet)
 	{
 		include("connexionBdd.php");

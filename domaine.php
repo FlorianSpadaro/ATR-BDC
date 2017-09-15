@@ -349,7 +349,7 @@
                                 ?>
                                 <div class="btn-group">
                                     <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
-                                    <button class="btn btn-danger">Supprimer sous-domaine</button>
+                                    <button id="btnSupprimerSousDomaine-<?php echo $sd->id ?>" class="btn btn-danger btnSupprimerSousDomaine">Supprimer sous-domaine</button>
                                 </div>
                                 <br/>
                                 <br/>
