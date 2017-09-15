@@ -1,4 +1,68 @@
 <?php
+	function removeImageEnteteProjet($idProjet)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT image_entete FROM projet WHERE id = ?");
+			$req->execute(array($idProjet));
+			if($data = $req->fetch())
+			{
+				$reponse = unlink("../".$data["image_entete"]);
+				if($reponse)
+				{
+					$req2 = $bdd->prepare("UPDATE projet SET image_entete = DEFAULT WHERE id = ?");
+					$reponse = $req2->execute(array($idProjet));
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function modifierSousDomaineProjet($idProjet, $idSousDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM projet_domaine WHERE projet_id = ?");
+			$reponse = $req->execute(array($idProjet));
+			
+			if($reponse)
+			{
+				$req = $bdd->prepare("UPDATE projet SET sous_domaine_id = ? WHERE id = ?");
+				$reponse = $req->execute(array($idSousDomaine, $idProjet));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addDomaineProjet($idProjet, $idDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		
+		$req = $bdd->prepare("UPDATE projet SET sous_domaine_id = NULL WHERE id = ?");
+		$reponse = $req->execute(array($idProjet));
+		
+		try{
+			if($reponse)
+			{
+				$req = $bdd->prepare("INSERT INTO projet_domaine(projet_id, domaine_id) VALUES(?, ?)");
+				$reponse = $req->execute(array($idProjet, $idDomaine));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function getDomainesBySecteurId($idSecteur)
 	{
 		include("connexionBdd.php");
@@ -386,34 +450,24 @@
 		return json_encode($reponse);
 	}
 
-	function addProjet($titre, $description, $idSousDomaine, $idContrat, $idUser)
+	function addProjet($titre, $description, $contenu, $idUser)
 	{
 		include("connexionBdd.php");
 		
 		$id = null;
-			if($description == null && $idContrat == null)
-			{
-				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id) VALUES(?, NOW(), NOW(), ?, ?) RETURNING id");
-				$req->execute(array($titre, $idSousDomaine, $idUser));
-			}
-			else if($idContrat == null)
-			{
-				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id, description) VALUES(?, NOW(), NOW(), ?, ?, ?) RETURNING id");
-				$req->execute(array($titre, $idSousDomaine, $idUser, $description));
-			}
-			else if($description == null)
-			{
-				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id, contrat_id) VALUES(?, NOW(), NOW(), ?, ?, ?) RETURNING id");
-				$req->execute(array($titre, $idSousDomaine, $idUser, $idContrat));
-			}
-			else{
-				$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, sous_domaine_id, utilisateur_id, description, contrat_id) VALUES(?, NOW(), NOW(), ?, ?, ?, ?) RETURNING id");
-				$req->execute(array($titre, $idSousDomaine, $idUser, $description, $idContrat));
-			}
-			if($data = $req->fetch())
-			{
-				$id = $data["id"];
-			}
+		if($description == null)
+		{
+			$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, contenu, utilisateur_id) VALUES(?, NOW(), NOW(), ?, ?) RETURNING id");
+			$req->execute(array($titre, $contenu, $idUser));
+		}
+		else{
+			$req = $bdd->prepare("INSERT INTO projet(titre, date_creation, date_derniere_maj, description, contenu, utilisateur_id) VALUES (?, NOW(), NOW(), ?, ?, ?) RETURNING id");
+			$req->execute(array($titre, $description, $contenu, $idUser));
+		}
+		if($data = $req->fetch())
+		{
+			$id = $data["id"];
+		}
 		return json_encode($id);
 	}
 
@@ -888,7 +942,7 @@
 		
 		if($params == null)
 		{
-			$req = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj, contrat_id FROM projet ORDER BY date_creation DESC LIMIT ? OFFSET ?");
+			$req = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet ORDER BY date_creation DESC LIMIT ? OFFSET ?");
 			$req->execute(array($nb, $debut));
 			while($data = $req->fetch())
 			{
@@ -897,7 +951,7 @@
 				$projets[$i]["description"] = $data["description"];
 				$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
 				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
-				$projets[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
+				$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
 				
 				$i++;
 			}

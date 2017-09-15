@@ -1,5 +1,5 @@
 $(function () {
-    $("#listContratHeader").chosen();
+    $("#listContratHeader").chosen({width: "inherit", width: "100%"});
     
     $(".contratSelectHeader").click(function(e){
         e.stopPropagation();

@@ -1,6 +1,11 @@
 <?php
 	require_once("fonctions.php");
 	
+	if(isset($_FILES['file']))
+	{
+		$_FILES['pj'] = $_FILES['file'];
+	}
+	
 	if (isset($_FILES['pj']) AND $_FILES['pj']['error'] == 0)
 	{
 			if ($_FILES['pj']['size'] <= 1000000)

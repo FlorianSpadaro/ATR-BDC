@@ -72,6 +72,9 @@
             #rechercheProjet{
                 display: none;
             }
+            #nouveauProjet{
+                color: green;
+            }
         </style>
         
     </head>
@@ -86,13 +89,14 @@
                         <div class="site-heading">
                             <h1>Liste des Projets</h1>
                             <hr class="small">
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Rechercher..."><a class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
-                                    </div>
-                                </div>
-                            </form>
+                            <?php
+                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                            {
+                                ?>
+                                <a href="nouveauProjet.php" id="nouveauProjet" class="btn btn-link">Créer un Nouveau Projet</a>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -189,13 +193,13 @@
                       <div class="panel-heading">
                         <h3 class="panel-title">
                             <a href="projet.php?id=<?php echo $projet->id ?>"><?php echo $projet->titre ?></a>
-                            <span class="pull-right">Contrat : <?php 
-                                if($projet->contrat != null)
+                            <span class="pull-right">Type : <?php 
+                                if($projet->sous_domaine_id != null)
                                 {
-                                    echo $projet->contrat->libelle;
+                                    echo "Spécifique";
                                 }
                                 else{
-                                    echo "Aucun";
+                                    echo "Générique";
                                 }
                                 ?></span>
                           </h3>
