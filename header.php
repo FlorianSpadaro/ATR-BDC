@@ -40,7 +40,7 @@
         <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="bootstrap-toggle-master/css/bootstrap-toggle.min.css" >
-         <link rel="stylesheet" href="chosen/chosen.css" >
+         <link rel="stylesheet" href="bootstrap-chosen-master/bootstrap-chosen.css" >
         
        
 
@@ -197,6 +197,7 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    
                     <ul class="nav navbar-nav navbar-right">
                         <li class="active">
                             <a href="index.php">Accueil</a>
@@ -207,13 +208,15 @@
                             ?>
                             <li class="dropdown" id="secteur<?php echo $secteur->id ?>">
                                 <a href="#" class="secteur dropdown-toggle" data-toggle="dropdown"><?php echo $secteur->libelle ?></a>
+                                
                                 <ul class="dropdown-menu">
                                     <?php
                                     if($secteur->id == 2)
                                     {
                                         ?>
                                     <li class="contratSelectHeader">
-                                        <select name="listContratHeader" id="listContratHeader" multiple >
+
+                                        <select name="listContratHeader" id="listContratHeader" multiple>
                                           
                                             <?php
                                             foreach($contrats as $contrat)
@@ -224,6 +227,7 @@
                                             }
                                             ?>
                                         </select>
+                                         
                                     </li>
                                         <?php
                                     }
