@@ -1,4 +1,3 @@
-- supprimer domaines
 - modifier projet
 - recherche actualites
 - gestion notifications
