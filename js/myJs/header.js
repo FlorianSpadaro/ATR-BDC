@@ -1,5 +1,5 @@
 $(function () {
-
+    $("#listContratHeader").chosen();
     
     $(".contratSelectHeader").click(function(e){
         e.stopPropagation();

@@ -42,6 +42,9 @@
             .radio{
                 display: inline-block;
             }
+            #divProjetGenerique, #divProjetSpecifique{
+                display: none;
+            }
         </style>
     </head>
     
@@ -94,7 +97,7 @@
                     <div id="divProjetSpecifique">
                         <div class="form-group">
                             <label>Sélectionner un sous-domaine</label>
-                            <select name="sousDomaineProjet" class="form-control">
+                            <select id="sousDomaineProjet" name="sousDomaineProjet" class="form-control">
                             </select>
                         </div>
                     </div>

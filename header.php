@@ -213,7 +213,7 @@
                                     {
                                         ?>
                                     <li class="contratSelectHeader">
-                                        <select name="listContratHeader" id="listContratHeader" class="chosen" multiple="true" data-placeholder="Tout contrats" >
+                                        <select name="listContratHeader" id="listContratHeader" multiple >
                                           
                                             <?php
                                             foreach($contrats as $contrat)
