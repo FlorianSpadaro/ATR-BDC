@@ -1,4 +1,68 @@
 <?php
+	function removeDomaineById($idDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT id FROM sous_domaine WHERE domaine_id = ?");
+			$req->execute(array($idDomaine));
+			while($data = $req->fetch())
+			{
+				removeSousDomaineById($data["id"]);
+			}
+			$req = $bdd->prepare("DELETE FROM domaine WHERE id = ?");
+			$reponse = $req->execute(array($idDomaine));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function removeSousDomaineById($idSousDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM sous_domaine WHERE id = ?");
+			$reponse = $req->execute(array($idSousDomaine));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function removePiecesJointesProjet($idProjet)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT piece_jointe_id FROM projet_pj WHERE projet_id = ?");
+			$req->execute(array($idProjet));
+			while($data = $req->fetch())
+			{
+				$req2 = $bdd->prepare("SELECT url FROM piece_jointe WHERE id = ?");
+				$req2->execute(array($data["piece_jointe_id"]));
+				if($data2 = $req2->fetch())
+				{
+					$reponse = unlink("../".$data2["url"]);
+					if($reponse)
+					{
+						$req3 = $bdd->prepare("DELETE FROM projet_pj WHERE piece_jointe_id = ? AND projet_id  = ?");
+						$req3->execute(array($data["piece_jointe_id"], $idProjet));
+						$req3 = $bdd->prepare("DELETE FROM piece_jointe WHERE id = ?");
+						$reponse = $req3->execute(array($data["piece_jointe_id"]));
+					}
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function removeImageEnteteProjet($idProjet)
 	{
 		include("connexionBdd.php");
@@ -379,22 +443,10 @@
 		
 		$reponse = false;
 		try{
-			$req = $bdd->prepare("SELECT piece_jointe_id FROM projet_pj WHERE projet_id = ?");
+			removePiecesJointesProjet($id);
+			removeImageEnteteProjet($id);
+			$req = $bdd->prepare("DELETE FROM projet_domaine WHERE projet_id = ?");
 			$req->execute(array($id));
-			while($data = $req->fetch())
-			{
-				$req2 = $bdd->prepare("SELECT url FROM piece_jointe WHERE id = ?");
-				$req2->execute(array($data["piece_jointe_id"]));
-				if($data2 = $req2->fetch())
-				{
-					unlink("../".$data2["url"]);
-				}
-				$req3 = $bdd->prepare("DELETE FROM projet_pj WHERE piece_jointe_id = ?");
-				$req3->execute(array($data["piece_jointe_id"]));
-				$req2 = $bdd->prepare("DELETE FROM piece_jointe WHERE id = ?");
-				$req2->execute(array($data["piece_jointe_id"]));
-			}
-			
 			$req = $bdd->prepare("DELETE FROM projet WHERE id = ?");
 			$reponse = $req->execute(array($id));
 		}catch(Exception $e){
