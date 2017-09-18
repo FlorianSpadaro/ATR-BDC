@@ -2548,4 +2548,47 @@
 		
 		return json_encode($date);
 	}
+
+    function getSearchProjetBySearchBar($search_text)
+    {
+        include("connexionBdd.php");
+        $searcharray = explode(" ",$search_text);
+        $countarray = count($searcharray);
+        $titresearch_sql = "titre like ";
+        $descsearch_sql = "description like ";
+        $z = 0;
+        $search = null;
+        for($i = 1; $i <= $countarray; $i++)
+        {
+            
+          
+                $searcharray[$i - 1] = "%".$searcharray[$i - 1]."%";
+                  
+           
+            
+            $titresearch_sql = $titresearch_sql."'".$searcharray[$i - 1]."'";
+            $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
+                    if($i != $countarray)
+                    {
+                        $titresearch_sql = $titresearch_sql." and titre like ";
+                        $descsearch_sql = $descsearch_sql." and description like ";
+                    }
+            
+        }
+        
+        $sql_return = "select id,titre,description from projet
+where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
+        $req = $bdd->query($sql_return);
+        while($data = $req->fetch())
+        {
+            $search[$z]['id'] = $data['id'];
+            $search[$z]['titre'] = $data['titre'];
+            $search[$z]['description'] = $data['description'];
+            
+            $z++;
+        }
+        return json_encode($search);
+        
+    }
+
 ?>
