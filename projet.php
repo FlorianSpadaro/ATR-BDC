@@ -101,7 +101,7 @@
                             if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
                             {
                                 ?>
-                                <button id="modifierProjet" class="btn btn-link">Modifier projet</button>
+                                <a href="modificationProjet.php?id=<?php echo $_GET["id"] ?>"><button id="modifierProjet" class="btn btn-link">Modifier projet</button></a>
                                 <button id="supprimerProjet" class="btn btn-link">Supprimer projet</button>
                                 <?php
                             }
