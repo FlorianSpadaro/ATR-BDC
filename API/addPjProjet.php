@@ -12,6 +12,7 @@
 			{
 					$infosfichier = pathinfo($_FILES['pj']['name']);
 					$extension_upload = $infosfichier['extension'];
+					$_POST["libelle"] = $_FILES['pj']['name'];
 					$extension_upload = strtolower(  substr(  strrchr($_FILES['pj']['name'], '.')  ,1)  );
 					$destination = '../pj/projets/'.md5(uniqid(rand(), true)).".".$extension_upload;
 					move_uploaded_file($_FILES['pj']['tmp_name'], $destination);

@@ -29,10 +29,10 @@ $(function(){
                                 optionElt.value = sd.id;
                                 optionElt.textContent = sd.libelle;
                                 optgroupElt.appendChild(optionElt);
-                                $("#sousDomaineProjet").trigger("chosen:updated");
                             });
 
                             document.getElementById("sousDomaineProjet").appendChild(optgroupElt);
+                            $("#sousDomaineProjet").trigger("chosen:updated");
                         }
                 });
             });

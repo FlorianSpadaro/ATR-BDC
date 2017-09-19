@@ -1,4 +1,101 @@
 <?php
+	function getUtilisateursAbonnesByProjetId($idProjet)
+	{
+		include("connexionBdd.php");
+		$users = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT sous_domaine_id FROM projet WHERE id = ?");
+		$req->execute(array($idProjet));
+		if($data = $req->fetch())
+		{
+			if($data["sous_domaine_id"] != null)
+			{
+				$idSd = $data["sous_domaine_id"];
+				$idDomaine = json_decode(getDomaineIdByProjetId($idProjet));
+				$idSecteur = json_decode(getSecteurIdByProjetId($idProjet));
+				$req2 = $bdd->prepare("SELECT DISTINCT utilisateur_id FROM abonnement WHERE projet_id = ? OR sous_domaine_id = ? OR domaine_id = ? OR secteur_id = ?");
+				$req2->execute(array($idProjet, $idSd, $idDomaine, $idSecteur));
+				while($data2 = $req2->fetch())
+				{
+					$users[$i] = json_decode(getUtilisateurById($data2["utilisateur_id"]));
+					$i++;
+				}
+			}
+			else{
+				$idsDomaines = [];
+				$req2 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+				$req2->execute(array($idProjet));
+				while($data2 = $req2->fetch())
+				{
+					array_push($idsDomaines, $data2["domaine_id"]);
+				}
+				$idSecteur = json_decode(getSecteurIdByDomaineId($idsDomaines[0]));
+				$reqDom = "";
+				foreach($idsDomaines as $idDom)
+				{
+					$reqDom = $reqDom." OR domaine_id = ".$idDom;
+				}
+				$req3 = $bdd->prepare("SELECT utilisateur_id FROM abonnement WHERE projet_id = ?".$reqDom." OR secteur_id = ?");
+				$req3->execute(array($idProjet, $idSecteur));
+				while($data3 = $req3->fetch())
+				{
+					$users[$i] = json_decode(getUtilisateurById($data3["utilisateur_id"]));
+					$i++;
+				}
+			}
+		}
+		return json_encode($users);
+	}
+
+	function removePieceJointeProjetById($idProjet, $idPj)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT url FROM piece_jointe WHERE id = ?");
+			$req->execute(array($idPj));
+			if($data = $req->fetch())
+			{
+				$suppr = unlink("../".$data["url"]);
+				if($suppr)
+				{
+					$req2 = $bdd->prepare("DELETE FROM projet_pj WHERE projet_id = ? AND piece_jointe_id = ?");
+					$req2->execute(array($idProjet, $idPj));
+					if($data2 = $req2->fetch())
+					{
+						$req3 = $bdd->prepare("DELETE FROM piece_jointe WHERE id = ?");
+						$reponse = $req3->execute(array($idPj));
+					}
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function modifierProjetById($idProjet, $titre, $description, $contenu)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			if($description != null)
+			{
+				$req = $bdd->prepare("UPDATE projet SET titre = ?, description = ?, contenu = ? WHERE id = ?");
+				$reponse = $req->execute(array($titre, $description, $contenu, $idProjet));
+			}
+			else{
+				$req = $bdd->prepare("UPDATE projet SET titre = ?, contenu = ? WHERE id = ?");
+				$reponse = $req->execute(array($titre, $contenu, $idProjet));
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function removeDomaineById($idDomaine)
 	{
 		include("connexionBdd.php");
@@ -105,6 +202,21 @@
 		}
 		return json_encode($reponse);
 	}
+	
+	function removeDomainesProjet($idProjet)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		
+		try{
+			$req = $bdd->prepare("DELETE FROM projet_domaine WHERE projet_id = ?");
+			$reponse = $req->execute(array($idProjet));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
 
 	function addDomaineProjet($idProjet, $idDomaine)
 	{
@@ -117,7 +229,7 @@
 		
 		try{
 			if($reponse)
-			{
+			{	
 				$req = $bdd->prepare("INSERT INTO projet_domaine(projet_id, domaine_id) VALUES(?, ?)");
 				$reponse = $req->execute(array($idProjet, $idDomaine));
 			}
@@ -1211,7 +1323,18 @@
 		$req->execute(array($id));
 		if($data = $req->fetch())
 		{
-			$idProjet = json_decode(getSecteurIdBySousDomaineId($data["id"]));
+			if($data["id"] != null)
+			{
+				$idProjet = json_decode(getSecteurIdBySousDomaineId($data["id"]));
+			}
+			else{
+				$req2 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+				$req2->execute(array($id));
+				if($data2 = $req2->fetch())
+				{
+					$idProjet = json_decode(getSecteurIdByDomaineId($data2["domaine_id"]));
+				}
+			}
 		}
 		
 		return json_encode($idProjet);
