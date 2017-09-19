@@ -33,7 +33,42 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-        
+        <style>
+        #searchBarOption
+{
+    width:741px;
+    position:absolute;
+    top:34px;
+    overflow:hidden;
+    
+}
+            .searchOptionProjet{
+    font-style: italic;
+    font-size:px;
+}
+            .noResultOption
+{
+  color:#c10000;
+  font-weight: bold;
+}
+.searchOption
+{
+
+    border-bottom:1px #e4e4e4 dashed;
+    padding-top:2px;
+    padding-bottom:2px;
+
+}
+.searchOption:hover
+{
+    background-color:#e4e4e4;
+ 
+}
+.noResultOption:hover
+{
+    background-color:white;
+}
+        </style>
     </head>
 
     <body>
@@ -48,7 +83,12 @@
                             <form class="form-horizontal">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Rechercher..."><a class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
+                                        <input id="searchBar" list="searchBarOption" type="text" class="form-control" placeholder="Rechercher...">
+                                            <select id="searchBarOption" class="form-control searchSelector">
+                                                
+                                          </select>
+                                        
+                                        <a class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
                                     </div>
                                 </div>
                             </form>
@@ -104,7 +144,47 @@
         <script src="js/myJs/index.js"></script>
 
     </body>
-
+        <script>
+         $("#searchBarOption").hide()
+        </script>
+<script>
+    
+        $("#searchBar").on("input",function(){
+            $.post("API/getSearchProjetBySearchBar.php",{search_text: $("#searchBar").val()}, function(data){
+                var searchResult = JSON.parse(data);
+                var i = 1;
+                var resultSearch = "<optgroup label='Projet:'>"
+                $("#searchBarOption").html(null);
+                if(searchResult != null)
+                    {
+                        for( i ; i <= searchResult.length;i++){
+                   console.log(searchResult[i - 1].titre);
+                   resultSearch += '<option class="searchOption">'+searchResult[i - 1].titre+'</option>';
+                         
+                }
+                    }
+                else
+                    {
+                        resultSearch += '<option class="searchOption noResultOption" disabled>Pas de résultats</option>'
+                    }
+              console.log(resultSearch);
+                $("#searchBarOption").append( resultSearch + '</optgroup><optgroup label="Autres:"><option value="'+$("#searchBar").val()+'" class="searchOption searchOptionProjet">Rechercher "'+$("#searchBar").val()+'" dans le contenu des projets</option><option value="'+$("#searchBar").val()+'" class="searchOption searchOptionProjet">Rechercher "'+$("#searchBar").val()+'" dans actu</option></optgroup>');
+               
+                console.log("___");
+                $("#searchBarOption").attr('size',5)
+                if($("#searchBar").val() != "")
+                    {
+                        $("#searchBarOption").show()
+                        $("#searchBarOption").attr('size',searchResult.length + 4)
+                    }
+                else
+                    {
+                        $("#searchBarOption").hide()
+                    }
+                
+            })});
+        
+        </script>
     </html>
 
 
