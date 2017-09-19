@@ -1,4 +1,5 @@
 $(function () {
+    $("#searchBarOption").hide();
     
     function chargerActus(numPremActu, nbActus) {
         $("#notif").prop("disabled", "true");
@@ -66,5 +67,60 @@ $(function () {
     };
     
     chargerActus(0, 5);
-    
+          
+        
+
+        $("#searchBar").on("input",function(){
+            $.post("API/getSearchProjetBySearchBar.php",{search_text: $("#searchBar").val()}, function(data){
+                var searchResult = JSON.parse(data);
+                var i = 1;
+                var resultSearch = "<optgroup label='Projet:'>";
+                $("#searchBarOption").html(null);
+                if(searchResult != null)
+                    {
+                        for( i ; i <= searchResult.length;i++){
+                   resultSearch += '<option class="searchOption" projet="'+searchResult[i - 1].id+'">'+searchResult[i - 1].titre+'</option>';
+                         
+                }
+                    }
+                else
+                    {
+                        resultSearch += '<option class="searchOption noResultOption" disabled>Pas de résultats</option>';
+                    }
+                $("#searchBarOption").append( resultSearch + '</optgroup><optgroup label="Autres:"><option value="'+$("#searchBar").val()+'" class="searchOption searchOptionProjet" projet="projet">Rechercher "'+$("#searchBar").val()+'" dans le contenu des projets</option><option value="'+$("#searchBar").val()+'" class="searchOption searchOptionProjet" projet="actu">Rechercher "'+$("#searchBar").val()+'" dans actu</option></optgroup>');
+               
+
+                $("#searchBarOption").attr('size',5);
+                if($("#searchBar").val() != "")
+                    {
+                        $("#searchBarOption").fadeIn("fast")
+                        if(searchResult != null){
+                            $("#searchBarOption").attr('size',searchResult.length + 4)
+                        }
+                        else
+                        {
+                             $("#searchBarOption").attr('size',5)
+                        }
+                        
+                    }
+                else
+                    {
+                        $("#searchBarOption").hide()
+                    }
+                
+            })});
+        
+
+            $("#searchBarOption").click(function() {
+                var projet_id = $('option:selected', this).attr('projet');
+                if (projet_id == "projet" || projet_id == "actu") 
+                {
+
+                } else 
+                {
+                    document.location.href = "projet.php?id=" + projet_id;
+                }
+
+            })
 });
+

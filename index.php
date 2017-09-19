@@ -144,47 +144,6 @@
         <script src="js/myJs/index.js"></script>
 
     </body>
-        <script>
-         $("#searchBarOption").hide()
-        </script>
-<script>
-    
-        $("#searchBar").on("input",function(){
-            $.post("API/getSearchProjetBySearchBar.php",{search_text: $("#searchBar").val()}, function(data){
-                var searchResult = JSON.parse(data);
-                var i = 1;
-                var resultSearch = "<optgroup label='Projet:'>"
-                $("#searchBarOption").html(null);
-                if(searchResult != null)
-                    {
-                        for( i ; i <= searchResult.length;i++){
-                   console.log(searchResult[i - 1].titre);
-                   resultSearch += '<option class="searchOption">'+searchResult[i - 1].titre+'</option>';
-                         
-                }
-                    }
-                else
-                    {
-                        resultSearch += '<option class="searchOption noResultOption" disabled>Pas de résultats</option>'
-                    }
-              console.log(resultSearch);
-                $("#searchBarOption").append( resultSearch + '</optgroup><optgroup label="Autres:"><option value="'+$("#searchBar").val()+'" class="searchOption searchOptionProjet">Rechercher "'+$("#searchBar").val()+'" dans le contenu des projets</option><option value="'+$("#searchBar").val()+'" class="searchOption searchOptionProjet">Rechercher "'+$("#searchBar").val()+'" dans actu</option></optgroup>');
-               
-                console.log("___");
-                $("#searchBarOption").attr('size',5)
-                if($("#searchBar").val() != "")
-                    {
-                        $("#searchBarOption").show()
-                        $("#searchBarOption").attr('size',searchResult.length + 4)
-                    }
-                else
-                    {
-                        $("#searchBarOption").hide()
-                    }
-                
-            })});
-        
-        </script>
     </html>
 
 
