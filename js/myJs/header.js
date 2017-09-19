@@ -1,5 +1,5 @@
 $(function () {
-    $("#listContratHeader").chosen({width: "inherit", width: "100%"});
+    $("#listContratHeader").chosen({width: "inherit", width: "100%",placeholder_text_multiple:"Tous contrats"});
     
     $(".contratSelectHeader").click(function(e){
         e.stopPropagation();
