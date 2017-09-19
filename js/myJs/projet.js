@@ -5,6 +5,7 @@ $(function(){
         if(repUser)
             {
                 $.post("API/removeProjetById.php", {projet_id: $("#projet_id").val()}, function(data){
+                    console.log(data);
                     var reponse = JSON.parse(data);
                     if(reponse)
                         {

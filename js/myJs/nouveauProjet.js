@@ -1,10 +1,12 @@
 $(function(){
+    
     $("#summernote").summernote({
         height: 300,
         lang: 'fr-FR'
     });
     var summerNoteVide = $("#summernote").summernote('code');
     
+    $("#envoiMail").bootstrapToggle();
     
     function actualiserHautFormulaire(){
         var idSecteur = $("#secteurProjet").val();
@@ -147,7 +149,6 @@ $(function(){
                                                 });
                                             }
 
-
                                        if($("#imageEnteteNouveauProjet").val() != "")
                                            {                                   
                                                var image = document.getElementById("imageEnteteNouveauProjet").files[0];
@@ -163,12 +164,72 @@ $(function(){
                                            }
                                             if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
                                                 {
-                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                   if($("#envoiMail").is(":checked"))
+                                                       {
+                                                           $.post("API/getUtilisateursAbonnesByProjetId.php", {projet_id: idProjet}, function(data){
+                                                                var users = JSON.parse(data);
+                                                                if(users != null)
+                                                                    {
+                                                                        var titre = "Un nouveau projet a été créé";
+                                                                        var contenu = "Bonjour,\n\nUn nouveau projet lié à vos abonnements vient d'être créé.\nPour le consulter vous pouvez cliquer <a href='projet.php?id=" + idProjet + "'>ICI</a>";
+                                                                        var emails = [];
+                                                                        users.forEach(function(user){
+                                                                            emails.push(user.email);
+                                                                        });
+                                                                        emails = emails.join();
+                                                                        console.log(emails);
+
+                                                                        $.post("API/envoyerMail.php", {emails: emails, titre: titre, contenu: contenu}, function(data){
+                                                                            var reponse = JSON.parse(data);
+                                                                            if(reponse)
+                                                                                {
+                                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                                }
+                                                                            else{
+                                                                                alert("Erreur: les mails n'ont pas pu être envoyés aux utilisateurs abonnés");
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                else{
+                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                }
+                                                            });
+                                                       }
                                                 }
                                             else{
                                                 myDropzone.on("complete", function (file) {
                                                   if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                   if($("#envoiMail").is(":checked"))
+                                                       {
+                                                           $.post("API/getUtilisateursAbonnesByProjetId.php", {projet_id: idProjet}, function(data){
+                                                                var users = JSON.parse(data);
+                                                                console.log(users);
+                                                                if(users != null)
+                                                                    {
+                                                                        var titre = "Un nouveau projet a été créé";
+                                                                        var contenu = "Bonjour,\n\nUn nouveau projet lié à vos abonnements vient d'être créé.\nPour le consulter vous pouvez cliquer <a href='projet.php?id=" + idProjet + "'>ICI</a>";
+                                                                        var emails = [];
+                                                                        users.forEach(function(user){
+                                                                            emails.push(user.email);
+                                                                        });
+                                                                        emails = emails.join();
+                                                                        $.post("API/envoyerMail.php", {emails: emails, titre: titre, contenu: contenu}, function(data){
+                                                                            var reponse = JSON.parse(data);
+                                                                            if(reponse)
+                                                                                {
+                                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                                }
+                                                                            else{
+                                                                                alert("Erreur: les mails n'ont pas pu être envoyés aux utilisateurs abonnés");
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                else{
+                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                }
+                                                            });
+                                                       }
+                                                       
                                                   }
                                                 });
 

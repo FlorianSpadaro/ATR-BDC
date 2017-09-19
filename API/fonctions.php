@@ -1,4 +1,10 @@
 <?php
+	function envoyerMail($emails, $titre, $contenu)
+	{
+		$reponse = mail($emails, $titre, $contenu);
+		return json_encode($reponse);
+	}
+
 	function getUtilisateursAbonnesByProjetId($idProjet)
 	{
 		include("connexionBdd.php");
@@ -13,7 +19,7 @@
 				$idSd = $data["sous_domaine_id"];
 				$idDomaine = json_decode(getDomaineIdByProjetId($idProjet));
 				$idSecteur = json_decode(getSecteurIdByProjetId($idProjet));
-				$req2 = $bdd->prepare("SELECT DISTINCT utilisateur_id FROM abonnement WHERE projet_id = ? OR sous_domaine_id = ? OR domaine_id = ? OR secteur_id = ?");
+				$req2 = $bdd->prepare("SELECT DISTINCT utilisateur_id FROM (SELECT * FROM abonnement WHERE projet_id = ? OR sous_domaine_id = ? OR domaine_id = ? OR secteur_id = ?) select_user");
 				$req2->execute(array($idProjet, $idSd, $idDomaine, $idSecteur));
 				while($data2 = $req2->fetch())
 				{
@@ -29,13 +35,19 @@
 				{
 					array_push($idsDomaines, $data2["domaine_id"]);
 				}
-				$idSecteur = json_decode(getSecteurIdByDomaineId($idsDomaines[0]));
+				if(sizeof($idsDomaines) > 0)
+				{
+					$idSecteur = json_decode(getSecteurIdByDomaineId($idsDomaines[0]));
+				}
+				else{
+					$idSecteur = null;
+				}
 				$reqDom = "";
 				foreach($idsDomaines as $idDom)
 				{
 					$reqDom = $reqDom." OR domaine_id = ".$idDom;
 				}
-				$req3 = $bdd->prepare("SELECT utilisateur_id FROM abonnement WHERE projet_id = ?".$reqDom." OR secteur_id = ?");
+				$req3 = $bdd->prepare("SELECT DISTINCT utilisateur_id FROM (SELECT * FROM abonnement WHERE projet_id = ?".$reqDom." OR secteur_id = ?) select_user");
 				$req3->execute(array($idProjet, $idSecteur));
 				while($data3 = $req3->fetch())
 				{
@@ -170,12 +182,15 @@
 			$req->execute(array($idProjet));
 			if($data = $req->fetch())
 			{
-				$reponse = unlink("../".$data["image_entete"]);
-				if($reponse)
-				{
-					$req2 = $bdd->prepare("UPDATE projet SET image_entete = DEFAULT WHERE id = ?");
-					$reponse = $req2->execute(array($idProjet));
-				}
+				if($data["image_entete"] != "img/imageEnteteProjetDefault.jpg")
+					{
+						$reponse = unlink("../".$data["image_entete"]);
+						if($reponse)
+						{
+							$req2 = $bdd->prepare("UPDATE projet SET image_entete = DEFAULT WHERE id = ?");
+							$reponse = $req2->execute(array($idProjet));
+						}
+					}
 			}
 		}catch(Exception $e){
 			$reponse = false;
@@ -289,7 +304,10 @@
 			$req->execute(array($idActu));
 			if($data = $req->fetch())
 			{
-				$reponse = unlink("../".$data["image_entete"]);
+				if($data["image_entete"] != "imageEnteteProjetDefault.jpg")
+				{
+					$reponse = unlink("../".$data["image_entete"]);
+				}
 			}
 		}catch(Exception $e){
 			$reponse = false;
