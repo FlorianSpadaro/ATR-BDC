@@ -40,7 +40,6 @@
     position:absolute;
     top:34px;
     overflow:hidden;
-    
 }
             .searchOptionProjet{
     font-style: italic;
@@ -53,16 +52,14 @@
 }
 .searchOption
 {
-
     border-bottom:1px #e4e4e4 dashed;
     padding-top:2px;
     padding-bottom:2px;
-
+    cursor:pointer;
 }
 .searchOption:hover
 {
     background-color:#e4e4e4;
- 
 }
 .noResultOption:hover
 {
@@ -83,7 +80,7 @@
                             <form class="form-horizontal">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input id="searchBar" list="searchBarOption" type="text" class="form-control" placeholder="Rechercher...">
+                                        <input id="searchBar" list="searchBarOption" type="text" class="form-control" placeholder="Rechercher..." autocomplete="off">
                                             <select id="searchBarOption" class="form-control searchSelector">
                                                 
                                           </select>
