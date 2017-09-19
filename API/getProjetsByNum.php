@@ -5,8 +5,13 @@
 	{
 		$_POST["params"] = null;
 	}
+
+if(!isset($_POST["search"]))
+	{
+		$_POST["search"] = null;
+	}
 	
-	echo getProjetsByNum($_POST["nb_projets"], $_POST["debut"], $_POST["params"]);
+	echo getProjetsByNum($_POST["nb_projets"], $_POST["debut"], $_POST["params"], $_POST["search"]);
 	
 	/*$params = (object)[];
 	$params->texte = (object)[];

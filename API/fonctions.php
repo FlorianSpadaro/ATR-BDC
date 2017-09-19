@@ -1084,6 +1084,7 @@
 					$i++;
 				}
 			}
+            
 			
 			//echo $requete;
 			
@@ -1097,14 +1098,14 @@
 		return json_encode($nb);
 	}
 
-	function getProjetsByNum($nb, $debut, $params)
+	function getProjetsByNum($nb, $debut, $params, $search)
 	{
 		include("connexionBdd.php");
 		
 		$projets = null;
 		$i = 0;
 		
-		if($params == null)
+		if($params == null && $search == null)
 		{
 			$req = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet ORDER BY date_creation DESC LIMIT ? OFFSET ?");
 			$req->execute(array($nb, $debut));
@@ -1119,7 +1120,33 @@
 				
 				$i++;
 			}
-		}
+		}elseif($search != null){
+            $idsProjets = json_decode(getSearchProjetByProjectSearch($search));
+            $tabIdsProjets = [];
+            if($idsProjets != null)
+            {
+                foreach($idsProjets as $idProjet)
+                {
+                    array_push($tabIdsProjets, $idProjet->id);
+                }
+            }
+            $resultIds = "'".implode("','",$tabIdsProjets)."'";
+      
+            
+            
+            $req = $bdd->query("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet WHERE id IN (".implode(',',$tabIdsProjets).") ORDER BY date_creation DESC");
+            while($data = $req->fetch())
+			{
+				$projets[$i]["id"] = $data["id"];
+				$projets[$i]["titre"] = $data["titre"];
+				$projets[$i]["description"] = $data["description"];
+				$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
+				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
+				$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
+				
+				$i++;
+			}
+        }
 		else{
 			$tabTexte = array();
 			$txt = strtoupper($params->texte->texte);
@@ -2727,10 +2754,11 @@
     function getSearchProjetBySearchBar($search_text)
     {
         include("connexionBdd.php");
+        $search_text = strtoupper($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
-        $titresearch_sql = "titre like ";
-        $descsearch_sql = "description like ";
+        $titresearch_sql = "UPPER(titre) like ";
+        $descsearch_sql = "UPPER(description) like ";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -2745,8 +2773,8 @@
             $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
                     if($i != $countarray)
                     {
-                        $titresearch_sql = $titresearch_sql." and titre like ";
-                        $descsearch_sql = $descsearch_sql." and description like ";
+                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
+                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
                     }
             
         }
@@ -2760,6 +2788,49 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
             $search[$z]['titre'] = $data['titre'];
             $search[$z]['description'] = $data['description'];
             
+            $z++;
+        }
+        return json_encode($search);
+        
+    }
+    function getSearchProjetByProjectSearch($search_text)
+    {
+        include("connexionBdd.php");
+        $search_text = strtoupper($search_text);
+        $searcharray = explode(" ",$search_text);
+        $countarray = count($searcharray);
+        $titresearch_sql = "UPPER(titre) like ";
+        $descsearch_sql = "UPPER(description) like ";
+        $contenu_sql = "UPPER(contenu) like ";
+        $z = 0;
+        $search = null;
+        for($i = 1; $i <= $countarray; $i++)
+        {
+            
+          
+                $searcharray[$i - 1] = "%".$searcharray[$i - 1]."%";
+                  
+           
+            
+            $titresearch_sql = $titresearch_sql."'".$searcharray[$i - 1]."'";
+            $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
+            $contenu_sql = $contenu_sql."'".$searcharray[$i - 1]."'";
+            
+                    if($i != $countarray)
+                    {
+                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
+                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
+                        $contenu_sql = $contenu_sql." and UPPER(contenu) like";
+                    }
+            
+        }
+        
+        $sql_return = "select id,titre,description from projet
+where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
+        $req = $bdd->query($sql_return);
+        while($data = $req->fetch())
+        {
+            $search[$z]['id'] = $data['id']; 
             $z++;
         }
         return json_encode($search);

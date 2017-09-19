@@ -6,6 +6,11 @@
     {
         $params = json_decode($_POST["params"]);
     }
+    $search = null;
+    if(isset($_GET["searchbar"]) && ($_GET["searchbar"] != null))
+    {
+        $search = $_GET["searchbar"];
+    }
     else if(isset($_GET["params"]) && ($_GET["params"] != null)){
         $params = json_decode(urldecode($_GET["params"]));
     }
@@ -24,7 +29,7 @@
         $_GET["p"] = $nbPages;
     }
     $debutProjets = ($_GET["p"]*$nbProjetsAfficher)-$nbProjetsAfficher;
-    $projets = json_decode(getProjetsByNum($nbProjetsAfficher, $debutProjets, $params));
+    $projets = json_decode(getProjetsByNum($nbProjetsAfficher, $debutProjets, $params, $search));
 ?>
 <html>
     <head>
@@ -87,7 +92,17 @@
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                         <div class="site-heading">
-                            <h1>Liste des Projets</h1>
+                            <?php 
+                            if(!isset($_GET["searchbar"]))
+                            {
+                                echo "<h1>Liste des Projets</h1>";
+                            }
+                            else
+                            {
+                                echo "<h1>Recherche</h1><h2><i>'".$_GET['searchbar']."'</i></h2>";
+                            }
+                            ?>
+                            <h1></h1>
                             <hr class="small">
                             <?php
                             if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
@@ -106,7 +121,15 @@
         <div class="container">
             
             <h3>
-                <button id="btnFiltres" class="btn btn-info">Filtres <span class="glyphicon glyphicon-filter"></span></button>
+                <?php
+                if(!isset($_GET["searchbar"]))
+                {
+                    ?>
+                    <button id="btnFiltres" class="btn btn-info">Filtres <span class="glyphicon glyphicon-filter"></span></button>
+                    <?php
+                }
+                ?>
+                
                 <form href="projets.php" method="post" class="form-horizontal" id="rechercheProjet">
                     <div id="listeHidden">
                         <input type="hidden" id="params" name="params" />
@@ -230,55 +253,35 @@
             ?>
             
             <hr>
-            
-            <div class="pull-right">
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a id="btnNum" href="#" class="btn btn-lg btn-info">N°</a>
-                        <form class="form-inline" id="formNumPage">
-                            <input class="form-control" type="number" placeholder="n° page" id="numPage" required />
-                        </form>
-                    </li>
-                    <?php
-                    if($_GET["p"] != 1)
-                    {
-                        ?>
+            <?php
+            if(!isset($_GET["searchbar"]))
+            {
+                ?>
+                <div class="pull-right">
+                    <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <div class="btn-group">
-                                <a href="projets.php?p=1<?php if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-backward"></span></button></a>
-                                <a href="projets.php?p=<?php echo ($_GET["p"]-1); if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-backward"></span></button></a>
-                            </div>
+                            <a id="btnNum" href="#" class="btn btn-lg btn-info">N°</a>
+                            <form class="form-inline" id="formNumPage">
+                                <input class="form-control" type="number" placeholder="n° page" id="numPage" required />
+                            </form>
                         </li>
                         <?php
-                    }
-                    ?>
-                    <?php
-                    if($nbPages < 12)
-                    {
-                        for($i = 1; $i <= $nbPages; $i++)
+                        if($_GET["p"] != 1)
                         {
                             ?>
-                            <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                                <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
+                            <li class="nav-item">
+                                <div class="btn-group">
+                                    <a href="projets.php?p=1<?php if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-backward"></span></button></a>
+                                    <a href="projets.php?p=<?php echo ($_GET["p"]-1); if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-backward"></span></button></a>
+                                </div>
                             </li>
                             <?php
                         }
-                    }
-                    else{
-                        if($_GET["p"] < 6)
+                        ?>
+                        <?php
+                        if($nbPages < 12)
                         {
-                            for($i = 1; $i <= 10; $i++)
-                            {
-                                ?>
-                                <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                                    <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
-                                </li>
-                                <?php
-                            }
-                        }
-                        else if($_GET["p"] > ($nbPages-6))
-                        {
-                            for($i = ($nbPages-10); $i <= $nbPages; $i++)
+                            for($i = 1; $i <= $nbPages; $i++)
                             {
                                 ?>
                                 <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
@@ -288,33 +291,60 @@
                             }
                         }
                         else{
-                            for($i = ($_GET["p"]-5); $i <= ($_GET["p"]+5); $i++)
+                            if($_GET["p"] < 6)
                             {
-                                ?>
-                                <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
-                                    <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
-                                </li>
-                                <?php
+                                for($i = 1; $i <= 10; $i++)
+                                {
+                                    ?>
+                                    <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
+                                        <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
+                                    </li>
+                                    <?php
+                                }
+                            }
+                            else if($_GET["p"] > ($nbPages-6))
+                            {
+                                for($i = ($nbPages-10); $i <= $nbPages; $i++)
+                                {
+                                    ?>
+                                    <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
+                                        <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
+                                    </li>
+                                    <?php
+                                }
+                            }
+                            else{
+                                for($i = ($_GET["p"]-5); $i <= ($_GET["p"]+5); $i++)
+                                {
+                                    ?>
+                                    <li class="nav-item <?php if($_GET["p"] == $i){ echo "active"; } ?>">
+                                        <a class="nav-link" href="projets.php?p=<?php echo $i; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><?php echo $i ?></a>
+                                    </li>
+                                    <?php
+                                }
                             }
                         }
-                    }
-                    ?>
-                    <?php
-                    if($_GET["p"] != $nbPages)
-                    {
                         ?>
-                        <li class="nav-item">
-                            <div class="btn-group">
-                                <a href="projets.php?p=<?php echo ($_GET["p"]+1); if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></button></a>
-                                <a href="projets.php?p=<?php echo $nbPages; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-forward"></span></button></a>
-                            </div>
-                        </li>
                         <?php
-                    }
-                    ?>
-                </ul>
-                <br/>
-            </div>
+                        if($_GET["p"] != $nbPages)
+                        {
+                            ?>
+                            <li class="nav-item">
+                                <div class="btn-group">
+                                    <a href="projets.php?p=<?php echo ($_GET["p"]+1); if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></button></a>
+                                    <a href="projets.php?p=<?php echo $nbPages; if($params != null){ echo "&amp;params=".urlencode(json_encode($params)); } ?>"><button class="btn btn-default"><span class="glyphicon glyphicon-fast-forward"></span></button></a>
+                                </div>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                    </ul>
+                    <br/>
+                </div>
+                <?php
+            }
+            ?>
+            
         </div>
         
         <br/><br/>
