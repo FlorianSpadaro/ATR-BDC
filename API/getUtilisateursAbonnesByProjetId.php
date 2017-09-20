@@ -1,4 +1,4 @@
 <?php
 	require_once("fonctions.php");
-	echo getUtilisateursAbonnesByProjetId(170);
+	echo getUtilisateursAbonnesByProjetId($_POST["projet_id"]);
 ?>
