@@ -42,7 +42,7 @@
             .radio{
                 display: inline-block;
             }
-            #divProjetGenerique, #divProjetSpecifique, ##waitValider{
+            #divProjetGenerique, #divProjetSpecifique, #waitValider{
                 display: none;
             }
             #divEnvoiMail{
