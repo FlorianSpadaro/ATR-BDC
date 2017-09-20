@@ -195,6 +195,9 @@ $(function(){
                                                                                             }
                                                                                         });
                                                                                    }
+                                                                                    else{
+                                                                                        document.location.href = "projet.php?id=" + idProjet;
+                                                                                    }
                                                                                 }
                                                                             else{
                                                                                 myDropzone.on("complete", function (file) {
@@ -231,6 +234,9 @@ $(function(){
                                                                                             }
                                                                                         });
                                                                                    }
+                                                                                      else{
+                                                                                          document.location.href = "projet.php?id=" + idProjet;
+                                                                                      }
                                                                                   }
                                                                                 });
 
@@ -281,6 +287,9 @@ $(function(){
                                                                         }
                                                                     });
                                                                }
+                                                                else{
+                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                }
                                                             }
                                                         else{
                                                             myDropzone.on("complete", function (file) {
@@ -317,6 +326,9 @@ $(function(){
                                                                         }
                                                                     });
                                                                }
+                                                                  else{
+                                                                      document.location.href = "projet.php?id=" + idProjet;
+                                                                  }
                                                               }
                                                             });
 
@@ -392,6 +404,9 @@ $(function(){
                                                                                         }
                                                                                     });
                                                                                }
+                                                                                else{
+                                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                                }
                                                                             }
                                                                         else{
                                                                             myDropzone.on("complete", function (file) {
@@ -428,6 +443,9 @@ $(function(){
                                                                                         }
                                                                                     });
                                                                                }
+                                                                                  else{
+                                                                                      document.location.href = "projet.php?id=" + idProjet;
+                                                                                  }
                                                                               }
                                                                             });
 
@@ -477,6 +495,9 @@ $(function(){
                                                                     }
                                                                 });
                                                            }
+                                                            else{
+                                                                document.location.href = "projet.php?id=" + idProjet;
+                                                            }
                                                         }
                                                     else{
                                                         myDropzone.on("complete", function (file) {
@@ -513,6 +534,9 @@ $(function(){
                                                                     }
                                                                 });
                                                            }
+                                                              else{
+                                                                  document.location.href = "projet.php?id=" + idProjet;
+                                                              }
                                                           }
                                                         });
 
