@@ -70,7 +70,6 @@
             <div class="modal fade" id="infos<?php echo $_SESSION["user_id"] ?>">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        
                     </div>
                 </div>
             </div>
