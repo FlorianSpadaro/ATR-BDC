@@ -54,7 +54,7 @@
             .element{
                 text-align: center;
             }
-            #pjActuellesSuppr{
+            #pjActuellesSuppr, #waitValider{
                 display: none;
             }
             ##divEnvoiMail{
@@ -67,7 +67,7 @@
         
         <input type="hidden" id="idProjet" name="idProjet" value="<?php echo $_GET["id"] ?>" />
         
-        <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
+        <header class="intro-header" style="background-image: url('<?php echo $projet->image_entete ?>')">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -239,6 +239,7 @@
             <div class="form-group pull-right">
                 <button class="btn btn-link" id="btnReinitialiser">Réinitialiser</button>
                 <button class="btn btn-default" id="validerNouveauProjet">Valider</button>
+                <img src="img/wait.gif" id="waitValider" />
             </div>
 
         </div>

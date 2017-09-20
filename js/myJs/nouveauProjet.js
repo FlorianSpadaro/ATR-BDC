@@ -88,14 +88,20 @@ $(function(){
         myDropzone = this;
             
         $("#validerNouveauProjet").click(function(){
+            $("#validerNouveauProjet").prop("disabled", true);
+            $("#waitValider").show();
             if($("#titreNouveauProjet").val() == "" || $("#summernote").summernote('code') == summerNoteVide || $("#summernote").summernote('code') == "<br>")
                 {
                     alert("Veuillez saisir un titre et un contenu");
+                    $("#validerNouveauProjet").prop("disabled", false);
+                    $("#waitValider").hide();
                 }
             else{
                 if($(".divRadio:visible").length == 0)
                     {
                         alert("Veuillez sélectionner un type de projet (générique ou spécifique)");
+                        $("#validerNouveauProjet").prop("disabled", false);
+                        $("#waitValider").hide();
                     }
                 else{
                     var continu = true;
@@ -108,6 +114,8 @@ $(function(){
                                 {
                                     continu = false;
                                     alert("Veuillez sélectionner au moins un domaine");
+                                    $("#validerNouveauProjet").prop("disabled", false);
+                                    $("#waitValider").hide();
                                 }
                         }
                     else if(typeProjet == "projetSpecifique")
@@ -117,6 +125,8 @@ $(function(){
                                 {
                                     continu = false;
                                     alert("Veuillez sélectionner un sous-domaine");
+                                    $("#validerNouveauProjet").prop("disabled", false);
+                                    $("#waitValider").hide();
                                 }
                         }
                     if(continu)
@@ -187,6 +197,8 @@ $(function(){
                                                                                 }
                                                                             else{
                                                                                 alert("Erreur: les mails n'ont pas pu être envoyés aux utilisateurs abonnés");
+                                                                                $("#validerNouveauProjet").prop("disabled", false);
+                                                                                $("#waitValider").hide();
                                                                             }
                                                                         });
                                                                     }
@@ -221,6 +233,8 @@ $(function(){
                                                                                 }
                                                                             else{
                                                                                 alert("Erreur: les mails n'ont pas pu être envoyés aux utilisateurs abonnés");
+                                                                                $("#validerNouveauProjet").prop("disabled", false);
+                                                                                $("#waitValider").hide();
                                                                             }
                                                                         });
                                                                     }
@@ -245,6 +259,8 @@ $(function(){
                                     }
                                 else{
                                     alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                                    $("#validerNouveauProjet").prop("disabled", false);
+                                    $("#waitValider").hide();
                                 }
                             });
                         }

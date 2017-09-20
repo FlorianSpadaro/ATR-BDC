@@ -42,7 +42,7 @@
             .radio{
                 display: inline-block;
             }
-            #divProjetGenerique, #divProjetSpecifique{
+            #divProjetGenerique, #divProjetSpecifique, ##waitValider{
                 display: none;
             }
             #divEnvoiMail{
@@ -134,6 +134,7 @@
             <div class="form-group pull-right">
                 <button class="btn btn-link" id="btnReinitialiser">Réinitialiser</button>
                 <button class="btn btn-default" id="validerNouveauProjet">Valider</button>
+                <img src="img/wait.gif" id="waitValider" />
             </div>
 
         </div>
