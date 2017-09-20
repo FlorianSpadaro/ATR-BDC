@@ -35,15 +35,18 @@
     <![endif]-->
         
         <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
-        
         <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+        <link href="bootstrap-toggle-master/css/bootstrap-toggle.min.css" rel="stylesheet">
         
         <style>
             .radio{
                 display: inline-block;
             }
-            #divProjetGenerique, #divProjetSpecifique{
+            #divProjetGenerique, #divProjetSpecifique, ##waitValider{
                 display: none;
+            }
+            #divEnvoiMail{
+                text-align: right;
             }
         </style>
     </head>
@@ -125,9 +128,13 @@
             <div action="API/addPjProjet.php" class="dropzone" id="form2">
             </div>
             <br/>
+            <div class="form-group" id="divEnvoiMail">
+                <label for="envoiMail">Envoi de mails <input type="checkbox" name="envoiMail" id="envoiMail" checked></label>
+            </div>
             <div class="form-group pull-right">
                 <button class="btn btn-link" id="btnReinitialiser">Réinitialiser</button>
                 <button class="btn btn-default" id="validerNouveauProjet">Valider</button>
+                <img src="img/wait.gif" id="waitValider" />
             </div>
 
         </div>
@@ -139,6 +146,7 @@
         <script src="js/dropzone.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
         <script src="js/summernote-fr-FR.js"></script>
+        <script src="bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
         
         <script src="js/myJs/nouveauProjet.js"></script>
     </body>

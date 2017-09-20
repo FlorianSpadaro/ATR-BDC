@@ -14,7 +14,6 @@
 
         <!-- Bootstrap Core JavaScript -->
         <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-        <script src="bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
 
         <!-- Contact Form JavaScript -->
         <script src="js/jqBootstrapValidation.js"></script>

@@ -1,4 +1,4 @@
 <?php
-	include("connexionBdd.php");
-	echo getUtilisateursAbonnesByProjetId($_POST["projet_id"]);
+	require_once("fonctions.php");
+	echo getUtilisateursAbonnesByProjetId(170);
 ?>

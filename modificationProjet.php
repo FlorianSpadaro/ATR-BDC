@@ -37,6 +37,7 @@
         <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
         
         <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+        <link href="bootstrap-toggle-master/css/bootstrap-toggle.min.css" rel="stylesheet">
         
         <style>
             .radio{
@@ -53,8 +54,11 @@
             .element{
                 text-align: center;
             }
-            #pjActuellesSuppr{
+            #pjActuellesSuppr, #waitValider{
                 display: none;
+            }
+            ##divEnvoiMail{
+                text-align: right;
             }
         </style>
     </head>
@@ -63,7 +67,7 @@
         
         <input type="hidden" id="idProjet" name="idProjet" value="<?php echo $_GET["id"] ?>" />
         
-        <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
+        <header class="intro-header" style="background-image: url('<?php echo $projet->image_entete ?>')">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -228,9 +232,14 @@
                     ?>
                 </div>
             </div>
+            <div class="form-group" id="divEnvoiMail">
+                <label for="envoiMail">Envoi de mails <input type="checkbox" name="envoiMail" id="envoiMail" checked></label>
+                
+            </div>
             <div class="form-group pull-right">
                 <button class="btn btn-link" id="btnReinitialiser">Réinitialiser</button>
                 <button class="btn btn-default" id="validerNouveauProjet">Valider</button>
+                <img src="img/wait.gif" id="waitValider" />
             </div>
 
         </div>
@@ -242,6 +251,7 @@
         <script src="js/dropzone.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
         <script src="js/summernote-fr-FR.js"></script>
+        <script src="bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
         
         <script src="js/myJs/modificationProjet.js"></script>
     </body>
