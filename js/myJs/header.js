@@ -112,7 +112,6 @@ $(function () {
     $("#listContratHeader").change(function(){
         var list_contrats = []
         list_contrats = $("#listContratHeader").val();
-        console.log(list_contrats);
         $("#secteur2 .domaine_").hide()
         if(list_contrats == null){
             $("#secteur2 .domaine_").show()  
@@ -123,6 +122,12 @@ $(function () {
                 $("#secteur2 .contrat_" + list_contrat).show();
             })
         }
-       
+    })
+    $(".domaine_").click(function(){
+        if($("#listContratHeader").val() != null){
+            var new_href = $(this).children().attr("href") + "&amp;contrats=" + $("#listContratHeader").val();
+            $(this).children().attr("href",new_href);
+        }
+       console.log($(this).children().attr("href"));
     })
 });
