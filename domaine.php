@@ -2,6 +2,7 @@
     include("header.php");
     $domaine = json_decode(getDomaineById($_GET["id"]));
     $sousDomaines = json_decode(getProjetsBySousDomaineByDomaineId($_GET["id"]));
+    $projetsGeneriques = json_decode(getProjetsGeneriquesByDomaineId($_GET["id"]));
     $contrats = json_decode(getContrats());
     $secteurs = json_decode(getSecteurs());
     $domaines = json_decode(getDomaines());
@@ -50,7 +51,19 @@
     </head>
 
     <body>
-        
+        <?php
+        if(isset($_GET["contrats"]))
+        {
+            ?>
+            <input type="hidden" name="cacherSd" id="cacherSd" value="<?php echo $_GET["contrats"] ?>" />
+            <?php
+        }
+        else{
+            ?>
+            <input type="hidden" name="cacherSd" id="cacherSd" value="false" />
+            <?php
+        }
+        ?>
         <input type="hidden" id="idDomaine" name="idDomaine" value="<?php echo $_GET["id"] ?>" />
         
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
@@ -316,11 +329,27 @@
                     <li class="active"><a href="#projetsGeneriques" data-toggle="tab">Projets Génériques</a></li>
                     <li><a href="#projetsSpecifiques" data-toggle="tab">Projets Spécifiques</a></li>
                 </ul>
-                
+                <br/>
                 <div class="tab-content">
                     
                     <div class="tab-pane active fade in" id="projetsGeneriques">
                         <div class="list-group">
+                            <?php
+                            if($projetsGeneriques != null)
+                            {
+                                foreach($projetsGeneriques as $projetGen)
+                                {
+                                    ?>
+                                    <a href="projet.php?id=<?php echo $projetGen->id ?>" class="list-group-item" title="<?php echo $projetGen->description ?>"><?php echo $projetGen->titre ?></a>
+                                    <?php
+                                }
+                            }
+                            else{
+                                ?>
+                            <label>Ce domaine ne contient aucun projet générique</label>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     
@@ -333,7 +362,7 @@
                               foreach($sousDomaines as $sd)
                           {
                               ?>
-                            <div class="panel panel-default">
+                            <div class="panel panel-default divSd contrat__<?php echo $sd->contrat_id ?>">
                               <div class="panel-heading"> 
                                 <h3 class="panel-title">
                                   <a href="#sd<?php echo $sd->id ?>" data-parent="#monaccordeon" data-toggle="collapse" title="<?php if(isset($sd->description) && ($sd->description != null)){echo $sd->description;} ?>" class="click"><span class="badge pull-right">

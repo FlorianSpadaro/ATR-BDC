@@ -2,6 +2,16 @@ $(function (){
    $('a').tooltip({ trigger: "hover" });
     $(".click").click();
     
+    if($("#cacherSd").val() != "false")
+        {
+            $(".divSd").hide();
+            var valGet = $("#cacherSd").val();
+            var idsContrats = [];//traiter valGet pour le transformer en tableau
+            idsContrats.forEach(function(idContrat){
+                $(".contrat__" + idContrat).show();
+            });
+        }
+    
     $("#btnValiderModifSousDomaine").click(function(e){
         e.preventDefault();
         if($("#libelleSousDomaineModif").val() == "")

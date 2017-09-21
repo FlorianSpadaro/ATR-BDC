@@ -2252,19 +2252,19 @@
 		$sousDomaines = null;
 		$i = 0;
 		$j = 0;
-		$req = $bdd->prepare("SELECT id, libelle, description FROM sous_domaine WHERE domaine_id = ?");
+		$req = $bdd->prepare("SELECT id, contrat_id, libelle, description FROM sous_domaine WHERE domaine_id = ?");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
 			$sousDomaines[$i]["id"] = $data["id"];
 			$sousDomaines[$i]["libelle"] = $data["libelle"];
 			$sousDomaines[$i]["description"] = $data["description"];
-			$req2 = $bdd->prepare("SELECT id, contrat_id, titre, description, contenu, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ?");
+			$sousDomaines[$i]["contrat_id"] = $data["contrat_id"];
+			$req2 = $bdd->prepare("SELECT id, titre, description, contenu, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ?");
 			$req2->execute(array($data["id"]));
 			while($data2 = $req2->fetch())
 			{
 				$sousDomaines[$i]["projets"][$j]["id"] = $data2["id"];
-				$sousDomaines[$i]["projets"][$j]["contrat_id"] = $data2["contrat_id"];
 				$sousDomaines[$i]["projets"][$j]["titre"] = $data2["titre"];
 				$sousDomaines[$i]["projets"][$j]["description"] = $data2["description"];
 				$sousDomaines[$i]["projets"][$j]["contenu"] = $data2["contenu"];
