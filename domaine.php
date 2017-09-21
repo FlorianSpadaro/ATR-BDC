@@ -409,7 +409,7 @@
                                             foreach($projetsGeneriques as $proGen)
                                             {
                                                 ?>
-                                                <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item list-group-item-info" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?><span class="badge">Générique</span></a>
+                                                <a href="projet.php?id=<?php echo $proGen->id ?>" class="list-group-item list-group-item-info" title="<?php echo $proGen->description ?>"><?php echo $proGen->titre ?><span class="badge">Générique</span></a>
                                                 <?php
                                             }
                                         }
