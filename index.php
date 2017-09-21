@@ -33,39 +33,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-        <style>
-        #searchBarOption
-{
-    width:741px;
-    position:absolute;
-    top:34px;
-    overflow:hidden;
-}
-            .searchOptionProjet{
-    font-style: italic;
-    font-size:px;
-}
-            .noResultOption
-{
-  color:#c10000;
-  font-weight: bold;
-}
-.searchOption
-{
-    border-bottom:1px #e4e4e4 dashed;
-    padding-top:2px;
-    padding-bottom:2px;
-    cursor:pointer;
-}
-.searchOption:hover
-{
-    background-color:#e4e4e4;
-}
-.noResultOption:hover
-{
-    background-color:white;
-}
-        </style>
+
     </head>
 
     <body>
@@ -80,12 +48,6 @@
                             <form class="form-horizontal">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input id="searchBar" list="searchBarOption" type="text" class="form-control" placeholder="Rechercher..." autocomplete="off">
-                                            <select id="searchBarOption" class="form-control searchSelector">
-                                                
-                                          </select>
-                                        
-                                        <a class="input-group-addon" href="#"><span class="glyphicon glyphicon-search"></span></a>
                                     </div>
                                 </div>
                             </form>

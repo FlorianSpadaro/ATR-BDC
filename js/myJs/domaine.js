@@ -4,6 +4,7 @@ $(function (){
     
     if($("#cacherSd").val() != "false")
         {
+            console.log("test");
             $(".divSd").hide();
             var valGet = $("#cacherSd").val();
             var idsContrats = valGet.split(",");
