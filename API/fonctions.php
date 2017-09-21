@@ -61,7 +61,7 @@
 			$tabEmails = array();
 			foreach($utilisateurs as $user)
 			{
-				array_push($emails, $user->email);
+				array_push($tabEmails, $user->email);
 			}
 			$emails = implode(",", $tabEmails);
 			
@@ -102,7 +102,7 @@
 			$tabEmails = array();
 			foreach($utilisateurs as $user)
 			{
-				array_push($emails, $user->email);
+				array_push($tabEmails, $user->email);
 			}
 			$emails = implode(",", $tabEmails);
 			
@@ -157,7 +157,6 @@
 				if($data["sous_domaine_id"] != null)
 				{
 					$typeProjet = "spécifique";
-					echo $data["sous_domaine_id"];
 					$sousDomaine = json_decode(getSousDomaineById($data["sous_domaine_id"]));
 					$domSd = $sousDomaine->libelle;
 				}
@@ -226,7 +225,6 @@
 				if($data["sous_domaine_id"] != null)
 				{
 					$typeProjet = "spécifique";
-					echo $data["sous_domaine_id"];
 					$sousDomaine = json_decode(getSousDomaineById($data["sous_domaine_id"]));
 					$domSd = $sousDomaine->libelle;
 				}
@@ -667,8 +665,7 @@
 	function removeActualiteById($idActu)
 	{
 		include("connexionBdd.php");
-		
-		$rep = false;
+		$rep = true;
 		$reponse = false;
 		try{
 			$req = $bdd->prepare("SELECT piece_jointe_id FROM actualite_pj WHERE actualite_id = ?");
@@ -697,7 +694,7 @@
 				$req4->execute(array($idActu));
 				if($data4 = $req4->fetch())
 				{
-					if($data4 != "img/imageEnteteProjetDefault.jpg")
+					if($data4["image_entete"] != "img/imageEnteteProjetDefault.jpg")
 					{
 						unlink("../".$data4["image_entete"]);
 					}
@@ -1410,7 +1407,6 @@
 				}
 			}
 			
-			//echo $requete;
 			
 			$req = $bdd->query($requete);
 			while($data = $req->fetch())
@@ -1600,7 +1596,6 @@
 			}
 			$requete = $requete." ORDER BY date_creation DESC LIMIT ? OFFSET ?";
 			
-			//echo $requete;
 			
 			$req = $bdd->prepare($requete);
 			$req->execute(array($nb, $debut));

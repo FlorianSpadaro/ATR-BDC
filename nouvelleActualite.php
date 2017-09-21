@@ -37,6 +37,12 @@
         
         <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
         <link href="bootstrap-toggle-master/css/bootstrap-toggle.min.css" rel="stylesheet">
+        
+        <style>
+            #waitValider{
+                display: none;
+            }
+        </style>
     </head>
     
     <body>
@@ -83,6 +89,7 @@
             <div class="form-group pull-right">
                 <button class="btn btn-link" id="btnReinitialiser">Réinitialiser</button>
                 <button class="btn btn-default" id="validerNouvelleActu">Valider</button>
+                <img src="img/wait.gif" id="waitValider" />
             </div>
 
         </div>

@@ -325,7 +325,7 @@
                 }
                 ?>
                 <br/>
-                <ul class="nav nav-pills container">
+                <!--<ul class="nav nav-pills container">
                     <li class="active"><a href="#projetsSpecifiques" data-toggle="tab">Projets Spécifiques</a></li>
                     <li><a href="#projetsGeneriques" data-toggle="tab">Projets Génériques</a></li>
                 </ul>
@@ -335,25 +335,25 @@
                     <div class="tab-pane fade" id="projetsGeneriques">
                         <div class="list-group">
                             <?php
-                            if($projetsGeneriques != null)
+                            /*if($projetsGeneriques != null)
                             {
                                 foreach($projetsGeneriques as $projetGen)
                                 {
-                                    ?>
-                                    <a href="projet.php?id=<?php echo $projetGen->id ?>" class="list-group-item" title="<?php echo $projetGen->description ?>"><?php echo $projetGen->titre ?></a>
+                                    */?>
+                                    <a href="projet.php?id=<?php /*echo $projetGen->id*/ ?>" class="list-group-item" title="<?php /*echo $projetGen->description*/ ?>"><?php /*echo $projetGen->titre*/ ?></a>
                                     <?php
-                                }
+                               /* }
                             }
-                            else{
+                            else{*/
                                 ?>
                             <label>Ce domaine ne contient aucun projet générique</label>
                                 <?php
-                            }
+                            //}
                             ?>
                         </div>
-                    </div>
+                    </div>-->
                     
-                    <div class="tab-pane active fade in" id="projetsSpecifiques">
+                    <!--<div class="tab-pane active fade in" id="projetsSpecifiques">-->
                         <div id="monaccordeon" class="panel-group">
                         <h3>Sous-domaines</h3>
                           <?php
@@ -404,10 +404,19 @@
                                         ?>
                                         <div class="list-group">
                                         <?php
+                                        if($projetsGeneriques != null)
+                                        {
+                                            foreach($projetsGeneriques as $proGen)
+                                            {
+                                                ?>
+                                                <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item list-group-item-info" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?><span class="badge">Générique</span></a>
+                                                <?php
+                                            }
+                                        }
                                         foreach($sd->projets as $projet)
                                         {
                                             ?>
-                                            <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?></a>
+                                            <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?><span class="badge">Spécifique</span></a>
                                             <?php
                                         }
                                         ?>
@@ -423,13 +432,13 @@
                           }
                           else{
                             ?>
-                            <label class="label label-default">Ce domaine ne contient aucun sous-domaine</label>
+                            <label class="label label-info">Ce domaine ne contient aucun sous-domaine</label>
                             <?php
                           }
                           ?>
 
                       </div>
-                    </div>
+                    <!--</div>-->
                     
                 </div>
                 

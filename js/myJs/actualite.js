@@ -4,15 +4,19 @@ $(function(){
     });
     
     $("#btnSupprimerActu").click(function(){
-        var idActu = $("#idActu").val();
-        $.post("API/removeActualiteById.php", {actualite_id: idActu}, function(data){
-            var reponse = JSON.parse(data);
-            if(reponse){
-                document.location.href = "index.php";
+        var repUser = confirm("Voulez-vous vraiment supprimer cette actualité?");
+        if(repUser)
+            {
+                var idActu = $("#idActu").val();
+                $.post("API/removeActualiteById.php", {actualite_id: idActu}, function(data){
+                    var reponse = JSON.parse(data);
+                    if(reponse){
+                        document.location.href = "index.php";
+                    }
+                    else{
+                        alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                    }
+                });
             }
-            else{
-                alert("Une erreur s'est produite, veuillez réessayer plus tard");
-            }
-        });
     });
 });
