@@ -58,6 +58,65 @@
             .newDomaine{
                 background-color: burlywood;
             }
+            #searchBarOption
+            {
+                width: 779px;
+                position: absolute;
+                top: 47px;
+                left: -38px;
+                overflow: hidden;
+            }
+                        .searchOptionProjet{
+                font-style: italic;
+                font-size:px;
+            }
+                        .noResultOption
+            {
+            color:#c10000;
+            font-weight: bold;
+            }
+            .searchOption
+            {
+                border-bottom:1px #e4e4e4 dashed;
+                padding-top:2px;
+                padding-bottom:2px;
+                cursor:pointer;
+            }
+            .searchOption:hover
+            {
+                background-color:#e4e4e4;
+            }
+            .noResultOption:hover
+            {
+                background-color:white;
+            }
+            #searchBar
+            {
+                margin-top:13px;
+                margin-right:20px;
+                width:200px;
+                border-top-right-radius:7px;
+                border-bottom-right-radius:7px;
+                border:rgb(230, 233, 234) 1px solid;
+                border-left:none;
+                outline-style:none;
+                box-shadow:none;
+            }
+            #searchBarIcon
+            {
+
+                background-color:white;
+                border:#e6e8e8 1px solid;
+                border-right:none;
+                border-radius:0;
+                position:absolute;
+                left:-38px;
+                top:13px;
+                height:34px;
+                border-top-left-radius:7px;
+                border-bottom-left-radius:7px;
+                box-shadow
+            }   
         </style>
 
     </head>
@@ -193,11 +252,20 @@
                     ?>
 
                 </div>
-
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     
                     <ul class="nav navbar-nav navbar-right">
+                        <li>
+                        <form class="form-inline">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="searchBarIcon"><span class="glyphicon glyphicon-search"></span></span>
+                                <input id="searchBar" list="searchBarOption" type="text" class="form-control" placeholder="Rechercher..." autocomplete="off">
+                                <select id="searchBarOption" class="form-control searchSelector"></select>   
+                            </div>
+                        </form>
+                                    
+                        </li>
                         <li class="active">
                             <a href="index.php">Accueil</a>
                         </li>
