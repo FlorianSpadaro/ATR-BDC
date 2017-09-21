@@ -1,7 +1,180 @@
 <?php
+	function mailNotifModificationProjet($idProjet, $users)//$users = format json
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		
+		try{
+			$users = json_decode($users);
+			$emails = array();
+			foreach($users as $user)
+			{
+				array_push($emails, $user->email);
+			}
+			$emails = implode(", ", $emails);
+			$titreProjet = "";
+			
+			$req = $bdd->prepare("SELECT titre, sous_domaine_id FROM projet WHERE id = ?");
+			$req->execute(array($idProjet));
+			if($data = $req->fetch())
+			{
+				$titreProjet = $data["titre"];
+				if($data["sous_domaine_id"] != null)
+				{
+					$typeProjet = "spécifique";
+					echo $data["sous_domaine_id"];
+					$sousDomaine = json_decode(getSousDomaineById($data["sous_domaine_id"]));
+					$domSd = $sousDomaine->libelle;
+				}
+				else{
+					$typeProjet = "générique";
+					$domaines = array();
+					$req = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+					$req->execute(array($idProjet));
+					while($data = $req->fetch())
+					{
+						array_push($domaines, $data["domaine_id"]);
+					}
+					$domSd = implode(", ", $domaines);
+				}
+				$sect = json_decode(getSecteurById(json_decode(getSecteurIdByProjetId($idProjet))));
+				$secteur = $sect->libelle;
+				
+				$lien = "projet.php?id=".$idProjet;
+				$titre = "Un projet a été modifié";
+				$contenu = "Bonjour<br/><br/>Le projet \"".$titreProjet."\" du secteur ".$secteur." a été modifié.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd .")<br/>Pour y accéder, cliquez <a href='".$lien."'>ICI</a>";
+				
+				$reponse = json_decode(envoyerMail($emails, $titre, $contenu));
+				if($reponse)
+				{
+					$titreNotif = $titre;
+					$descriptionNotif = $contenu;
+					$lienNotif = $lien;
+					$idNotif = json_decode(addNotification($titreNotif, $descriptionNotif, $lienNotif));
+					if($idNotif != null)
+					{
+						foreach($users as $usr)
+						{
+							if($reponse)
+							{
+								$reponse = json_decode(addUtilisateurNotification($usr->id, $idNotif));
+							}
+						}
+					}
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function mailNotifNouveauProjet($idProjet, $users) //$users = format json
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		
+		try{
+			$users = json_decode($users);
+			$emails = array();
+			foreach($users as $user)
+			{
+				array_push($emails, $user->email);
+			}
+			$emails = implode(", ", $emails);
+			
+			$req = $bdd->prepare("SELECT sous_domaine_id FROM projet WHERE id = ?");
+			$req->execute(array($idProjet));
+			if($data = $req->fetch())
+			{
+				if($data["sous_domaine_id"] != null)
+				{
+					$typeProjet = "spécifique";
+					echo $data["sous_domaine_id"];
+					$sousDomaine = json_decode(getSousDomaineById($data["sous_domaine_id"]));
+					$domSd = $sousDomaine->libelle;
+				}
+				else{
+					$typeProjet = "générique";
+					$domaines = array();
+					$req = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+					$req->execute(array($idProjet));
+					while($data = $req->fetch())
+					{
+						array_push($domaines, $data["domaine_id"]);
+					}
+					$domSd = implode(", ", $domaines);
+				}
+				$sect = json_decode(getSecteurById(json_decode(getSecteurIdByProjetId($idProjet))));
+				$secteur = $sect->libelle;
+				
+				$lien = "projet.php?id=".$idProjet;
+				$titre = "Un nouveau projet a été créé";
+				$contenu = "Bonjour<br/><br/>Un projet du secteur ".$secteur." a été créé.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd.")<br/>Pour y accéder, cliquez <a href='".$lien."'>ICI</a>";
+				
+				$reponse = json_decode(envoyerMail($emails, $titre, $contenu));
+				if($reponse)
+				{
+					$titreNotif = $titre;
+					$descriptionNotif = $contenu;
+					$lienNotif = $lien;
+					$idNotif = json_decode(addNotification($titreNotif, $descriptionNotif, $lienNotif));
+					if($idNotif != null)
+					{
+						foreach($users as $usr)
+						{
+							if($reponse)
+							{
+								$reponse = json_decode(addUtilisateurNotification($usr->id, $idNotif));
+							}
+						}
+					}
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function addNotification($titre, $description, $lien)
+	{
+		include("connexionBdd.php");
+		$id = null;
+		$req = $bdd->prepare("INSERT INTO notification(titre, description, lien, date) VALUES(?, ?, ?, NOW()) RETURNING id");
+		$req->execute(array($titre, $description, $lien));
+		if($data = $req->fetch())
+		{
+			$id = $data["id"];
+		}
+		return json_encode($id);
+	}
+	
+	function addUtilisateurNotification($idUser, $idNotif)
+	{
+		include("connexionBdd.php");
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO notification_utilisateur(utilisateur_id, notification_id) VALUES(?, ?)");
+			$reponse = $req->execute(array($idUser, $idNotif));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
 	function envoyerMail($emails, $titre, $contenu)
 	{
-		$reponse = mail($emails, $titre, $contenu);
+		$headers = "";
+		//$headers .= "From: " . strip_tags($_POST['req-email']) . "\r\n";
+		//$headers .= "Reply-To: ". strip_tags($_POST['req-email']) . "\r\n";
+		//$headers .= "CC: susan@example.com\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-Type: text/html; charset=utf-8\r\n";
+		
+		$reponse = mail($emails, $titre, $contenu, $headers);
 		return json_encode($reponse);
 	}
 
@@ -1102,7 +1275,6 @@
 					$i++;
 				}
 			}
-            
 			
 			//echo $requete;
 			
@@ -1116,14 +1288,14 @@
 		return json_encode($nb);
 	}
 
-	function getProjetsByNum($nb, $debut, $params, $search)
+	function getProjetsByNum($nb, $debut, $params)
 	{
 		include("connexionBdd.php");
 		
 		$projets = null;
 		$i = 0;
 		
-		if($params == null && $search == null)
+		if($params == null)
 		{
 			$req = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet ORDER BY date_creation DESC LIMIT ? OFFSET ?");
 			$req->execute(array($nb, $debut));
@@ -1138,33 +1310,7 @@
 				
 				$i++;
 			}
-		}elseif($search != null){
-            $idsProjets = json_decode(getSearchProjetByProjectSearch($search));
-            $tabIdsProjets = [];
-            if($idsProjets != null)
-            {
-                foreach($idsProjets as $idProjet)
-                {
-                    array_push($tabIdsProjets, $idProjet->id);
-                }
-            }
-            $resultIds = "'".implode("','",$tabIdsProjets)."'";
-      
-            
-            
-            $req = $bdd->query("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet WHERE id IN (".implode(',',$tabIdsProjets).") ORDER BY date_creation DESC");
-            while($data = $req->fetch())
-			{
-				$projets[$i]["id"] = $data["id"];
-				$projets[$i]["titre"] = $data["titre"];
-				$projets[$i]["description"] = $data["description"];
-				$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
-				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
-				$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
-				
-				$i++;
-			}
-        }
+		}
 		else{
 			$tabTexte = array();
 			$txt = strtoupper($params->texte->texte);
@@ -2772,11 +2918,10 @@
     function getSearchProjetBySearchBar($search_text)
     {
         include("connexionBdd.php");
-        $search_text = strtoupper($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
-        $titresearch_sql = "UPPER(titre) like ";
-        $descsearch_sql = "UPPER(description) like ";
+        $titresearch_sql = "titre like ";
+        $descsearch_sql = "description like ";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -2791,8 +2936,8 @@
             $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
                     if($i != $countarray)
                     {
-                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
-                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
+                        $titresearch_sql = $titresearch_sql." and titre like ";
+                        $descsearch_sql = $descsearch_sql." and description like ";
                     }
             
         }
@@ -2806,49 +2951,6 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
             $search[$z]['titre'] = $data['titre'];
             $search[$z]['description'] = $data['description'];
             
-            $z++;
-        }
-        return json_encode($search);
-        
-    }
-    function getSearchProjetByProjectSearch($search_text)
-    {
-        include("connexionBdd.php");
-        $search_text = strtoupper($search_text);
-        $searcharray = explode(" ",$search_text);
-        $countarray = count($searcharray);
-        $titresearch_sql = "UPPER(titre) like ";
-        $descsearch_sql = "UPPER(description) like ";
-        $contenu_sql = "UPPER(contenu) like ";
-        $z = 0;
-        $search = null;
-        for($i = 1; $i <= $countarray; $i++)
-        {
-            
-          
-                $searcharray[$i - 1] = "%".$searcharray[$i - 1]."%";
-                  
-           
-            
-            $titresearch_sql = $titresearch_sql."'".$searcharray[$i - 1]."'";
-            $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
-            $contenu_sql = $contenu_sql."'".$searcharray[$i - 1]."'";
-            
-                    if($i != $countarray)
-                    {
-                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
-                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
-                        $contenu_sql = $contenu_sql." and UPPER(contenu) like";
-                    }
-            
-        }
-        
-        $sql_return = "select id,titre,description from projet
-where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
-        $req = $bdd->query($sql_return);
-        while($data = $req->fetch())
-        {
-            $search[$z]['id'] = $data['id']; 
             $z++;
         }
         return json_encode($search);
