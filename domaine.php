@@ -52,7 +52,7 @@
 
     <body>
         <?php
-        if(isset($_GET["contrats"]))
+        if(isset($_GET["contrats"]) && $domaine->secteur->id == 2)
         {
             ?>
             <input type="hidden" name="cacherSd" id="cacherSd" value="<?php echo $_GET["contrats"] ?>" />
