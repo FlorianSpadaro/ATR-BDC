@@ -125,7 +125,7 @@ $(function () {
     })
     $(".domaine_").click(function(){
         if($("#listContratHeader").val() != null){
-            var new_href = $(this).children().attr("href") + "&amp;contrats=" + $("#listContratHeader").val();
+            var new_href = $(this).children().attr("href") + "&contrats=" + $("#listContratHeader").val();
             $(this).children().attr("href",new_href);
         }
        console.log($(this).children().attr("href"));
