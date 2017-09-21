@@ -79,7 +79,7 @@
                                 <?php echo $domaine->secteur->libelle ?>
                             </h2>
                             <span class="meta">
-                                <?php 
+                                <?php
                                 if($domaine->description != null)
                                 {
                                     echo $domaine->description;

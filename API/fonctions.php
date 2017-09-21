@@ -3091,5 +3091,64 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
         return json_encode($search);
         
     }
-
+	
+    function getSearchProjetByProjectSearch($search_text)
+    {
+        include("connexionBdd.php");
+        $search_text = strtoupper($search_text);
+        $searcharray = explode(" ",$search_text);
+        $countarray = count($searcharray);
+        $titresearch_sql = "UPPER(titre) like ";
+        $descsearch_sql = "UPPER(description) like ";
+        $contenu_sql = "UPPER(contenu) like ";
+        $z = 0;
+        $search = null;
+        for($i = 1; $i <= $countarray; $i++)
+        {
+            
+          
+                $searcharray[$i - 1] = "%".$searcharray[$i - 1]."%";
+                  
+           
+            
+            $titresearch_sql = $titresearch_sql."'".$searcharray[$i - 1]."'";
+            $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
+            $contenu_sql = $contenu_sql."'".$searcharray[$i - 1]."'";
+            
+                    if($i != $countarray)
+                    {
+                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
+                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
+                        $contenu_sql = $contenu_sql." and UPPER(contenu) like";
+                    }
+            
+        }
+        
+        $sql_return = "select id,titre,description from projet
+where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
+        $req = $bdd->query($sql_return);
+        while($data = $req->fetch())
+        {
+            $search[$z]['id'] = $data['id']; 
+            $z++;
+        }
+        return json_encode($search);
+        
+    }
+	function getContratByDomaineId()
+	{
+		include("connexionBdd.php");
+		$i = 0;
+		$contrat = null;
+		$req = $bdd->query("select distinct domaine.id as domaine_id, contrat.id as contrat_id from domaine
+		left join sous_domaine on domaine.id = sous_domaine.domaine_id
+		left join contrat on sous_domaine.contrat_id = contrat.id");
+		while($data = $req->fetch())
+		{
+			$contrat[$i]['contrat_id'] = $data['contrat_id'];
+			$contrat[$i]['domaine_id'] = $data['domaine_id'];
+			$i++;
+		}
+		return json_encode($contrat);
+	}
 ?>
