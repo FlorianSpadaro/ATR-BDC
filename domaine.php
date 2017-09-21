@@ -326,13 +326,13 @@
                 ?>
                 <br/>
                 <ul class="nav nav-pills container">
-                    <li class="active"><a href="#projetsGeneriques" data-toggle="tab">Projets Génériques</a></li>
-                    <li><a href="#projetsSpecifiques" data-toggle="tab">Projets Spécifiques</a></li>
+                    <li class="active"><a href="#projetsSpecifiques" data-toggle="tab">Projets Spécifiques</a></li>
+                    <li><a href="#projetsGeneriques" data-toggle="tab">Projets Génériques</a></li>
                 </ul>
                 <br/>
                 <div class="tab-content">
                     
-                    <div class="tab-pane active fade in" id="projetsGeneriques">
+                    <div class="tab-pane fade" id="projetsGeneriques">
                         <div class="list-group">
                             <?php
                             if($projetsGeneriques != null)
@@ -353,7 +353,7 @@
                         </div>
                     </div>
                     
-                    <div class="tab-pane fade" id="projetsSpecifiques">
+                    <div class="tab-pane active fade in" id="projetsSpecifiques">
                         <div id="monaccordeon" class="panel-group">
                         <h3>Sous-domaines</h3>
                           <?php
