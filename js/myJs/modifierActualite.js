@@ -4,6 +4,8 @@ $(function(){
         lang: 'fr-FR'
     });
     
+    $("#envoiMail").bootstrapToggle();
+    
     var tabSuppression = [];
     
     $(".btnSuprPj").click(function(){
@@ -51,6 +53,9 @@ $(function(){
                     alert("Veuillez saisir un titre et un contenu");
                 }
             else{
+                $("#validerNouvelleActu").prop("disabled", true);
+                $("#waitValider").show();
+                
                 var idActu = $("#idActu").val();
                 var titre = $("#titreNouvelleActu").val();
                 var description = $("#descriptionNouvelleActu").val();
@@ -91,12 +96,46 @@ $(function(){
                                                 {
                                                     if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
                                                         {
+                                                            if($("#envoiMail").is(":checked"))
+                                                            {
+                                                                $.post("API/mailNotifModificationActualite.php", {actualite_id: idActu}, function(data){
+                                                                    var reponse = JSON.parse(data);
+                                                                    if(reponse)
+                                                                        {
+                                                                            document.location.href = "actualite.php?id=" + idActu;
+                                                                        }
+                                                                    else{
+                                                                        alert("Les mails n'ont pas pu être envoyés aux utilisateurs");
+                                                                        $("#validerNouvelleActu").prop("disabled", false);
+                                                                        $("#waitValider").hide();
+                                                                    }
+                                                                });
+                                                            }
+                                                        else{
                                                             document.location.href = "actualite.php?id=" + idActu;
+                                                        }
                                                         }
                                                     else{
                                                         myDropzone.on("complete", function (file) {
                                                           if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                                                            if($("#envoiMail").is(":checked"))
+                                                            {
+                                                                $.post("API/mailNotifModificationActualite.php", {actualite_id: idActu}, function(data){
+                                                                    var reponse = JSON.parse(data);
+                                                                    if(reponse)
+                                                                        {
+                                                                            document.location.href = "actualite.php?id=" + idActu;
+                                                                        }
+                                                                    else{
+                                                                        alert("Les mails n'ont pas pu être envoyés aux utilisateurs");
+                                                                        $("#validerNouvelleActu").prop("disabled", false);
+                                                                        $("#waitValider").hide();
+                                                                    }
+                                                                });
+                                                            }
+                                                        else{
                                                             document.location.href = "actualite.php?id=" + idActu;
+                                                        }
                                                           }
                                                         });
 
@@ -114,12 +153,46 @@ $(function(){
                             else{
                                 if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
                                     {
-                                        document.location.href = "actualite.php?id=" + idActu;
+                                        if($("#envoiMail").is(":checked"))
+                                            {
+                                                $.post("API/mailNotifModificationActualite.php", {actualite_id: idActu}, function(data){
+                                                    var reponse = JSON.parse(data);
+                                                    if(reponse)
+                                                        {
+                                                            document.location.href = "actualite.php?id=" + idActu;
+                                                        }
+                                                    else{
+                                                        alert("Les mails n'ont pas pu être envoyés aux utilisateurs");
+                                                        $("#validerNouvelleActu").prop("disabled", false);
+                                                        $("#waitValider").hide();
+                                                    }
+                                                });
+                                            }
+                                        else{
+                                            document.location.href = "actualite.php?id=" + idActu;
+                                        }
                                     }
                                 else{
                                     myDropzone.on("complete", function (file) {
                                       if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                                        if($("#envoiMail").is(":checked"))
+                                        {
+                                            $.post("API/mailNotifModificationActualite.php", {actualite_id: idActu}, function(data){
+                                                var reponse = JSON.parse(data);
+                                                if(reponse)
+                                                    {
+                                                        document.location.href = "actualite.php?id=" + idActu;
+                                                    }
+                                                else{
+                                                    alert("Les mails n'ont pas pu être envoyés aux utilisateurs");
+                                                    $("#validerNouvelleActu").prop("disabled", false);
+                                                    $("#waitValider").hide();
+                                                }
+                                            });
+                                        }
+                                    else{
                                         document.location.href = "actualite.php?id=" + idActu;
+                                    }
                                       }
                                     });
 

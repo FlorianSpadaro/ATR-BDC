@@ -6,6 +6,8 @@ $(function(){
     
     var summerNoteVide = $("#summernote").summernote('code');
     
+    $("#envoiMail").bootstrapToggle();
+    
     Dropzone.options.form2 = {
         parallelUploads: 10,
         maxFiles: 10,
@@ -22,6 +24,9 @@ $(function(){
                     alert("Veuillez saisir un titre et un contenu");
                 }
             else{
+                $("#validerNouvelleActu").prop("disabled", true);
+                $("#waitValider").show();
+                
                 var idUser = $("#user_id").val();
                 var titre = $("#titreNouvelleActu").val();
                 var description = $("#descriptionNouvelleActu").val();
@@ -50,12 +55,46 @@ $(function(){
                                }
                             if(myDropzone.getUploadingFiles().length == 0 && myDropzone.getQueuedFiles().length == 0)
                                 {
-                                    document.location.href = "actualite.php?id=" + idActu;
+                                    if($("#envoiMail").is(":checked"))
+                                        {
+                                            $.post("API/mailNotifNouvelleActualite.php", {actualite_id: idActu}, function(data){
+                                                var reponse = JSON.parse(data);
+                                                if(reponse)
+                                                    {
+                                                        document.location.href = "actualite.php?id=" + idActu;
+                                                    }
+                                                else{
+                                                    alert("Les mails n'ont pas pu être envoyés aux utilisateurs");
+                                                    $("#validerNouvelleActu").prop("disabled", false);
+                                                    $("#waitValider").hide();
+                                                }
+                                            });
+                                        }
+                                    else{
+                                        document.location.href = "actualite.php?id=" + idActu;
+                                    }
                                 }
                             else{
                                 myDropzone.on("complete", function (file) {
                                   if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                                    document.location.href = "actualite.php?id=" + idActu;
+                                    if($("#envoiMail").is(":checked"))
+                                        {
+                                            $.post("API/mailNotifNouvelleActualite.php", {actualite_id: idActu}, function(data){
+                                                var reponse = JSON.parse(data);
+                                                if(reponse)
+                                                    {
+                                                        document.location.href = "actualite.php?id=" + idActu;
+                                                    }
+                                                else{
+                                                    alert("Les mails n'ont pas pu être envoyés aux utilisateurs");
+                                                    $("#validerNouvelleActu").prop("disabled", false);
+                                                    $("#waitValider").hide();
+                                                }
+                                            });
+                                        }
+                                    else{
+                                        document.location.href = "actualite.php?id=" + idActu;
+                                    }
                                   }
                                 });
 
@@ -69,6 +108,8 @@ $(function(){
                         }
                     else{
                         alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                        $("#validerNouvelleActu").prop("disabled", false);
+                        $("#waitValider").hide();
                     }
                 });
             }
