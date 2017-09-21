@@ -311,82 +311,98 @@
                     <?php
                 }
                 ?>
+                <br/>
+                <ul class="nav nav-pills container">
+                    <li class="active"><a href="#projetsGeneriques" data-toggle="tab">Projets Génériques</a></li>
+                    <li><a href="#projetsSpecifiques" data-toggle="tab">Projets Spécifiques</a></li>
+                </ul>
                 
-              <div id="monaccordeon" class="panel-group">
-                <h3>Sous-domaines</h3>
-                  <?php
-                  if(isset($sousDomaines) && ($sousDomaines != null))
-                  {
-                      foreach($sousDomaines as $sd)
-                  {
-                      ?>
-                    <div class="panel panel-default">
-                      <div class="panel-heading"> 
-                        <h3 class="panel-title">
-                          <a href="#sd<?php echo $sd->id ?>" data-parent="#monaccordeon" data-toggle="collapse" title="<?php if(isset($sd->description) && ($sd->description != null)){echo $sd->description;} ?>" class="click"><span class="badge pull-right">
-                    <?php 
-                    if(isset($sd->projets) && ($sd->projets != null))
-                    {
-                        $nb = 0;
-                        foreach($sd->projets as $proj)
-                        {
-                            $nb++;
-                        }
-                        echo $nb;
-                    }
-                    else{
-                        echo "0";
-                    }
-                    ?>
-                    </span> <?php echo $sd->libelle ?></a> 
-                        </h3>
-                      </div>
-                      <div id="sd<?php echo $sd->id ?>" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            <?php
-                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
-                            {
-                                ?>
-                                <div class="btn-group">
-                                    <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
-                                    <button id="btnSupprimerSousDomaine-<?php echo $sd->id ?>" class="btn btn-danger btnSupprimerSousDomaine">Supprimer sous-domaine</button>
-                                </div>
-                                <br/>
-                                <br/>
-                                <?php
-                            }
-                            ?>
-                            <?php
+                <div class="tab-content">
+                    
+                    <div class="tab-pane active fade in" id="projetsGeneriques">
+                        <div class="list-group">
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="projetsSpecifiques">
+                        <div id="monaccordeon" class="panel-group">
+                        <h3>Sous-domaines</h3>
+                          <?php
+                          if(isset($sousDomaines) && ($sousDomaines != null))
+                          {
+                              foreach($sousDomaines as $sd)
+                          {
+                              ?>
+                            <div class="panel panel-default">
+                              <div class="panel-heading"> 
+                                <h3 class="panel-title">
+                                  <a href="#sd<?php echo $sd->id ?>" data-parent="#monaccordeon" data-toggle="collapse" title="<?php if(isset($sd->description) && ($sd->description != null)){echo $sd->description;} ?>" class="click"><span class="badge pull-right">
+                            <?php 
                             if(isset($sd->projets) && ($sd->projets != null))
                             {
-                                ?>
-                                <div class="list-group">
-                                <?php
-                                foreach($sd->projets as $projet)
+                                $nb = 0;
+                                foreach($sd->projets as $proj)
                                 {
-                                    ?>
-                                    <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?></a>
-                                    <?php
+                                    $nb++;
                                 }
-                                ?>
-                                </div>
-                                <?php
+                                echo $nb;
+                            }
+                            else{
+                                echo "0";
                             }
                             ?>
-                        </div>
+                            </span> <?php echo $sd->libelle ?></a> 
+                                </h3>
+                              </div>
+                              <div id="sd<?php echo $sd->id ?>" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <?php
+                                    if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                                    {
+                                        ?>
+                                        <div class="btn-group">
+                                            <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
+                                            <button id="btnSupprimerSousDomaine-<?php echo $sd->id ?>" class="btn btn-danger btnSupprimerSousDomaine">Supprimer sous-domaine</button>
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                        <?php
+                                    }
+                                    ?>
+                                    <?php
+                                    if(isset($sd->projets) && ($sd->projets != null))
+                                    {
+                                        ?>
+                                        <div class="list-group">
+                                        <?php
+                                        foreach($sd->projets as $projet)
+                                        {
+                                            ?>
+                                            <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?></a>
+                                            <?php
+                                        }
+                                        ?>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                              </div>
+                            </div>
+                            <?php
+                          }
+                          }
+                          else{
+                            ?>
+                            <label class="label label-default">Ce domaine ne contient aucun sous-domaine</label>
+                            <?php
+                          }
+                          ?>
+
                       </div>
                     </div>
-                    <?php
-                  }
-                  }
-                  else{
-                    ?>
-                    <label class="label label-default">Ce domaine ne contient aucun sous-domaine</label>
-                    <?php
-                  }
-                  ?>
-
-              </div>
+                    
+                </div>
                 
             </div>
         <br/>

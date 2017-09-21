@@ -1,4 +1,20 @@
 <?php
+	function getProjetsGeneriquesByDomaineId($idDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$projets = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT projet_id FROM projet_domaine WHERE domaine_id = ?");
+		$req->execute(array($idDomaine));
+		while($data = $req->fetch())
+		{
+			$projets[$i] = json_decode(getProjetById($data["projet_id"]));
+			$i++;
+		}
+		return json_encode($projets);
+	}
+
 	function getIdElementByAbonnementId($idAbonnement)
 	{
 		include("connexionBdd.php");
@@ -27,9 +43,6 @@
 			elseif($data["contrat_id"] != null)
 			{
 				$id = $data["contrat_id"];
-			}
-			else{
-				$id = "test";
 			}
 		}
 		return json_encode($id);
@@ -2246,11 +2259,12 @@
 			$sousDomaines[$i]["id"] = $data["id"];
 			$sousDomaines[$i]["libelle"] = $data["libelle"];
 			$sousDomaines[$i]["description"] = $data["description"];
-			$req2 = $bdd->prepare("SELECT id, titre, description, contenu, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ?");
+			$req2 = $bdd->prepare("SELECT id, contrat_id, titre, description, contenu, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ?");
 			$req2->execute(array($data["id"]));
 			while($data2 = $req2->fetch())
 			{
 				$sousDomaines[$i]["projets"][$j]["id"] = $data2["id"];
+				$sousDomaines[$i]["projets"][$j]["contrat_id"] = $data2["contrat_id"];
 				$sousDomaines[$i]["projets"][$j]["titre"] = $data2["titre"];
 				$sousDomaines[$i]["projets"][$j]["description"] = $data2["description"];
 				$sousDomaines[$i]["projets"][$j]["contenu"] = $data2["contenu"];
