@@ -1,14 +1,14 @@
 $(function () {
     $("#nouveauMessage").on("keyup", function(){
-                if($(this).val().length > 0 && $(this).val() !== "")
-                    {
-                        $("#nbCaracNw").text($(this).val().length);
-                        $("#envoyerMessage").prop("disabled", false);
-                    }
-                else{
-                    $("#nbCaracNw").text("0");
+            if($(this).val().length > 0 && $(this).val() !== "")
+                {
+                    $("#nbCaracNw").text($(this).val().length);
+                    $("#envoyerMessage").prop("disabled", false);
                 }
-            });
+            else{
+                $("#nbCaracNw").text("0");
+            }
+        });
     
     $("#formNouveauMessage").submit(function(e){
         e.preventDefault();
@@ -21,7 +21,6 @@ $(function () {
                     var message = $("#nouveauMessage").val();
                     var idUser = $("#user_id").val();
                     $.post("API/addMessage.php", {utilisateur_id: idUser, correspondant_id: idCorrespondant, sujet: sujet, message: message}, function(data){
-                        //console.log(data);
                     });
                 });
                 $("#annulerRedigerNouveauMessage").click();

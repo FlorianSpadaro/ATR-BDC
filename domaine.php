@@ -2,6 +2,7 @@
     include("header.php");
     $domaine = json_decode(getDomaineById($_GET["id"]));
     $sousDomaines = json_decode(getProjetsBySousDomaineByDomaineId($_GET["id"]));
+    $projetsGeneriques = json_decode(getProjetsGeneriquesByDomaineId($_GET["id"]));
     $contrats = json_decode(getContrats());
     $secteurs = json_decode(getSecteurs());
     $domaines = json_decode(getDomaines());
@@ -50,7 +51,19 @@
     </head>
 
     <body>
-        
+        <?php
+        if(isset($_GET["contrats"]))
+        {
+            ?>
+            <input type="hidden" name="cacherSd" id="cacherSd" value="<?php echo $_GET["contrats"] ?>" />
+            <?php
+        }
+        else{
+            ?>
+            <input type="hidden" name="cacherSd" id="cacherSd" value="false" />
+            <?php
+        }
+        ?>
         <input type="hidden" id="idDomaine" name="idDomaine" value="<?php echo $_GET["id"] ?>" />
         
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
@@ -311,82 +324,114 @@
                     <?php
                 }
                 ?>
-                
-              <div id="monaccordeon" class="panel-group">
-                <h3>Sous-domaines</h3>
-                  <?php
-                  if(isset($sousDomaines) && ($sousDomaines != null))
-                  {
-                      foreach($sousDomaines as $sd)
-                  {
-                      ?>
-                    <div class="panel panel-default">
-                      <div class="panel-heading"> 
-                        <h3 class="panel-title">
-                          <a href="#sd<?php echo $sd->id ?>" data-parent="#monaccordeon" data-toggle="collapse" title="<?php if(isset($sd->description) && ($sd->description != null)){echo $sd->description;} ?>" class="click"><span class="badge pull-right">
-                    <?php 
-                    if(isset($sd->projets) && ($sd->projets != null))
-                    {
-                        $nb = 0;
-                        foreach($sd->projets as $proj)
-                        {
-                            $nb++;
-                        }
-                        echo $nb;
-                    }
-                    else{
-                        echo "0";
-                    }
-                    ?>
-                    </span> <?php echo $sd->libelle ?></a> 
-                        </h3>
-                      </div>
-                      <div id="sd<?php echo $sd->id ?>" class="panel-collapse collapse in">
-                        <div class="panel-body">
+                <br/>
+                <ul class="nav nav-pills container">
+                    <li class="active"><a href="#projetsSpecifiques" data-toggle="tab">Projets Spécifiques</a></li>
+                    <li><a href="#projetsGeneriques" data-toggle="tab">Projets Génériques</a></li>
+                </ul>
+                <br/>
+                <div class="tab-content">
+                    
+                    <div class="tab-pane fade" id="projetsGeneriques">
+                        <div class="list-group">
                             <?php
-                            if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                            if($projetsGeneriques != null)
                             {
-                                ?>
-                                <div class="btn-group">
-                                    <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
-                                    <button id="btnSupprimerSousDomaine-<?php echo $sd->id ?>" class="btn btn-danger btnSupprimerSousDomaine">Supprimer sous-domaine</button>
-                                </div>
-                                <br/>
-                                <br/>
-                                <?php
-                            }
-                            ?>
-                            <?php
-                            if(isset($sd->projets) && ($sd->projets != null))
-                            {
-                                ?>
-                                <div class="list-group">
-                                <?php
-                                foreach($sd->projets as $projet)
+                                foreach($projetsGeneriques as $projetGen)
                                 {
                                     ?>
-                                    <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?></a>
+                                    <a href="projet.php?id=<?php echo $projetGen->id ?>" class="list-group-item" title="<?php echo $projetGen->description ?>"><?php echo $projetGen->titre ?></a>
                                     <?php
                                 }
+                            }
+                            else{
                                 ?>
-                                </div>
+                            <label>Ce domaine ne contient aucun projet générique</label>
                                 <?php
                             }
                             ?>
                         </div>
+                    </div>
+                    
+                    <div class="tab-pane active fade in" id="projetsSpecifiques">
+                        <div id="monaccordeon" class="panel-group">
+                        <h3>Sous-domaines</h3>
+                          <?php
+                          if(isset($sousDomaines) && ($sousDomaines != null))
+                          {
+                              foreach($sousDomaines as $sd)
+                          {
+                              ?>
+                            <div class="panel panel-default divSd contrat__<?php echo $sd->contrat_id ?>">
+                              <div class="panel-heading"> 
+                                <h3 class="panel-title">
+                                  <a href="#sd<?php echo $sd->id ?>" data-parent="#monaccordeon" data-toggle="collapse" title="<?php if(isset($sd->description) && ($sd->description != null)){echo $sd->description;} ?>" class="click"><span class="badge pull-right">
+                            <?php 
+                            if(isset($sd->projets) && ($sd->projets != null))
+                            {
+                                $nb = 0;
+                                foreach($sd->projets as $proj)
+                                {
+                                    $nb++;
+                                }
+                                echo $nb;
+                            }
+                            else{
+                                echo "0";
+                            }
+                            ?>
+                            </span> <?php echo $sd->libelle ?></a> 
+                                </h3>
+                              </div>
+                              <div id="sd<?php echo $sd->id ?>" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <?php
+                                    if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                                    {
+                                        ?>
+                                        <div class="btn-group">
+                                            <button id="btnModifierSousDomaine-<?php echo $sd->id ?>" data-toggle="modal" href="#divModifierSousDomaine" class="btn btn-info btnModifierSousDomaine">Modifier sous-domaine</button>
+                                            <button id="btnSupprimerSousDomaine-<?php echo $sd->id ?>" class="btn btn-danger btnSupprimerSousDomaine">Supprimer sous-domaine</button>
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                        <?php
+                                    }
+                                    ?>
+                                    <?php
+                                    if(isset($sd->projets) && ($sd->projets != null))
+                                    {
+                                        ?>
+                                        <div class="list-group">
+                                        <?php
+                                        foreach($sd->projets as $projet)
+                                        {
+                                            ?>
+                                            <a href="projet.php?id=<?php echo $projet->id ?>" class="list-group-item" title="<?php echo $projet->description ?>"><?php echo $projet->titre ?></a>
+                                            <?php
+                                        }
+                                        ?>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                              </div>
+                            </div>
+                            <?php
+                          }
+                          }
+                          else{
+                            ?>
+                            <label class="label label-default">Ce domaine ne contient aucun sous-domaine</label>
+                            <?php
+                          }
+                          ?>
+
                       </div>
                     </div>
-                    <?php
-                  }
-                  }
-                  else{
-                    ?>
-                    <label class="label label-default">Ce domaine ne contient aucun sous-domaine</label>
-                    <?php
-                  }
-                  ?>
-
-              </div>
+                    
+                </div>
                 
             </div>
         <br/>

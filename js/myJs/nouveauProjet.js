@@ -180,20 +180,61 @@ $(function(){
                                                                 var users = JSON.parse(data);
                                                                 if(users != null)
                                                                     {
-                                                                        var titre = "Un nouveau projet a été créé";
-                                                                        var contenu = "Bonjour,\n\nUn nouveau projet lié à vos abonnements vient d'être créé.\nPour le consulter vous pouvez cliquer <a href='projet.php?id=" + idProjet + "'>ICI</a>";
-                                                                        var emails = [];
+                                                                        var utilisateurs = JSON.stringify(users);
+                                                                        
+                                                                        /*var secteur = $("#secteurProjet option:selected").text();
+                                                                        var typeProjet = $("[name='typeProjet']:checked").val();
+                                                                        var sousDomaine = null;
+                                                                        var domaines = [];
+                                                                        var tpProj = "";
+                                                                        if(typeProjet == "projetSpecifique")
+                                                                            {
+                                                                                tpProj = "spécifique";
+                                                                                sousDomaine = $("#sousDomaineProjet option:selected").text();
+                                                                            }
+                                                                        else if(typeProjet == "projetGenerique")
+                                                                            {
+                                                                                tpProj = "générique";
+                                                                                $("#domainesProjet option:selected").each(function(){
+                                                                                    domaines.push($(this).text());
+                                                                                });
+                                                                            }
+                                                                        var domSd = "";
+                                                                        if(sousDomaine != null)
+                                                                            {
+                                                                                domSd = sousDomaine;
+                                                                            }
+                                                                        else{
+                                                                            domSd = domaines.join(", ");
+                                                                        }
+                                                                        var titre = "Un projet vient d'être créé";
+                                                                        var lien = "projet.php?id=" + idProjet;
+                                                                        var description = "Un projet du secteur " + secteur + " a été créé.<br/>Il s'agit d'un projet " + tpProj + " (" + domSd + ")";
+                                                                        var contenu ="Bonjour<br/><br/>" + description + "<br/>Pour y accéder, cliquez <a href='" + lien + "'>ICI</a>";*/
+                                                                        /*var emails = [];
                                                                         users.forEach(function(user){
                                                                             emails.push(user.email);
                                                                         });
-                                                                        emails = emails.join();
-                                                                        console.log(emails);
+                                                                        emails = emails.join();*/
+                                                                        
 
-                                                                        $.post("API/envoyerMail.php", {emails: emails, titre: titre, contenu: contenu}, function(data){
+                                                                        $.post("API/mailNotifNouveauProjet.php", {utilisateurs: utilisateurs, projet_id: idProjet}, function(data){
                                                                             var reponse = JSON.parse(data);
                                                                             if(reponse)
                                                                                 {
-                                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                                    /*$.post("API/addNotification.php", {titre: titre, description: description, lien: lien}, function(data){
+                                                                                        var idNotif = JSON.parse(data);
+                                                                                        var i = 0;
+                                                                                        users.forEach(function(user){
+                                                                                            $.post("API/addUtilisateurNotification.php", {utilisateur_id: user.id, notification_id: idNotif}, function(data){
+                                                                                                i++;
+                                                                                                if(i == users.length)
+                                                                                                    {*/
+                                                                                                        document.location.href = "projet.php?id=" + idProjet;
+                                                                                                   /* }
+                                                                                            });
+                                                                                        });
+                                                                                    });*/
                                                                                 }
                                                                             else{
                                                                                 alert("Erreur: les mails n'ont pas pu être envoyés aux utilisateurs abonnés");
@@ -221,18 +262,58 @@ $(function(){
                                                                 console.log(users);
                                                                 if(users != null)
                                                                     {
-                                                                        var titre = "Un nouveau projet a été créé";
-                                                                        var contenu = "Bonjour,\n\nUn nouveau projet lié à vos abonnements vient d'être créé.\nPour le consulter vous pouvez cliquer <a href='projet.php?id=" + idProjet + "'>ICI</a>";
+                                                                        var utilisateurs = JSON.stringify(users);
+                                                                        /*var secteur = $("#secteurProjet option:selected").text();
+                                                                        var typeProjet = $("[name='typeProjet']:checked").val();
+                                                                        var sousDomaine = null;
+                                                                        var domaines = [];
+                                                                        var tpProj = "";
+                                                                        if(typeProjet == "projetSpecifique")
+                                                                            {
+                                                                                tpProj = "spécifique";
+                                                                                sousDomaine = $("#sousDomaineProjet option:selected").text();
+                                                                            }
+                                                                        else if(typeProjet == "projetGenerique")
+                                                                            {
+                                                                                tpProj = "générique";
+                                                                                $("#domainesProjet option:selected").each(function(){
+                                                                                    domaines.push($(this).text());
+                                                                                });
+                                                                            }
+                                                                        var domSd = "";
+                                                                        if(sousDomaine != null)
+                                                                            {
+                                                                                domSd = sousDomaine;
+                                                                            }
+                                                                        else{
+                                                                            domSd = domaines.join(", ");
+                                                                        }
+                                                                        var titre = "Un projet vient d'être créé";
+                                                                        var lien = "projet.php?id=" + idProjet;
+                                                                        var description = "Un projet du secteur " + secteur + " a été créé.<br/>Il s'agit d'un projet " + tpProj + " (" + domSd + ")";
+                                                                        var contenu ="Bonjour<br/><br/>" + description + "<br/>Pour y accéder, cliquez <a href='" + lien + "'>ICI</a>";
                                                                         var emails = [];
                                                                         users.forEach(function(user){
                                                                             emails.push(user.email);
                                                                         });
-                                                                        emails = emails.join();
-                                                                        $.post("API/envoyerMail.php", {emails: emails, titre: titre, contenu: contenu}, function(data){
+                                                                        emails = emails.join();*/
+                                                                        $.post("API/mailNotifNouveauProjet.php", {utilisateurs: utilisateurs, projet_id: idProjet}, function(data){
                                                                             var reponse = JSON.parse(data);
                                                                             if(reponse)
                                                                                 {
-                                                                                    document.location.href = "projet.php?id=" + idProjet;
+                                                                                    /*$.post("API/addNotification.php", {titre: titre, description: description, lien: lien}, function(data){
+                                                                                        var idNotif = JSON.parse(data);
+                                                                                        var i = 0;
+                                                                                        users.forEach(function(user){
+                                                                                            $.post("API/addUtilisateurNotification.php", {utilisateur_id: user.id, notification_id: idNotif}, function(data){
+                                                                                                i++;
+                                                                                                if(i == users.length)
+                                                                                                    {*/
+                                                                                                        document.location.href = "projet.php?id=" + idProjet;
+                                                                                                    /*}
+                                                                                            });
+                                                                                        });
+                                                                                    });*/
                                                                                 }
                                                                             else{
                                                                                 alert("Erreur: les mails n'ont pas pu être envoyés aux utilisateurs abonnés");
