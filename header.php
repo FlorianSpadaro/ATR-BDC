@@ -70,7 +70,6 @@
             <div class="modal fade" id="infos<?php echo $_SESSION["user_id"] ?>">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        
                     </div>
                 </div>
             </div>
@@ -239,7 +238,7 @@
                                         foreach($secteur->domaines as $domaine)
                                         {
                                             ?>
-                                            <li class="" id="domaine<?php echo $domaine->id ?>">
+                                            <li class="domaine_" id="domaine<?php echo $domaine->id ?>">
                                                 <a tabindex="-1" href="domaine.php?id=<?php echo $domaine->id ?>"><?php echo $domaine->libelle ?></a>
                                                 <ul class="dropdown-menu hidden-xs hidden-sm hidden-md hidden-lg">
                                                     <?php
@@ -305,5 +304,4 @@
         <!-- Set your background image for this header on the line below. -->
 
     </body>
-
     </html>

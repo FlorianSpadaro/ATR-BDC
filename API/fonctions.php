@@ -2854,5 +2854,20 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
         return json_encode($search);
         
     }
-
+	function getContratByDomaineId()
+	{
+		include("connexionBdd.php");
+		$i = 0;
+		$contrat = null;
+		$req = $bdd->query("select distinct domaine.id as domaine_id, contrat.id as contrat_id from domaine
+		left join sous_domaine on domaine.id = sous_domaine.domaine_id
+		left join contrat on sous_domaine.contrat_id = contrat.id");
+		while($data = $req->fetch())
+		{
+			$contrat[$i]['contrat_id'] = $data['contrat_id'];
+			$contrat[$i]['domaine_id'] = $data['domaine_id'];
+			$i++;
+		}
+		return json_encode($contrat);
+	}
 ?>
