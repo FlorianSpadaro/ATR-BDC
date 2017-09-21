@@ -6,7 +6,7 @@ $(function (){
         {
             $(".divSd").hide();
             var valGet = $("#cacherSd").val();
-            var idsContrats = [];//traiter valGet pour le transformer en tableau
+            var idsContrats = valGet.split(",");
             idsContrats.forEach(function(idContrat){
                 $(".contrat__" + idContrat).show();
             });

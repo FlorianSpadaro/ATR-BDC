@@ -47,6 +47,91 @@
 		}
 		return json_encode($id);
 	}
+	
+	
+	function mailNotifModificationActualite($idActu)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$actu = json_decode(getActualiteById($idActu));
+			
+			$utilisateurs = json_decode(getUtilisateurs());
+			$tabEmails = array();
+			foreach($utilisateurs as $user)
+			{
+				array_push($emails, $user->email);
+			}
+			$emails = implode(",", $tabEmails);
+			
+			$lien = "actualite.php?id=" + $idActu;
+			$titreMail = "Une actualité a été modifiée";
+			$contenuMail = "Bonjour,<br/><br/>L'actualité '".$actu->titre."' a été modifiée.<br/>Pour la consulter vous pouvez cliquer <a href='".$lien."'>ICI</a>";
+			$reponse = json_decode(envoyerMail($emails, $titreMail, $contenuMail));
+			if($reponse)
+			{
+				$titreNotif = $titreMail;
+				$contenuNotif = $contenuMail;
+				$lienNotif = $lien;
+				$idNotif = json_decode(addNotification($titreNotif, $contenuNotif, $lienNotif));
+				if($idNotif != null)
+				{
+					foreach($utilisateurs as $user)
+					{
+						if($reponse)
+						{
+							$reponse = json_decode(addUtilisateurNotification($user->id, $idNotif));
+						}
+					}
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+	
+	function mailNotifNouvelleActualite($idActu)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$utilisateurs = json_decode(getUtilisateurs());
+			$tabEmails = array();
+			foreach($utilisateurs as $user)
+			{
+				array_push($emails, $user->email);
+			}
+			$emails = implode(",", $tabEmails);
+			
+			$lien = "actualite.php?id=" + $idActu;
+			$titreMail = "Une nouvelle actualité a été créée";
+			$contenuMail = "Bonjour,<br/><br/>Une nouvelle actualité vient d'être créée.<br/>Pour la consulter vous pouvez cliquer <a href='".$lien."'>ICI</a>";
+			$reponse = json_decode(envoyerMail($emails, $titreMail, $contenuMail));
+			if($reponse)
+			{
+				$titreNotif = $titreMail;
+				$contenuNotif = $contenuMail;
+				$lienNotif = $lien;
+				$idNotif = json_decode(addNotification($titreNotif, $contenuNotif, $lienNotif));
+				if($idNotif != null)
+				{
+					foreach($utilisateurs as $user)
+					{
+						if($reponse)
+						{
+							$reponse = json_decode(addUtilisateurNotification($user->id, $idNotif));
+						}
+					}
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
 
 	function mailNotifModificationProjet($idProjet, $users)//$users = format json
 	{
@@ -118,7 +203,7 @@
 		}
 		return json_encode($reponse);
 	}
-
+	
 	function mailNotifNouveauProjet($idProjet, $users) //$users = format json
 	{
 		include("connexionBdd.php");

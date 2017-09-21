@@ -1,5 +1,3 @@
 - recherche actualites
--afficher projets génériques
 - favoris projets / abonnements
 - abonnement -> nouveau projet
-- double click s'abonner
