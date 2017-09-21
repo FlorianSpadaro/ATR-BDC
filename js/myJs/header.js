@@ -1,4 +1,5 @@
 $(function () {
+    
     $("#listContratHeader").chosen({width: "inherit", width: "100%",placeholder_text_multiple:"Tous contrats"});
     
     $(".contratSelectHeader").click(function(e){
@@ -94,5 +95,34 @@ $(function () {
             });
         }
     });
-    
+   
+    $.post("API/getContratByDomaineId.php",function(data){
+        var contrats = JSON.parse(data);
+        if(contrats != null)
+        {
+            contrats.forEach(function(contrat){
+                $("#domaine" + contrat.domaine_id).addClass("contrat_" + contrat.contrat_id);
+            })
+        }
+        else
+        {
+            alert("Une erreur s'est produite, veuillez réessayer plus tard");
+        }
+    });
+    $("#listContratHeader").change(function(){
+        var list_contrats = []
+        list_contrats = $("#listContratHeader").val();
+        console.log(list_contrats);
+        $("#secteur2 .domaine_").hide()
+        if(list_contrats == null){
+            $("#secteur2 .domaine_").show()  
+        }
+        else
+        {
+            list_contrats.forEach(function(list_contrat){
+                $("#secteur2 .contrat_" + list_contrat).show();
+            })
+        }
+       
+    })
 });
