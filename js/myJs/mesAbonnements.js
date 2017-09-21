@@ -27,7 +27,16 @@ $(function(){
             var abonnements = JSON.parse(data);
             $(".panel-success").removeClass("panel-success").addClass("panel-default");
             $(".list-group-item-success").removeClass("list-group-item-success");
-            $(".desabonner").removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>").removeAttr("id");
+            /*$(".desabonner").each(function(){
+                var tab = $(this).attr("id").split("-");
+                var idAbo = tab[1];
+                console.log(idAbo);
+                var elt = $(this);
+                $.post("API/getIdElementByAbonnementId.php", {abonnement_id: idAbo}, function(data){
+                    var idElt = JSON.parse(data);
+                    elt.removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>").attr("id", tab[0] + "-" + idElt);
+                });
+            });*/
             if(abonnements != null)
                 {
                         abonnements.forEach(function(abo){
@@ -61,6 +70,14 @@ $(function(){
             $(".desabonner").click(function(e){
                 e.preventDefault();
                 
+                var tab = $(this).attr("id").split("-");
+                var idAbo = tab[1];
+                var elt = $(this);
+                $.post("API/getIdElementByAbonnementId.php", {abonnement_id: idAbo}, function(data){
+                    var idElt = JSON.parse(data);
+                    elt.removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>").attr("id", tab[0] + "-" + idElt);
+                });
+                
                 var elt = $(this);
                 var tab = elt.attr("id").split("-");
                 var id = tab[1];
@@ -80,7 +97,7 @@ $(function(){
 
             $(".abonner").click(function(e){
                 e.preventDefault();
-
+                
                 var elt = $(this);
                 var tab = $(this).attr("id").split("-");
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");

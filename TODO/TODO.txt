@@ -1,6 +1,5 @@
 - recherche actualites
-- gestion notifications
+-afficher projets génériques
 - favoris projets / abonnements
 - abonnement -> nouveau projet
 - double click s'abonner
--html mail

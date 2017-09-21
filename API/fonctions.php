@@ -1,4 +1,40 @@
 <?php
+	function getIdElementByAbonnementId($idAbonnement)
+	{
+		include("connexionBdd.php");
+		
+		$id = null;
+		$req = $bdd->prepare("SELECT * FROM abonnement WHERE id = ?");
+		$req->execute(array($idAbonnement));
+		if($data = $req->fetch())
+		{
+			if($data["secteur_id"] != null)
+			{
+				$id = $data["secteur_id"];
+			}
+			elseif($data["domaine_id"] != null)
+			{
+				$id = $data["domaine_id"];
+			}
+			elseif($data["sous_domaine_id"] != null)
+			{
+				$id = $data["sous_domaine_id"];
+			}
+			elseif($data["projet_id"] != null)
+			{
+				$id = $data["projet_id"];
+			}
+			elseif($data["contrat_id"] != null)
+			{
+				$id = $data["contrat_id"];
+			}
+			else{
+				$id = "test";
+			}
+		}
+		return json_encode($id);
+	}
+
 	function mailNotifModificationProjet($idProjet, $users)//$users = format json
 	{
 		include("connexionBdd.php");
