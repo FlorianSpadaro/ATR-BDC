@@ -43,26 +43,26 @@ $(function(){
                         if(abo.secteur_id != null)
                             {
                                 $("#enteteSecteur" + abo.secteur_id).removeClass("panel-default").addClass("panel-success");
-                                $("#enteteSecteur" + abo.secteur_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner").attr("id", "secteur-" + abo.id);
+                                $("#enteteSecteur" + abo.secteur_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
                             }
                         else if(abo.domaine_id != null)
                             {
                                 $("#enteteDomaine" + abo.domaine_id).removeClass("panel-default").addClass("panel-success");
-                                $("#enteteDomaine" + abo.domaine_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner").attr("id", "domaine-" + abo.id);
+                                $("#enteteDomaine" + abo.domaine_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
                             }
                         else if(abo.sous_domaine_id != null)
                             {
                                 $("#enteteSousDomaine" + abo.sous_domaine_id).removeClass("panel-default").addClass("panel-success");
-                                $("#enteteSousDomaine" + abo.sous_domaine_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner").attr("id", "sousDomaine-" + abo.id);
+                                $("#enteteSousDomaine" + abo.sous_domaine_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
                             }
                         else if(abo.projet_id != null)
                             {
                                 $("#enteteProjet" + abo.projet_id).addClass("list-group-item-success");
-                                $("#enteteProjet" + abo.projet_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner").attr("id", "projet-" + abo.id);
+                                $("#enteteProjet" + abo.projet_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
                             }
                         else if(abo.contrat_id != null){
                             $("#enteteContrat" + abo.contrat_id).addClass("list-group-item-success");
-                            $("#enteteContrat" + abo.contrat_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner").attr("id", "contrat-" + abo.id);
+                            $("#enteteContrat" + abo.contrat_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
                         }
 
                     });
@@ -70,17 +70,21 @@ $(function(){
             $(".desabonner").click(function(e){
                 e.preventDefault();
                 
-                var tab = $(this).attr("id").split("-");
+                /*var tab = $(this).attr("id").split("-");
                 var idAbo = tab[1];
                 var elt = $(this);
                 $.post("API/getIdElementByAbonnementId.php", {abonnement_id: idAbo}, function(data){
                     var idElt = JSON.parse(data);
                     elt.removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>").attr("id", tab[0] + "-" + idElt);
-                });
+                });*/
                 
                 var elt = $(this);
-                var tab = elt.attr("id").split("-");
-                var id = tab[1];
+                elt.removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>");
+                /*var tab = elt.attr("id").split("-");
+                var id = tab[1];*/
+                var id = elt.attr("id");
+                console.log(id);
+                
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");
                 
                 $.post("API/removeAbonnementById.php", {abonnement_id: id, utilisateur_id: $("#user_id").val()}, function(data){
@@ -99,6 +103,7 @@ $(function(){
                 e.preventDefault();
                 
                 var elt = $(this);
+                
                 var tab = $(this).attr("id").split("-");
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");
 

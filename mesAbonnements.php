@@ -145,6 +145,23 @@
                                                                                     ?>
                                                                                     <div class="list-group">
                                                                                         <?php
+                                                                                        $projetsGeneriques = json_decode(getProjetsGeneriquesByDomaineId($domaine->id));
+                                                                                        if($projetsGeneriques != null)
+                                                                                        {
+                                                                                            foreach($projetsGeneriques as $proGen)
+                                                                                            {
+                                                                                                ?>
+                                                                                                <div class="list-group-item" id="enteteProjet<?php echo $proGen->id ?>">
+                                                                                                    <a href="#" title="<?php echo $proGen->description ?>">
+                                                                                                        <?php echo $proGen->titre ?>
+                                                                                                    </a>
+                                                                                                    <a href="#" class="pull-right abonner" id="projet-<?php echo $proGen->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                                    <span class="badge">Générique</span>
+                                                                                                </div>
+                                                                                                <?php
+                                                                                            }
+                                                                                        }
+                                                                                        
                                                                                         foreach($sousDomaine->projet as $projet)
                                                                                         {
                                                                                             ?>
@@ -153,6 +170,7 @@
                                                                                                     <?php echo $projet->titre ?>
                                                                                                 </a>
                                                                                                 <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                                <span class="badge">Spécifique</span>
                                                                                             </div>
                                                                                             <?php
                                                                                         }

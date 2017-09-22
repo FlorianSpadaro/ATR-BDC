@@ -1,5 +1,4 @@
 - recherche actualites
 - favoris projets / abonnements
-- abonnement -> nouveau projet
-- abonnement: affichage projets génériques
-- admionistrateurs peuvent choisir les abonnements des utilisateurs
+- ajouter le nombre de projets génériques dans les abonnements
+- administrateurs peuvent choisir les abonnements des utilisateurs
