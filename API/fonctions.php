@@ -1,4 +1,60 @@
 <?php
+
+	function getNbProjetsGeneriquesBySousDomaineId($idSousDomaine)
+	{
+		include("connexionBdd.php");
+		
+		$projets = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT domaine_id FROM sous_domaine WHERE id = ?");
+		$req->execute(array($idSousDomaine));
+		if($data = $req->fetch())
+		{
+			$projets = json_decode(getProjetsGeneriquesByDomaineId($data["domaine_id"]));
+			if($projets != null)
+			{
+				foreach($projets as $projet)
+				{
+					$i++;
+				}
+			}
+		}
+		return json_encode($i);
+	}
+
+	function getProjetsGeneriquesBySecteurId($idSecteur)
+	{
+		include("connexionBdd.php");
+		
+		$projets = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
+		$req->execute(array($idSecteur));
+		while($data = $req->fetch())
+		{
+			$projetsDomaine = json_decode(getProjetsGeneriquesByDomaineId($data["id"]));
+			if($projetsDomaine != null)
+			{
+				foreach($projetsDomaine as $proDom)
+				{
+					if($projets != null)
+					{
+						if(!array_search($proDom, $projets))
+						{
+							$projets[$i] = $proDom;
+							$i++;
+						}
+					}
+					else{
+						$projets[$i] = $proDom;
+						$i++;
+					}
+				}
+			}
+		}
+		return json_encode($projets);
+	}
+
 	function getProjetsGeneriquesByDomaineId($idDomaine)
 	{
 		include("connexionBdd.php");
@@ -2482,6 +2538,17 @@
 					$projet->sous_domaine_id = json_decode(getSousDomaineIdByProjetId($projet->id));
 					$projet->domaine_id = json_decode(getDomaineIdByProjetId($projet->id));
 					$projet->secteur_id = json_decode(getSecteurIdByProjetId($projet->id));
+					
+					/*$req = $bdd->prepare("SELECT sous_domaine_id FROM projet WHERE id = ?");
+					$req->execute(array($abo->projet_id));
+					if($data = $req->fetch())
+					{
+						if($data["sous_domaine_id"] == null)
+						{
+							var_dump($projet);
+						}
+					}*/
+					
 					array_push($projetsAbo, $projet);
 				}
 			}
@@ -2589,14 +2656,46 @@
 						
 						array_push($sous_domaine->projet, $projet);
 					}
-					$sous_domaine->nbProjets = $nbProjetsSousDomaine;
+					
+					/*$req4 = $bdd->prepare("SELECT p.id pid, p.titre ptitre, p.description pdesc, p.date_creation pdatecrea, p.date_derniere_maj pdatemaj FROM projet p JOIN projet_domaine prdm ON p.id = prdm.projet_id WHERE prdm.domaine_id = ?");
+					$req4->execute(array($data2["id"]));
+					while($data4 = $req4->fetch())
+					{
+						$nbProjetsSecteur++;
+						$nbProjetsDomaine++;
+						$nbProjetsSousDomaine++;
+						
+						if($projetsAbo != null)
+						{
+							foreach($projetsAbo as $proAbo)
+							{
+								if($proAbo->id == $data4["id"])
+								{
+									$nbProjetsSecteurAbo++;
+									$nbProjetsDomaineAbo++;
+									$nbProjetsSousDomaineAbo++;
+								}
+							}
+						}
+						
+						$projet = (object)[];
+						$projet->id = $data4["id"];
+						$projet->titre = $data4["titre"];
+						$projet->description = $data4["description"];
+						$projet->date_creation = json_decode(modifierDate($data4["date_creation"]));
+						$projet->date_derniere_maj = json_decode(modifierDate($data4["date_derniere_maj"]));
+						
+						array_push($sous_domaine->projet, $projet);
+					}*/
+					
+					$sous_domaine->nbProjets = $nbProjetsSousDomaine + json_decode(getNbProjetsGeneriquesBySousDomaineId($sous_domaine->id));
 					$sous_domaine->nbProjetsAbo = $nbProjetsSousDomaineAbo;
 					
 					array_push($domaine->sous_domaine, $sous_domaine);
 				}
 				$domaine->nbSousDomaines = $nbSousDomainesDomaine;
 				$domaine->nbSousDomainesAbo = $nbSousDomainesDomaineAbo;
-				$domaine->nbProjets = $nbProjetsDomaine;
+				$domaine->nbProjets = $nbProjetsDomaine + sizeof(json_decode(getProjetsGeneriquesByDomaineId($domaine->id)));
 				$domaine->nbProjetsAbo = $nbProjetsDomaineAbo;
 				
 				array_push($secteur->domaine, $domaine);
@@ -2605,7 +2704,7 @@
 			$secteur->nbDomainesAbo = $nbDomainesSecteurAbo;
 			$secteur->nbSousDomaines = $nbSousDomainesSecteur;
 			$secteur->nbSousDomainesAbo = $nbSousDomainesSecteurAbo;
-			$secteur->nbProjets = $nbProjetsSecteur;
+			$secteur->nbProjets = $nbProjetsSecteur + sizeof(json_decode(getProjetsGeneriquesBySecteurId($data["id"])));
 			$secteur->nbProjetsAbo = $nbProjetsSecteurAbo;
 			
 			array_push($tab, $secteur);

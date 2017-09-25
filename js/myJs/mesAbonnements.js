@@ -57,8 +57,15 @@ $(function(){
                             }
                         else if(abo.projet_id != null)
                             {
-                                $("#enteteProjet" + abo.projet_id).addClass("list-group-item-success");
-                                $("#enteteProjet" + abo.projet_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
+                                if($("#enteteProjet" + abo.projet_id).length > 0)
+                                    {
+                                        $("#enteteProjet" + abo.projet_id).addClass("list-group-item-success");
+                                        $("#enteteProjet" + abo.projet_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
+                                    }
+                                else{
+                                    $(".enteteProjetGenerique" + abo.projet_id).addClass("list-group-item-success");
+                                    $(".enteteProjetGenerique" + abo.projet_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
+                                }
                             }
                         else if(abo.contrat_id != null){
                             $("#enteteContrat" + abo.contrat_id).addClass("list-group-item-success");
@@ -83,7 +90,6 @@ $(function(){
                 /*var tab = elt.attr("id").split("-");
                 var id = tab[1];*/
                 var id = elt.attr("id");
-                console.log(id);
                 
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");
                 
