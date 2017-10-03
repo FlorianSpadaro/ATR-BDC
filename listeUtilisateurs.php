@@ -43,6 +43,9 @@
                 color: red;
                 display: none;
             }
+            .formGererAbonnement{
+                display: inline-block;
+            }
         </style>
         
     </head>
@@ -92,8 +95,11 @@
                                 <td><?php echo $user->fonction->libelle ?></td> 
                                 <td><?php echo $user->fonction->niveau->libelle ?></td>
                                 <td>
-                                    <a href="mesAbonnements.php?usr=<?php echo $user->id ?>" data-toggle="tooltip" title="gérer abonnements" ><span class="glyphicon glyphicon-heart-empty"></span></a> 
-                                    <a data-toggle="modal" href="#modificationsUtilisateur" data-toggle="tooltip" class="modifierUser" title="modifier utilisateur"><span class="glyphicon glyphicon-edit"></span></a>
+                                    <form class="formGererAbonnement" method="post" action="mesAbonnements.php">
+                                        <input type="hidden" name="usr" value="<?php echo $user->id ?>" />
+                                        <a href="#" class="submitGererAbo" type="submit" data-toggle="tooltip" title="gérer abonnements"><span class="glyphicon glyphicon-heart-empty"></span></a>
+                                    </form>
+                                    <a data-toggle="modal" href="#modificationsUtilisateur" class="modifierUser" title="modifier utilisateur"><span class="glyphicon glyphicon-edit"></span></a>
                                     <?php
                                     if(!$user->actif)
                                     {

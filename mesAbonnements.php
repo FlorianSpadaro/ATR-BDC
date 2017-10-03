@@ -1,8 +1,8 @@
 <?php
     include("header.php");
-    if(isset($_GET["usr"]) && $_GET["usr"] != null)
+    if(isset($_POST["usr"]) && $_POST["usr"] != null)
     {
-        $user_id = $_GET["usr"];
+        $user_id = $_POST["usr"];
     }
     else{
         $user_id = $_SESSION["user_id"];
@@ -159,12 +159,12 @@
                                                                                             if($projet->type == "generique")
                                                                                             {
                                                                                                 ?>
-                                                                                                <div class="list-group-item" id="enteteProjet<?php echo $projet->id ?>">
+                                                                                                <div class="list-group-item enteteProjetGenerique<?php echo $projet->id ?>">
                                                                                                     <a href="#" title="<?php echo $projet->description ?>">
                                                                                                         <?php echo $projet->titre ?>
                                                                                                     </a>
-                                                                                                    <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
-                                                                                                    <span class="badge"><?php if($projet->type == "specifique"){ echo "Spécifique"; }elseif($projet->type == "generique"){ echo "Générique"; } ?></span>
+                                                                                                    <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>-sd-<?php echo $sousDomaine->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                                    <span class="badge">Générique</span>
                                                                                                 </div>
                                                                                                 <?php
                                                                                             }
@@ -179,7 +179,7 @@
                                                                                                         <?php echo $projet->titre ?>
                                                                                                     </a>
                                                                                                     <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
-                                                                                                    <span class="badge"><?php if($projet->type == "specifique"){ echo "Spécifique"; }elseif($projet->type == "generique"){ echo "Générique"; } ?></span>
+                                                                                                    <span class="badge">Spécifique</span>
                                                                                                 </div>
                                                                                                 <?php
                                                                                             }

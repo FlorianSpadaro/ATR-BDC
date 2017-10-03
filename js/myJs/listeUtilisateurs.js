@@ -4,6 +4,11 @@ $(function(){
     $('[data-toggle="tooltip"]').tooltip();
     $(".modifierUser").tooltip();
     
+    $(".submitGererAbo").click(function(e){
+        e.preventDefault();
+        $(this).closest("form").submit();
+    });
+    
     $("#reinitialiserMdpUser").click(function(){
         var repUser = confirm("Voulez-vous vraiment réinitialiser le mot de passe de cet utilisateur?\nUn nouveau mot de passe sera alors créé aléatoirement et envoyé par mail à l'utilisateur");
         if(repUser)

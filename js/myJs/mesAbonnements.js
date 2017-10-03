@@ -64,7 +64,7 @@ $(function(){
                                     }
                                 else{
                                     $(".enteteProjetGenerique" + abo.projet_id).addClass("list-group-item-success");
-                                    $(".enteteProjetGenerique" + abo.projet_id + " .abonner:first").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
+                                    $(".enteteProjetGenerique" + abo.projet_id + " .abonner").html('Se désabonner <span class="glyphicon glyphicon-remove"></span>').removeClass("abonner").addClass("desabonner");
                                 }
                             }
                         else if(abo.contrat_id != null){
@@ -87,6 +87,7 @@ $(function(){
                 
                 var elt = $(this);
                 elt.removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>");
+                elt.closest(".panel").find(".desabonner").removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>");
                 /*var tab = elt.attr("id").split("-");
                 var id = tab[1];*/
                 var id = elt.attr("id");
