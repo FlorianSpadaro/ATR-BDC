@@ -6,7 +6,7 @@ $(function(){
         $(".abonner").off("click");
         $(".desabonner").off("click");
         
-        $.post("API/getSecteursDomainesSousDomainesProjets.php", {utilisateur_id: $("#user_id").val()}, function(data){
+        $.post("API/getSecteursDomainesSousDomainesProjets.php", {utilisateur_id: $("#idUser").val()}, function(data){
             var elems = JSON.parse(data);
             elems.forEach(function(secteur){
                 $("#domainesAboSecteur" + secteur.id).text(secteur.nbDomainesAbo);
@@ -23,7 +23,7 @@ $(function(){
         });
         
         
-        $.post("API/getAbonnementsByUtilisateurId.php", {utilisateur_id: $("#user_id").val()}, function(data){
+        $.post("API/getAbonnementsByUtilisateurId.php", {utilisateur_id: $("#idUser").val()}, function(data){
             var abonnements = JSON.parse(data);
             $(".panel-success").removeClass("panel-success").addClass("panel-default");
             $(".list-group-item-success").removeClass("list-group-item-success");
@@ -93,7 +93,7 @@ $(function(){
                 
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");
                 
-                $.post("API/removeAbonnementById.php", {abonnement_id: id, utilisateur_id: $("#user_id").val()}, function(data){
+                $.post("API/removeAbonnementById.php", {abonnement_id: id, utilisateur_id: $("#idUser").val()}, function(data){
                     var reponse = JSON.parse(data);
                     $("#imageAttente").replaceWith(elt);
                     if(reponse){
@@ -114,7 +114,7 @@ $(function(){
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");
 
                 var objet = {
-                    utilisateur_id: $("#user_id").val(),
+                    utilisateur_id: $("#idUser").val(),
                     secteur_id: "null",
                     domaine_id: "null",
                     sous_domaine_id: "null",

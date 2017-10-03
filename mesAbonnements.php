@@ -1,8 +1,15 @@
 <?php
     include("header.php");
-
-    $secteurs = json_decode(getSecteursDomainesSousDomainesProjets($_SESSION["user_id"]));
-    $contrats = json_decode(getContrats());
+    if(isset($_GET["usr"]) && $_GET["usr"] != null)
+    {
+        $user_id = $_GET["usr"];
+    }
+    else{
+        $user_id = $_SESSION["user_id"];
+    }
+    
+    $secteurs = json_decode(getSecteursDomainesSousDomainesProjets($user_id));
+    //$contrats = json_decode(getContrats());
 ?>
 
 <!DOCTYPE html>
@@ -48,6 +55,7 @@
     </head>
     
     <body>
+        <input type="hidden" id="idUser" value="<?php echo $user_id ?>" />
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
             <div class="container">
                 <div class="row">
@@ -140,61 +148,42 @@
                                                                                 <!-- PROJETS -->
                                                                                 
                                                                                 <?php
-                                                                                $projetsGeneriques = json_decode(getProjetsGeneriquesByDomaineId($domaine->id));
                                                                                 if(isset($sousDomaine->projet) && ($sousDomaine->projet != null))
                                                                                 {
                                                                                     ?>
                                                                                     <div class="list-group">
                                                                                         <?php
-                                                                                        if($projetsGeneriques != null)
-                                                                                        {
-                                                                                            foreach($projetsGeneriques as $proGen)
-                                                                                            {
-                                                                                                ?>
-                                                                                                <div class="list-group-item enteteProjetGenerique<?php echo $proGen->id ?>">
-                                                                                                    <a href="#" title="<?php echo $proGen->description ?>">
-                                                                                                        <?php echo $proGen->titre ?>
-                                                                                                    </a>
-                                                                                                    <a href="#" class="pull-right abonner" class="projetGenerique-<?php echo $proGen->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
-                                                                                                    <span class="badge">Générique</span>
-                                                                                                </div>
-                                                                                                <?php
-                                                                                            }
-                                                                                        }
                                                                                         
                                                                                         foreach($sousDomaine->projet as $projet)
                                                                                         {
-                                                                                            ?>
-                                                                                            <div class="list-group-item" id="enteteProjet<?php echo $projet->id ?>">
-                                                                                                <a href="#" title="<?php echo $projet->description ?>">
-                                                                                                    <?php echo $projet->titre ?>
-                                                                                                </a>
-                                                                                                <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
-                                                                                                <span class="badge">Spécifique</span>
-                                                                                            </div>
-                                                                                            <?php
-                                                                                        }
-                                                                                        ?>
-                                                                                    </div>
-                                                                                    <?php
-                                                                                }
-                                                                                elseif($projetsGeneriques != null)
-                                                                                {
-                                                                                    ?>
-                                                                                    <div class="list-group">
-                                                                                        <?php
-                                                                                            foreach($projetsGeneriques as $proGen)
+                                                                                            if($projet->type == "generique")
                                                                                             {
                                                                                                 ?>
-                                                                                                <div class="list-group-item enteteProjetGenerique<?php echo $proGen->id ?>">
-                                                                                                    <a href="#" title="<?php echo $proGen->description ?>">
-                                                                                                        <?php echo $proGen->titre ?>
+                                                                                                <div class="list-group-item" id="enteteProjet<?php echo $projet->id ?>">
+                                                                                                    <a href="#" title="<?php echo $projet->description ?>">
+                                                                                                        <?php echo $projet->titre ?>
                                                                                                     </a>
-                                                                                                    <a href="#" class="pull-right abonner" class="projetGenerique-<?php echo $proGen->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
-                                                                                                    <span class="badge">Générique</span>
+                                                                                                    <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                                    <span class="badge"><?php if($projet->type == "specifique"){ echo "Spécifique"; }elseif($projet->type == "generique"){ echo "Générique"; } ?></span>
                                                                                                 </div>
                                                                                                 <?php
                                                                                             }
+                                                                                        }
+                                                                                    foreach($sousDomaine->projet as $projet)
+                                                                                        {
+                                                                                            if($projet->type == "specifique")
+                                                                                            {
+                                                                                                ?>
+                                                                                                <div class="list-group-item" id="enteteProjet<?php echo $projet->id ?>">
+                                                                                                    <a href="#" title="<?php echo $projet->description ?>">
+                                                                                                        <?php echo $projet->titre ?>
+                                                                                                    </a>
+                                                                                                    <a href="#" class="pull-right abonner" id="projet-<?php echo $projet->id ?>">S'abonner <span class="glyphicon glyphicon-plus-sign"></span></a>
+                                                                                                    <span class="badge"><?php if($projet->type == "specifique"){ echo "Spécifique"; }elseif($projet->type == "generique"){ echo "Générique"; } ?></span>
+                                                                                                </div>
+                                                                                                <?php
+                                                                                            }
+                                                                                        }
                                                                                         ?>
                                                                                     </div>
                                                                                     <?php

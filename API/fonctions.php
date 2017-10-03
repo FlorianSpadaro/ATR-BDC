@@ -1079,7 +1079,13 @@
 			$id = $data["id"];
 			$login = strtolower($prenom).".".strtolower($nom);
 			$mdp = json_decode(motDePasseAleatoire(10));
-			mail($email, "Création de compte", "Bonjour,\n\nPour accéder à votre compte, merci d'utiliser ces identifiants:\n\nLogin: ".$login."\nMot de passe: ".$mdp."\n\nIl est conseillé de changer rapidement ce mot de passe en cliquant sur \"Mon Compte\" (tout en haut à gauche), puis \"Informations Personnelles\", et enfin cliquer sur \"Modifier mot de passe\"\n\nCeci est un mail automatique, merci de ne pas y répondre. ");
+			$headers = "";
+			//$headers .= "From: " . strip_tags($_POST['req-email']) . "\r\n";
+			//$headers .= "Reply-To: ". strip_tags($_POST['req-email']) . "\r\n";
+			//$headers .= "CC: susan@example.com\r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-Type: text/html; charset=utf-8\r\n";
+			mail($email, "Création de compte", "Bonjour,\n\nPour accéder à votre compte, merci d'utiliser ces identifiants:\n\nLogin: ".$login."\nMot de passe: ".$mdp."\n\nIl est conseillé de changer rapidement ce mot de passe en cliquant sur \"Mon Compte\" (tout en haut à gauche), puis \"Informations Personnelles\", et enfin cliquer sur \"Modifier mot de passe\"\n\nCeci est un mail automatique, merci de ne pas y répondre. ", $headers);
 			$mdpHasher = json_decode(hashage($mdp));
 			$req2 = $bdd->prepare("INSERT INTO connexion(login, mdp, utilisateur_id) VALUES(?, ?, ?)");
 			$req2->execute(array($login, $mdpHasher, $id));
@@ -2362,7 +2368,8 @@
 	function getAbonnementsByUtilisateurId($id)
 	{
 		include("connexionBdd.php");
-
+		
+		$listeProjetsGeneriquesAbo = array(); //Pour ne pas avoir 2 fois le même projet générique
 		$abonnements = null;
 		$i = 0;
 		$req = $bdd->prepare("SELECT id, secteur_id, domaine_id, sous_domaine_id, projet_id, contrat_id FROM abonnement WHERE utilisateur_id = ?");
@@ -2374,12 +2381,16 @@
 				$abonnements[$i]["secteur_id"] = $data["secteur_id"];
 				$i++;
 				
+				//$tabDomaine = array(); //Pour la requête des projets génériques
+				
 				$req2 = $bdd->prepare("SELECT id FROM domaine WHERE secteur_id = ?");
 				$req2->execute(array($data["secteur_id"]));
 				while($data2 = $req2->fetch())
 				{
 					$abonnements[$i]["domaine_id"] = $data2["id"];
 					$i++;
+					
+					//array_push($tabDomaine, "'".$data2["id"]."'");
 					
 					$req3 = $bdd->prepare("SELECT id FROM sous_domaine WHERE domaine_id = ?");
 					$req3->execute(array($data2["id"]));
@@ -2396,13 +2407,27 @@
 							$i++;
 						}
 						
-						$req4 = $bdd->prepare("SELECT projet_id FROM projet_domaine WHERE domaine_id = ?");
+						/*$req4 = $bdd->prepare("SELECT projet_id FROM projet_domaine WHERE domaine_id = ?");
 						$req4->execute(array($data2["id"]));
 						while($data4 = $req4->fetch())
 						{
 							$abonnements[$i]["projet_id"] = $data4["projet_id"];
 							$i++;
-						}
+						}*/
+					}
+				}
+				
+				//$tabDomaine = implode(", ", $tabDomaine);
+				
+				$req2 = $bdd->prepare("SELECT DISTINCT prdm.projet_id FROM projet_domaine prdm JOIN domaine d ON d.id = prdm.domaine_id WHERE d.secteur_id = ?");
+				//$req2 = $bdd->query("SELECT DISTINCT projet_id FROM projet_domaine WHERE domaine_id IN(".$tabDomaine.")");
+				$req2->execute(array($data["secteur_id"]));
+				while($data2 = $req2->fetch())
+				{
+					if(!array_search($data2["projet_id"], $listeProjetsGeneriquesAbo))
+					{
+						$abonnements[$i]["projet_id"] = $data2["projet_id"];
+						$i++;
 					}
 				}
 			}
@@ -2425,10 +2450,13 @@
 						$abonnements[$i]["projet_id"] = $data3["id"];
 						$i++;
 					}
-					
-					$req3 = $bdd->prepare("SELECT projet_id FROM projet_domaine WHERE domaine_id = ?");
-					$req3->execute(array($data["domaine_id"]));
-					while($data3 = $req3->fetch())
+				}
+				
+				$req3 = $bdd->prepare("SELECT projet_id FROM projet_domaine WHERE domaine_id = ?");
+				$req3->execute(array($data["domaine_id"]));
+				while($data3 = $req3->fetch())
+				{
+					if(!array_search($data3["projet_id"], $listeProjetsGeneriquesAbo))
 					{
 						$abonnements[$i]["projet_id"] = $data3["projet_id"];
 						$i++;
@@ -2456,8 +2484,11 @@
 					$req3->execute(array($data2["domaine_id"]));
 					while($data3 = $req3->fetch())
 					{
-						$abonnements[$i]["projet_id"] = $data3["projet_id"];
-						$i++;
+						if(!array_search($data3["projet_id"], $listeProjetsGeneriquesAbo))
+						{
+							$abonnements[$i]["projet_id"] = $data3["projet_id"];
+							$i++;
+						}
 					}
 				}
 			}
@@ -2498,6 +2529,7 @@
 		}
 		return json_encode($contrats);
 	}
+	
 
 	function getSecteursDomainesSousDomainesProjets($idUser)
 	{
@@ -2533,23 +2565,44 @@
 				}
 				if(isset($abo->projet_id) && ($abo->projet_id != null))
 				{
-					$projet = (object)[];
-					$projet->id = $abo->projet_id;
-					$projet->sous_domaine_id = json_decode(getSousDomaineIdByProjetId($projet->id));
-					$projet->domaine_id = json_decode(getDomaineIdByProjetId($projet->id));
-					$projet->secteur_id = json_decode(getSecteurIdByProjetId($projet->id));
+					//$projet = (object)[];
+					//$projet->id = $abo->projet_id;
+					//$projet->sous_domaine_id = json_decode(getSousDomaineIdByProjetId($projet->id));
+					//$projet->domaine_id = json_decode(getDomaineIdByProjetId($projet->id));
+					//$projet->secteur_id = json_decode(getSecteurIdByProjetId($projet->id));
 					
-					/*$req = $bdd->prepare("SELECT sous_domaine_id FROM projet WHERE id = ?");
+					$req = $bdd->prepare("SELECT * FROM projet WHERE id = ?");
 					$req->execute(array($abo->projet_id));
 					if($data = $req->fetch())
 					{
 						if($data["sous_domaine_id"] == null)
 						{
-							var_dump($projet);
+							$projet = (object)[];
+							$projet->id = $data["id"];
+							$projet->sous_domaine_id = json_decode(getSousDomaineIdByProjetId($data["id"]));
+							$projet->domaine_id = json_decode(getDomaineIdByProjetId($data["id"]));
+							$projet->secteur_id = json_decode(getSecteurIdByProjetId($data["id"]));
+							array_push($projetsAbo, $projet);
 						}
-					}*/
+						else{
+							$projet = (object)[];
+							$projet->id = $data["id"];
+							$projet->sous_domaine_id = null;
+							//$projet->domaine_id = json_decode(getDomaineIdByProjetId($data["id"]));
+							$projet->domaine_id = array();
+							$projet->secteur_id = json_decode(getSecteurIdByProjetId($data["id"]));
+							
+							$req2 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+							$req2->execute(array($abo->projet_id));
+							while($data2 = $req2->fetch())
+							{
+								array_push($projet->domaine_id, $data2["domaine_id"]);
+							}
+							array_push($projetsAbo, $projet);
+						}
+					}
 					
-					array_push($projetsAbo, $projet);
+					//array_push($projetsAbo, $projet);
 				}
 			}
 		}
@@ -2651,14 +2704,15 @@
 						$projet->id = $data4["id"];
 						$projet->titre = $data4["titre"];
 						$projet->description = $data4["description"];
+						$projet->type = "specifique";
 						$projet->date_creation = json_decode(modifierDate($data4["date_creation"]));
 						$projet->date_derniere_maj = json_decode(modifierDate($data4["date_derniere_maj"]));
 						
 						array_push($sous_domaine->projet, $projet);
 					}
 					
-					/*$req4 = $bdd->prepare("SELECT p.id pid, p.titre ptitre, p.description pdesc, p.date_creation pdatecrea, p.date_derniere_maj pdatemaj FROM projet p JOIN projet_domaine prdm ON p.id = prdm.projet_id WHERE prdm.domaine_id = ?");
-					$req4->execute(array($data2["id"]));
+					$req4 = $bdd->prepare("SELECT DISTINCT prdm.projet_id pid FROM projet_domaine prdm JOIN sous_domaine sd ON sd.domaine_id = prdm.domaine_id WHERE sd.id = ?");
+					$req4->execute(array($data3["id"]));
 					while($data4 = $req4->fetch())
 					{
 						$nbProjetsSecteur++;
@@ -2669,7 +2723,7 @@
 						{
 							foreach($projetsAbo as $proAbo)
 							{
-								if($proAbo->id == $data4["id"])
+								if($proAbo->id == $data4["pid"])
 								{
 									$nbProjetsSecteurAbo++;
 									$nbProjetsDomaineAbo++;
@@ -2678,24 +2732,66 @@
 							}
 						}
 						
+						$req5 = $bdd->prepare("SELECT id, titre, description, date_creation, date_derniere_maj FROM projet WHERE id = ?");
+						$req5->execute(array($data4["pid"]));
+						if($data5 = $req5->fetch())
+						{
+							$projet = (object)[];
+							$projet->id = $data5["id"];
+							$projet->titre = $data5["titre"];
+							$projet->type = "generique";
+							$projet->description = $data5["description"];
+							$projet->date_creation = json_decode(modifierDate($data5["date_creation"]));
+							$projet->date_derniere_maj = json_decode(modifierDate($data5["date_derniere_maj"]));
+							
+							array_push($sous_domaine->projet, $projet);
+						}
+					}
+					
+					/*$req4 = $bdd->prepare("SELECT p.id pid, p.titre ptitre, p.description pdesc, p.date_creation pdatecrea, p.date_derniere_maj pdatemaj FROM projet p JOIN projet_domaine prdm ON p.id = prdm.projet_id WHERE prdm.domaine_id = ?");
+					$req4->execute(array($data2["id"]));
+					while($data4 = $req4->fetch())
+					{
+						//$nbProjetsSecteur++;
+						//$nbProjetsDomaine++;
+						//$nbProjetsSousDomaine++;
+						$abonner = false;
+						
+						if($projetsAbo != null)
+						{
+							foreach($projetsAbo as $proAbo)
+							{
+								if($proAbo->id == $data4["pid"])
+								{
+									$abonner = true;
+								}
+							}
+						}
+						if($abonner)
+						{
+							$nbProjetsSecteurAbo++;
+							$nbProjetsDomaineAbo++;
+							$nbProjetsSousDomaineAbo++;
+						}
+						
 						$projet = (object)[];
-						$projet->id = $data4["id"];
-						$projet->titre = $data4["titre"];
-						$projet->description = $data4["description"];
-						$projet->date_creation = json_decode(modifierDate($data4["date_creation"]));
-						$projet->date_derniere_maj = json_decode(modifierDate($data4["date_derniere_maj"]));
+						$projet->id = $data4["pid"];
+						$projet->titre = $data4["ptitre"];
+						$projet->description = $data4["pdesc"];
+						$projet->date_creation = json_decode(modifierDate($data4["pdatecrea"]));
+						$projet->date_derniere_maj = json_decode(modifierDate($data4["pdatemaj"]));
 						
 						array_push($sous_domaine->projet, $projet);
 					}*/
 					
-					$sous_domaine->nbProjets = $nbProjetsSousDomaine + json_decode(getNbProjetsGeneriquesBySousDomaineId($sous_domaine->id));
+					$sous_domaine->nbProjets = $nbProjetsSousDomaine;
 					$sous_domaine->nbProjetsAbo = $nbProjetsSousDomaineAbo;
 					
 					array_push($domaine->sous_domaine, $sous_domaine);
 				}
 				$domaine->nbSousDomaines = $nbSousDomainesDomaine;
 				$domaine->nbSousDomainesAbo = $nbSousDomainesDomaineAbo;
-				$domaine->nbProjets = $nbProjetsDomaine + sizeof(json_decode(getProjetsGeneriquesByDomaineId($domaine->id)));
+				$domaine->nbProjets = $nbProjetsDomaine;
 				$domaine->nbProjetsAbo = $nbProjetsDomaineAbo;
 				
 				array_push($secteur->domaine, $domaine);
@@ -2704,7 +2800,7 @@
 			$secteur->nbDomainesAbo = $nbDomainesSecteurAbo;
 			$secteur->nbSousDomaines = $nbSousDomainesSecteur;
 			$secteur->nbSousDomainesAbo = $nbSousDomainesSecteurAbo;
-			$secteur->nbProjets = $nbProjetsSecteur + sizeof(json_decode(getProjetsGeneriquesBySecteurId($data["id"])));
+			$secteur->nbProjets = $nbProjetsSecteur;
 			$secteur->nbProjetsAbo = $nbProjetsSecteurAbo;
 			
 			array_push($tab, $secteur);
@@ -2736,7 +2832,13 @@
 					$reponse = $req->execute(array($mdp, $idUser));
 					if($reponse)
 					{
-						mail($email, "Modification de mot de passe", "Bonjour,\n\nPour accéder à votre compte, merci d'utiliser ces identifiants:\n\nLogin: ".$login."\nMot de passe: ".$motDePasse."\n\nIl est conseillé de changer rapidement ce mot de passe en cliquant sur \"Mon Compte\" (tout en haut à gauche), puis \"Informations Personnelles\", et enfin cliquer sur \"Modifier mot de passe\"\n\nCeci est un mail automatique, merci de ne pas y répondre. ");
+						$headers = "";
+						//$headers .= "From: " . strip_tags($_POST['req-email']) . "\r\n";
+						//$headers .= "Reply-To: ". strip_tags($_POST['req-email']) . "\r\n";
+						//$headers .= "CC: susan@example.com\r\n";
+						$headers .= "MIME-Version: 1.0\r\n";
+						$headers .= "Content-Type: text/html; charset=utf-8\r\n";
+						mail($email, "Modification de mot de passe", "Bonjour,\n\nPour accéder à votre compte, merci d'utiliser ces identifiants:\n\nLogin: ".$login."\nMot de passe: ".$motDePasse."\n\nIl est conseillé de changer rapidement ce mot de passe en cliquant sur \"Mon Compte\" (tout en haut à gauche), puis \"Informations Personnelles\", et enfin cliquer sur \"Modifier mot de passe\"\n\nCeci est un mail automatique, merci de ne pas y répondre. ", $headers);
 					}
 				}
 			}

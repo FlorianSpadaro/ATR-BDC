@@ -92,12 +92,13 @@
                                 <td><?php echo $user->fonction->libelle ?></td> 
                                 <td><?php echo $user->fonction->niveau->libelle ?></td>
                                 <td>
-                                    <a data-toggle="modal" href="#modificationsUtilisateur" class="modifierUser"><span class="glyphicon glyphicon-edit"></span></a>
+                                    <a href="mesAbonnements.php?usr=<?php echo $user->id ?>" data-toggle="tooltip" title="gérer abonnements" ><span class="glyphicon glyphicon-heart-empty"></span></a> 
+                                    <a data-toggle="modal" href="#modificationsUtilisateur" data-toggle="tooltip" class="modifierUser" title="modifier utilisateur"><span class="glyphicon glyphicon-edit"></span></a>
                                     <?php
                                     if(!$user->actif)
                                     {
                                         ?>
-                                        <a href="#" class="supprimerUser"><span class="glyphicon glyphicon-remove-sign"></span></a>
+                                        <a href="#" class="supprimerUser" data-toggle="tooltip" title="supprimer utilisateur"><span class="glyphicon glyphicon-remove-sign"></span></a>
                                         <?php
                                     }
                                     ?>
