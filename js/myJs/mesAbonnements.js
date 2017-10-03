@@ -25,7 +25,7 @@ $(function(){
         
         $.post("API/getAbonnementsByUtilisateurId.php", {utilisateur_id: $("#idUser").val()}, function(data){
             var abonnements = JSON.parse(data);
-            $(".panel-success").removeClass("panel-success").addClass("panel-default");
+            $(".panel-success").removeClass("panel-success").addClass("panel-default").find(".desabonner").removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>");
             $(".list-group-item-success").removeClass("list-group-item-success");
             /*$(".desabonner").each(function(){
                 var tab = $(this).attr("id").split("-");
