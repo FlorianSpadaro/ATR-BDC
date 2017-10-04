@@ -374,7 +374,12 @@
                                 {
                                     $nb++;
                                 }
+                                $nb += sizeof($projetsGeneriques);
                                 echo $nb;
+                            }
+                            elseif(sizeof($projetsGeneriques) > 0)
+                            {
+                                echo sizeof($projetsGeneriques);
                             }
                             else{
                                 echo "0";
@@ -423,6 +428,17 @@
                                         </div>
                                         <?php
                                     }
+                                  else{
+                                      if($projetsGeneriques != null)
+                                        {
+                                            foreach($projetsGeneriques as $proGen)
+                                            {
+                                                ?>
+                                                <a href="projet.php?id=<?php echo $proGen->id ?>" class="list-group-item list-group-item-info" title="<?php echo $proGen->description ?>"><?php echo $proGen->titre ?><span class="badge">Générique</span></a>
+                                                <?php
+                                            }
+                                        }
+                                  }
                                     ?>
                                 </div>
                               </div>

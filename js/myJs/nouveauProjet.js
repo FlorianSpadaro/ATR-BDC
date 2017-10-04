@@ -1,7 +1,5 @@
 $(function(){
     
-    console.log("retest");
-    
     $("#summernote").summernote({
         height: 300,
         lang: 'fr-FR'
