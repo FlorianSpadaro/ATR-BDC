@@ -1596,7 +1596,7 @@
 			}
 		}elseif($search != null){
             $idsProjets = json_decode(getSearchProjetByProjectSearch($search));
-            $tabIdsProjets = [];
+            $tabIdsProjets = array();
             if($idsProjets != null)
             {
                 foreach($idsProjets as $idProjet)
@@ -1607,18 +1607,20 @@
             $resultIds = "'".implode("','",$tabIdsProjets)."'";
       
             
-            
-            $req = $bdd->query("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet WHERE id IN (".implode(',',$tabIdsProjets).") ORDER BY date_creation DESC");
-            while($data = $req->fetch())
+            if(sizeof($tabIdsProjets) > 0)
 			{
-				$projets[$i]["id"] = $data["id"];
-				$projets[$i]["titre"] = $data["titre"];
-				$projets[$i]["description"] = $data["description"];
-				$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
-				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
-				$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
-				
-				$i++;
+				$req = $bdd->query("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet WHERE id IN (".implode(',',$tabIdsProjets).") ORDER BY date_creation DESC");
+				while($data = $req->fetch())
+				{
+					$projets[$i]["id"] = $data["id"];
+					$projets[$i]["titre"] = $data["titre"];
+					$projets[$i]["description"] = $data["description"];
+					$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
+					$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
+					$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
+					
+					$i++;
+				}
 			}
         }
 		else{

@@ -265,6 +265,13 @@
                     <?php
                 }
             }
+            else{
+                ?>
+                <div style="text-align: center">
+                    <label class="label label-info">Aucun Projet</label>
+                </div>
+                <?php
+            }
             ?>
             
             <hr>
