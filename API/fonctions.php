@@ -1581,7 +1581,7 @@
 				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
 			}
 			
-			$requete = "SELECT id projet_id, titre projet_titre, description projet_description, date_creation projet_date_creation, date_derniere_maj projet_date_derniere_maj, contrat_id FROM projet  WHERE";
+			$requete = "SELECT id projet_id, titre projet_titre, description projet_description, date_creation projet_date_creation, date_derniere_maj projet_date_derniere_maj, contrat_id, sous_domaine_id FROM projet  WHERE";
 			if(sizeof($tabTexte) > 0)
 			{
 				$i = 0;
@@ -1693,8 +1693,6 @@
 				}
 			}
 			$requete = $requete." ORDER BY date_creation DESC LIMIT ? OFFSET ?";
-			
-			
 			$req = $bdd->prepare($requete);
 			$req->execute(array($nb, $debut));
 			$i = 0;
@@ -1705,11 +1703,11 @@
 				$projets[$i]["description"] = $data["projet_description"];
 				$projets[$i]["date_creation"] = json_decode(modifierDate($data["projet_date_creation"]));
 				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["projet_date_derniere_maj"]));
+				$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
 				$projets[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
 				
 				$i++;
 			}
-			
 		}
 		return json_encode($projets);
 	}

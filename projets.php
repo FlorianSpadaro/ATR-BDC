@@ -217,7 +217,7 @@
                         <h3 class="panel-title">
                             <a href="projet.php?id=<?php echo $projet->id ?>"><?php echo $projet->titre ?></a>
                             <span class="pull-right">Type : <?php 
-                                if(isset($projet->sous_domaine_id) && $projet->sous_domaine_id != null)
+                                if($projet->sous_domaine_id != null)
                                 {
                                     echo "Spécifique";
                                 }
