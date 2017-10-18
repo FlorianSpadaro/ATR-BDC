@@ -1472,17 +1472,73 @@
 			}*/
 			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
 			{
-				$requeteSousDomaines = "";
-				$i = 0;
-				foreach($params->filtre->sousDomaines as $sd)
+				if(isset($params->filtre->type) && ($params->filtre->type != null) && (sizeof($params->filtre->type) > 0))
 				{
-					if($i != 0)
+					$generique = false;
+					$specifique = false;
+					foreach($params->filtre->type as $type)
 					{
-						$requeteSousDomaines = $requeteSousDomaines." OR ";
+						if($type == "generique")
+						{
+							$generique = true;
+						}
+						elseif($type == "specifique"){
+							$specifique = true;
+						}
 					}
-					$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
-					
-					$i++;
+					if($generique == true && $specifique == true)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+						$requeteSousDomaines = $requeteSousDomaines." OR sous_domaine_id IS NULL";
+					}
+					elseif($generique)
+					{
+						$requeteSousDomaines = "sous_domaine_id IS NULL";
+					}
+					elseif($specifique)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+					}
+					else{
+						$requeteSousDomaines = "sous_domaine_id = 0";
+					}
+				}
+				else{
+					$requeteSousDomaines = "";
+					$i = 0;
+					foreach($params->filtre->sousDomaines as $sd)
+					{
+						if($i != 0)
+						{
+							$requeteSousDomaines = $requeteSousDomaines." OR ";
+						}
+						$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+						
+						$i++;
+					}
+					//return json_encode("PAS ENTRER");
 				}
 				array_push($tabFiltre, $requeteSousDomaines);
 			}
@@ -1660,20 +1716,77 @@
 			}*/
 			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
 			{
-				$requeteSousDomaines = "";
-				$i = 0;
-				foreach($params->filtre->sousDomaines as $sd)
+				
+				if(isset($params->filtre->type) && ($params->filtre->type != null) && (sizeof($params->filtre->type) > 0))
 				{
-					if($i != 0)
+					$generique = false;
+					$specifique = false;
+					foreach($params->filtre->type as $type)
 					{
-						$requeteSousDomaines = $requeteSousDomaines." OR ";
+						if($type == "generique")
+						{
+							$generique = true;
+						}
+						elseif($type == "specifique"){
+							$specifique = true;
+						}
 					}
-					$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
-					
-					$i++;
+					if($generique == true && $specifique == true)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+						$requeteSousDomaines = $requeteSousDomaines." OR sous_domaine_id IS NULL";
+					}
+					elseif($generique)
+					{
+						$requeteSousDomaines = "sous_domaine_id IS NULL";
+					}
+					elseif($specifique)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+					}
+					else{
+						$requeteSousDomaines = "sous_domaine_id = 0";
+					}
+				}
+				else{
+					$requeteSousDomaines = "";
+					$i = 0;
+					foreach($params->filtre->sousDomaines as $sd)
+					{
+						if($i != 0)
+						{
+							$requeteSousDomaines = $requeteSousDomaines." OR ";
+						}
+						$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+						
+						$i++;
+					}
 				}
 				array_push($tabFiltre, $requeteSousDomaines);
 			}
+			
 			if(sizeof($tabFiltre) > 0)
 			{
 				$i = 0;
