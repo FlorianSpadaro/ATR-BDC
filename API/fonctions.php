@@ -1,4 +1,40 @@
 <?php
+	function getContratsIdByMiniatureId($id)
+	{
+		include("connexionBdd.php");
+		
+		$listeIdContrats = array();
+		$req = $bdd->prepare("SELECT id FROM contrat WHERE miniature_id = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			array_push($listeIdContrats, $data["id"]);
+		}
+		return json_encode($listeIdContrats);
+	}
+
+	function removeMiniatureById($id)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("SELECT url FROM miniature WHERE id = ?");
+			$req->execute(array($id));
+			if($data = $req->fetch())
+			{
+				$reponse = unlink("../".$data["url"]);
+				if($reponse)
+				{
+					$req = $bdd->prepare("DELETE FROM miniature WHERE id = ?");
+					$reponse = $req->execute(array($id));
+				}
+			}
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
 
 	function getNbProjetsGeneriquesBySousDomaineId($idSousDomaine)
 	{

@@ -295,4 +295,33 @@ $(function(){
             }
         });
     });
+    
+    $(".btnSupprMiniature").click(function(){
+        var elt = $(this);
+        var id = $(this).attr("id").split("-")[1];
+        
+        $.post("API/getContratsIdByMiniatureId.php", {miniature_id: id}, function(data2){
+            var listeIdContrats = JSON.parse(data2);
+            if(listeIdContrats.length > 0)
+                {
+                    alert("Impossible de supprimer cette miniature car elle est liée à un contrat");
+                }
+            else{
+                var repUser = confirm("Voulez-vous vraiment supprimer cette miniature?");
+                if(repUser)
+                    {
+                        $.post("API/removeMiniatureById.php", {miniature_id: id}, function(data){
+                            var reponse = JSON.parse(data);
+                            if(reponse)
+                                {
+                                    elt.closest("div.radio").hide();
+                                }
+                            else{
+                                alert("Une erreur s'est produite, veuillez réessayer plus tard");
+                            }
+                        });
+                    }
+            }
+        });
+    });
 });
