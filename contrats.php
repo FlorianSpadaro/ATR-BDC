@@ -42,10 +42,10 @@
             #btnModifierContrat, #btnSupprimerContrat, #divAjouterMiniature, #divAjouterMiniatureNC{
                 display: none;
             }
-            #listeMiniatures, #listeMiniaturesNouveauContrat{
+            /*#listeMiniaturesNouveauContrat{
                 display: flex;
                 justify-content: space-around;
-            }
+            }*/
         </style>
     </head>
     
@@ -106,7 +106,7 @@
                     </div>
                     <div class="form-group">
                         <label>Miniature: </label><br/>
-                        <div id="listeMiniatures">
+                        <div id="listeMiniatures" class="container-fluid">
                             <?php
                             if($miniatures != null)
                             {
@@ -114,8 +114,13 @@
                                 foreach($miniatures as $miniature)
                                 {
                                     ?>
-                                    <div class="radio">
-                                        <label class="radio" for="miniature-<?php echo $miniature->id ?>"><input type="radio" name="miniature" value="miniature-<?php echo $miniature->id ?>" id="miniature-<?php echo $miniature->id ?>" /> <img width="50px" height="50px" src="<?php echo $miniature->url ?>" /></label>
+                                    <div class="radio  col-lg-3" style="display: flex" style="justify-content: space-between">
+                                        <div>
+                                            <label class="radio" for="miniature-<?php echo $miniature->id ?>"><input type="radio" name="miniature" value="miniature-<?php echo $miniature->id ?>" id="miniature-<?php echo $miniature->id ?>" /> <img width="50px" height="50px" src="<?php echo $miniature->url ?>" /></label>
+                                        </div>
+                                        <div>
+                                            <button id="btnSupprMiniatureMC-<?php echo $miniature->id ?>" type="button" class="close btnSupprMiniature"><span class="glyphicon glyphicon-remove"></span></button>
+                                        </div>
                                     </div>
                                     <?php
                                         $i++;
@@ -169,7 +174,8 @@
                     </div>
                     <div class="form-group">
                         <label>Miniature: </label><br/>
-                        <div id="listeMiniaturesNouveauContrat">
+                        <div id="listeMiniaturesNouveauContrat" class="container-fluid">
+                            <br/><br/>
                             <?php
                             if($miniatures != null)
                             {
@@ -182,8 +188,13 @@
                                         echo "<br/>";
                                     }
                                     ?>
-                                    <div class="radio">
-                                        <label class="radio" for="miniatureNC-<?php echo $miniature->id ?>"><input type="radio" name="miniatureNC" value="miniatureNC-<?php echo $miniature->id ?>" id="miniatureNC-<?php echo $miniature->id ?>" /> <img width="50px" height="50px" src="<?php echo $miniature->url ?>" /></label>
+                                    <div class="radio col-lg-3" style="display: flex" style="justify-content: space-between">
+                                        <div>
+                                            <label class="radio" for="miniatureNC-<?php echo $miniature->id ?>"><input type="radio" name="miniatureNC" value="miniatureNC-<?php echo $miniature->id ?>" id="miniatureNC-<?php echo $miniature->id ?>" /> <img width="50px" height="50px" src="<?php echo $miniature->url ?>" /></label>
+                                        </div>
+                                        <div>
+                                            <button id="btnSupprMiniature-<?php echo $miniature->id ?>" type="button" class="close btnSupprMiniature"><span class="glyphicon glyphicon-remove"></span></button>
+                                        </div>
                                     </div>
                                     <?php
                                         $i++;
