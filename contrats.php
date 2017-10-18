@@ -65,7 +65,7 @@
         
         <div class="container">
             <div>
-                <button data-toggle="modal" href="#modalNouveauContrat" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Nouveau Contrat</button>
+                <button id="btnCreationNvContrat" data-toggle="modal" href="#modalNouveauContrat" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Nouveau Contrat</button>
                 <span class="btn-group pull-right">
                     <button data-toggle="modal" href="#modalModifContrat" class="btn btn-info" id="btnModifierContrat">Modifier</button>
                     <button class="btn btn-danger" id="btnSupprimerContrat">Supprimer</button>
@@ -106,8 +106,8 @@
                     </div>
                     <div class="form-group">
                         <label>Miniature: </label><br/>
-                        <div id="listeMiniatures" class="container-fluid">
-                            <?php
+                        <div id="listeMiniatures" class="container-fluid listeMiniatures">
+                            <!--<?php
                             if($miniatures != null)
                             {
                                 $i = 0;
@@ -126,7 +126,7 @@
                                         $i++;
                                 }
                             }
-                            ?>
+                            ?>-->
                         </div>
                         <button class="btn btn-link pull-right" id="btnAjouterMiniature"><span class="glyphicon glyphicon-plus"></span> Ajouter miniature</button>
                         <div id="divAjouterMiniature" class="well">
@@ -174,8 +174,8 @@
                     </div>
                     <div class="form-group">
                         <label>Miniature: </label><br/>
-                        <div id="listeMiniaturesNouveauContrat" class="container-fluid">
-                            <br/><br/>
+                        <div id="listeMiniaturesNouveauContrat" class="container-fluid listeMiniatures">
+                            <!--<br/><br/>
                             <?php
                             if($miniatures != null)
                             {
@@ -200,7 +200,7 @@
                                         $i++;
                                 }
                             }
-                            ?>
+                            ?>-->
                         </div>
                         <button class="btn btn-link pull-right" id="btnAjouterMiniatureNC"><span class="glyphicon glyphicon-plus"></span> Ajouter miniature</button>
                         <div id="divAjouterMiniatureNC" class="well">
