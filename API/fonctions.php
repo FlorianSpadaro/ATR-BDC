@@ -1472,17 +1472,73 @@
 			}*/
 			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
 			{
-				$requeteSousDomaines = "";
-				$i = 0;
-				foreach($params->filtre->sousDomaines as $sd)
+				if(isset($params->filtre->type) && ($params->filtre->type != null) && (sizeof($params->filtre->type) > 0))
 				{
-					if($i != 0)
+					$generique = false;
+					$specifique = false;
+					foreach($params->filtre->type as $type)
 					{
-						$requeteSousDomaines = $requeteSousDomaines." OR ";
+						if($type == "generique")
+						{
+							$generique = true;
+						}
+						elseif($type == "specifique"){
+							$specifique = true;
+						}
 					}
-					$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
-					
-					$i++;
+					if($generique == true && $specifique == true)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+						$requeteSousDomaines = $requeteSousDomaines." OR sous_domaine_id IS NULL";
+					}
+					elseif($generique)
+					{
+						$requeteSousDomaines = "sous_domaine_id IS NULL";
+					}
+					elseif($specifique)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+					}
+					else{
+						$requeteSousDomaines = "sous_domaine_id = 0";
+					}
+				}
+				else{
+					$requeteSousDomaines = "";
+					$i = 0;
+					foreach($params->filtre->sousDomaines as $sd)
+					{
+						if($i != 0)
+						{
+							$requeteSousDomaines = $requeteSousDomaines." OR ";
+						}
+						$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+						
+						$i++;
+					}
+					//return json_encode("PAS ENTRER");
 				}
 				array_push($tabFiltre, $requeteSousDomaines);
 			}
@@ -1540,7 +1596,7 @@
 			}
 		}elseif($search != null){
             $idsProjets = json_decode(getSearchProjetByProjectSearch($search));
-            $tabIdsProjets = [];
+            $tabIdsProjets = array();
             if($idsProjets != null)
             {
                 foreach($idsProjets as $idProjet)
@@ -1551,18 +1607,20 @@
             $resultIds = "'".implode("','",$tabIdsProjets)."'";
       
             
-            
-            $req = $bdd->query("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet WHERE id IN (".implode(',',$tabIdsProjets).") ORDER BY date_creation DESC");
-            while($data = $req->fetch())
+            if(sizeof($tabIdsProjets) > 0)
 			{
-				$projets[$i]["id"] = $data["id"];
-				$projets[$i]["titre"] = $data["titre"];
-				$projets[$i]["description"] = $data["description"];
-				$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
-				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
-				$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
-				
-				$i++;
+				$req = $bdd->query("SELECT id, titre, description, date_creation, date_derniere_maj, sous_domaine_id FROM projet WHERE id IN (".implode(',',$tabIdsProjets).") ORDER BY date_creation DESC");
+				while($data = $req->fetch())
+				{
+					$projets[$i]["id"] = $data["id"];
+					$projets[$i]["titre"] = $data["titre"];
+					$projets[$i]["description"] = $data["description"];
+					$projets[$i]["date_creation"] = json_decode(modifierDate($data["date_creation"]));
+					$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["date_derniere_maj"]));
+					$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
+					
+					$i++;
+				}
 			}
         }
 		else{
@@ -1581,7 +1639,7 @@
 				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
 			}
 			
-			$requete = "SELECT id projet_id, titre projet_titre, description projet_description, date_creation projet_date_creation, date_derniere_maj projet_date_derniere_maj, contrat_id FROM projet  WHERE";
+			$requete = "SELECT id projet_id, titre projet_titre, description projet_description, date_creation projet_date_creation, date_derniere_maj projet_date_derniere_maj, contrat_id, sous_domaine_id FROM projet  WHERE";
 			if(sizeof($tabTexte) > 0)
 			{
 				$i = 0;
@@ -1660,20 +1718,77 @@
 			}*/
 			if(isset($params->filtre->sousDomaines) && ($params->filtre->sousDomaines != null) && (sizeof($params->filtre->sousDomaines) > 0))
 			{
-				$requeteSousDomaines = "";
-				$i = 0;
-				foreach($params->filtre->sousDomaines as $sd)
+				
+				if(isset($params->filtre->type) && ($params->filtre->type != null) && (sizeof($params->filtre->type) > 0))
 				{
-					if($i != 0)
+					$generique = false;
+					$specifique = false;
+					foreach($params->filtre->type as $type)
 					{
-						$requeteSousDomaines = $requeteSousDomaines." OR ";
+						if($type == "generique")
+						{
+							$generique = true;
+						}
+						elseif($type == "specifique"){
+							$specifique = true;
+						}
 					}
-					$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
-					
-					$i++;
+					if($generique == true && $specifique == true)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+						$requeteSousDomaines = $requeteSousDomaines." OR sous_domaine_id IS NULL";
+					}
+					elseif($generique)
+					{
+						$requeteSousDomaines = "sous_domaine_id IS NULL";
+					}
+					elseif($specifique)
+					{
+						$requeteSousDomaines = "";
+						$i = 0;
+						foreach($params->filtre->sousDomaines as $sd)
+						{
+							if($i != 0)
+							{
+								$requeteSousDomaines = $requeteSousDomaines." OR ";
+							}
+							$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+							
+							$i++;
+						}
+					}
+					else{
+						$requeteSousDomaines = "sous_domaine_id = 0";
+					}
+				}
+				else{
+					$requeteSousDomaines = "";
+					$i = 0;
+					foreach($params->filtre->sousDomaines as $sd)
+					{
+						if($i != 0)
+						{
+							$requeteSousDomaines = $requeteSousDomaines." OR ";
+						}
+						$requeteSousDomaines = $requeteSousDomaines."sous_domaine_id = ".$sd;
+						
+						$i++;
+					}
 				}
 				array_push($tabFiltre, $requeteSousDomaines);
 			}
+			
 			if(sizeof($tabFiltre) > 0)
 			{
 				$i = 0;
@@ -1693,8 +1808,6 @@
 				}
 			}
 			$requete = $requete." ORDER BY date_creation DESC LIMIT ? OFFSET ?";
-			
-			
 			$req = $bdd->prepare($requete);
 			$req->execute(array($nb, $debut));
 			$i = 0;
@@ -1705,11 +1818,11 @@
 				$projets[$i]["description"] = $data["projet_description"];
 				$projets[$i]["date_creation"] = json_decode(modifierDate($data["projet_date_creation"]));
 				$projets[$i]["date_derniere_maj"] = json_decode(modifierDate($data["projet_date_derniere_maj"]));
+				$projets[$i]["sous_domaine_id"] = $data["sous_domaine_id"];
 				$projets[$i]["contrat"] = json_decode(getContratById($data["contrat_id"]));
 				
 				$i++;
 			}
-			
 		}
 		return json_encode($projets);
 	}

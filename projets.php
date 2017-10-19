@@ -1,18 +1,20 @@
 <?php
     include("header.php");
     
+    $search = null;
     $params = null;
     if(isset($_POST["params"]) && ($_POST["params"] != null))
     {
         $params = json_decode($_POST["params"]);
     }
-    $search = null;
-    if(isset($_GET["searchbar"]) && ($_GET["searchbar"] != null))
-    {
-        $search = $_GET["searchbar"];
-    }
-    else if(isset($_GET["params"]) && ($_GET["params"] != null)){
-        $params = json_decode(urldecode($_GET["params"]));
+    else{
+        if(isset($_GET["searchbar"]) && ($_GET["searchbar"] != null))
+        {
+            $search = $_GET["searchbar"];
+        }
+        else if(isset($_GET["params"]) && ($_GET["params"] != null)){
+            $params = json_decode(urldecode($_GET["params"]));
+        }
     }
 
     $nbProjetsAfficher = 10;
@@ -62,6 +64,9 @@
     <![endif]-->
         <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
         <style>
+            #filtreListeTypes a{
+                border: 1px solid black;
+            }
             .panel-footer{
                 text-align: right;
             }
@@ -166,16 +171,26 @@
                         <div class="form-group">
                             <legend>Filtres</legend>
                             <p class="help-block">Note: Par défaut, tous les filtres sont activés (sauf les contrats). Cliquez dessus pour les désactiver</p>
-                            <fieldset>
+                            <div id="imageChargementFiltre" style="text-align: center">
+                                <img src="img/loading.gif" />
+                            </div>
+                            <fieldset id="tousLesFiltres" style="display: none">
                                 <ul id="entetesOnglets" class="nav nav-pills">
-                                    <li class="active"><a id="enteteSecteurFiltre" href="#filtreSecteurs" data-toggle="tab">Secteurs</a></li>
+                                    <li class="active"><a id="enteteTypesFiltre" href="#filtreTypes" data-toggle="tab">Types</a></li>
+                                    <li><a id="enteteSecteurFiltre" href="#filtreSecteurs" data-toggle="tab">Secteurs</a></li>
                                     <li><a href="#filtreDomaines" data-toggle="tab">Domaines</a></li>
                                     <li><a href="#filtreSousDomaines" data-toggle="tab">Sous-Domaines</a></li>
                                     <li><a href="#filtreContrats" data-toggle="tab">Contrats</a></li>
                                 </ul>
                                 <br/>
                                 <div class="tab-content">
-                                    <div class="tab-pane active in fade" id="filtreSecteurs">
+                                    <div class="tab-pane active in fade" id="filtreTypes">
+                                        <div class="list-group" id="filtreListeTypes">
+                                          <a id="type-generique" class="list-group-item active visible filtreTypeProjet" href="#">Projets Génériques</a>
+                                          <a id="type-specifique" class="list-group-item active visible filtreTypeProjet" href="#">Projets Spécifiques</a>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="filtreSecteurs">
                                         <div class="list-group" id="filtreListeSecteurs">
                                           <label class="label label-info" id="labelSecteurFiltre">Aucun Secteur</label>
                                         </div>
@@ -199,7 +214,7 @@
                             </fieldset>
                             <div class="btn-group pull-right">
                                 <button type="reset" class="btn btn-danger" id="annulerFiltre">Annuler</button>
-                                <button class="btn btn-default" id="validerFiltre">Valider</button>
+                                <button class="btn btn-default" id="validerFiltre" disabled>Valider</button>
                             </div>
                         </div>
                     </div>
@@ -249,6 +264,13 @@
                     </div>
                     <?php
                 }
+            }
+            else{
+                ?>
+                <div style="text-align: center">
+                    <label class="label label-info">Aucun Projet</label>
+                </div>
+                <?php
             }
             ?>
             

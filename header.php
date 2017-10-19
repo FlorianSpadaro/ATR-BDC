@@ -257,10 +257,10 @@
                     
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                        <form class="form-inline">
+                        <form class="form-inline" method="get" action="projets.php">
                             <div class="input-group">
                                 <span class="input-group-addon" id="searchBarIcon"><span class="glyphicon glyphicon-search"></span></span>
-                                <input id="searchBar" list="searchBarOption" type="text" class="form-control" placeholder="Rechercher..." autocomplete="off">
+                                <input id="searchBar" name="searchbar" list="searchBarOption" type="text" class="form-control" placeholder="Rechercher..." autocomplete="off">
                                 <select id="searchBarOption" class="form-control searchSelector"></select>   
                             </div>
                         </form>

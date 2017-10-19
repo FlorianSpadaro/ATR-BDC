@@ -1,4 +1,59 @@
 $(function(){
+    var nbNvContrat = 0;
+    var nbMdContrat = 0;
+    $("#btnCreationNvContrat").click(function(){
+        if(nbNvContrat == 0)
+            {
+                nbNvContrat++;
+                $("#listeMiniaturesNouveauContrat").load("listeMiniatures.php", {nc: true}, function(){
+                //$('input[name=miniature]:first').delay(200).click();
+            });
+                
+            }
+        else{
+            $("#listeMiniaturesNouveauContrat").unload(function(){
+            $("#listeMiniaturesNouveauContrat").load("listeMiniatures.php", {nc: true}, function(){
+                //$('input[name=miniature]:first').delay(200).click();
+            });
+        });
+        }
+        
+    });
+    
+    $("#btnModifierContrat").click(function(){
+        if(nbMdContrat == 0)
+            {
+                $("#listeMiniatures").load("listeMiniatures.php", {nc: false}, function(){
+                    var id = $("#listeContrats .active").attr("id").split("-")[1];
+                    $.post("API/getContratById.php", {contrat_id: id}, function(data){
+                        var contrat = JSON.parse(data);
+                        if(contrat != null)
+                            {
+                                $("#libelleContrat").val(contrat.libelle);
+                                $("#miniature-" + contrat.miniature.id).click();
+                            }
+                    });
+                });
+            }
+        else{
+            $("#listeMiniatures").unload(function(){
+            $("#listeMiniatures").load("listeMiniatures.php", {nc: false}, function(){
+            var id = $("#listeContrats .active").attr("id").split("-")[1];
+            $.post("API/getContratById.php", {contrat_id: id}, function(data){
+                var contrat = JSON.parse(data);
+                if(contrat != null)
+                    {
+                        $("#libelleContrat").val(contrat.libelle);
+                        $("#miniature-" + contrat.miniature.id).click();
+                    }
+            });
+        });
+        });
+        }
+        
+        
+    });
+    
    $("#ajouterNouvelleMiniatureNC").click(function(e){
         e.preventDefault();
         
@@ -32,7 +87,11 @@ $(function(){
                         xhr.send(form);
                         
                         xhr.addEventListener('load', function() {
-                            $.post("API/getMiniatures.php", {}, function(data){
+                            $("#listeMiniaturesNouveauContrat").load("listeMiniatures.php", {}, function(){
+                                $('input[name=miniature]:first').click();
+                                $("#annulerAjoutMiniatureNC").click();
+                            });
+                            /*$.post("API/getMiniatures.php", {}, function(data){
                                 var miniatures = JSON.parse(data);
                                 if(miniatures != null)
                                     {
@@ -67,7 +126,7 @@ $(function(){
                                         });
                                     }
                                 $("#annulerAjoutMiniatureNC").click();
-                            });
+                            });*/
                         });
                     }
                 else{
@@ -130,7 +189,19 @@ $(function(){
                         xhr.send(form);
                         
                         xhr.addEventListener('load', function() {
-                            $.post("API/getMiniatures.php", {}, function(data){
+                            $("#listeMiniatures").load("listeMiniatures.php", {}, function(){
+                                var id = $("#listeContrats .active").attr("id").split("-")[1];
+                                $.post("API/getContratById.php", {contrat_id: id}, function(data){
+                                    var contrat = JSON.parse(data);
+                                    if(contrat != null)
+                                        {
+                                            $("#libelleContrat").val(contrat.libelle);
+                                            $("#miniature-" + contrat.miniature.id).click();
+                                        }
+                                });
+                                $("#annulerAjoutMiniature").click();
+                            });
+                            /*$.post("API/getMiniatures.php", {}, function(data){
                                 var miniatures = JSON.parse(data);
                                 if(miniatures != null)
                                     {
@@ -165,7 +236,7 @@ $(function(){
                                         });
                                     }
                                 $("#annulerAjoutMiniature").click();
-                            });
+                            });*/
                         });
                     }
                 else{
@@ -191,7 +262,7 @@ $(function(){
         $("#divAjouterMiniature").show("fade");
     });
     
-    $('input[name=miniatureNC]:first').click();
+    //$('input[name=miniature]:first').click();
     $("#validerNouveauContrat").prop("disabled", true);
     
     $("#libelleContrat").on("keyup", function(){
@@ -215,7 +286,7 @@ $(function(){
     });
     
     $("#annulerNouveauContrat").click(function(){
-        $('input[name=miniatureNC]:first').click();
+        $('input[name=miniature]:first').click();
         $("#libelleNouveauContrat").val("");
         $("#validerNouveauContrat").prop("disabled", true);
     });
@@ -224,7 +295,7 @@ $(function(){
         e.preventDefault();
         var libelle = $("#libelleNouveauContrat").val();
         var idUser = $("#user_id").val();
-        var idMiniature = $('input[name=miniatureNC]:checked').val().split("-")[1];
+        var idMiniature = $('input[name=miniature]:checked').val().split("-")[1];
         $.post("API/addContrat.php", {utilisateur_id: idUser, libelle: libelle, miniature_id: idMiniature}, function(data){
             var reponse = JSON.parse(data);
             if(reponse){
@@ -267,18 +338,6 @@ $(function(){
             }
     });
     
-    $("#btnModifierContrat").click(function(){
-        var id = $("#listeContrats .active").attr("id").split("-")[1];
-        $.post("API/getContratById.php", {contrat_id: id}, function(data){
-            var contrat = JSON.parse(data);
-            if(contrat != null)
-                {
-                    $("#libelleContrat").val(contrat.libelle);
-                    $("#miniature-" + contrat.miniature.id).click();
-                }
-        });
-    });
-    
     $("#validerModifContrat").click(function(e){
         e.preventDefault();
         var idContrat = $("#listeContrats .active").attr("id").split("-")[1];
@@ -296,32 +355,5 @@ $(function(){
         });
     });
     
-    $(".btnSupprMiniature").click(function(){
-        var elt = $(this);
-        var id = $(this).attr("id").split("-")[1];
-        
-        $.post("API/getContratsIdByMiniatureId.php", {miniature_id: id}, function(data2){
-            var listeIdContrats = JSON.parse(data2);
-            if(listeIdContrats.length > 0)
-                {
-                    alert("Impossible de supprimer cette miniature car elle est liée à un contrat");
-                }
-            else{
-                var repUser = confirm("Voulez-vous vraiment supprimer cette miniature?");
-                if(repUser)
-                    {
-                        $.post("API/removeMiniatureById.php", {miniature_id: id}, function(data){
-                            var reponse = JSON.parse(data);
-                            if(reponse)
-                                {
-                                    elt.closest("div.radio").hide();
-                                }
-                            else{
-                                alert("Une erreur s'est produite, veuillez réessayer plus tard");
-                            }
-                        });
-                    }
-            }
-        });
-    });
+    
 });

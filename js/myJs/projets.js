@@ -1,6 +1,16 @@
 $(function(){
     $('#summernote').summernote();
     
+    $(".filtreTypeProjet").click(function(e){
+        e.preventDefault();
+        if($(this).hasClass("active"))
+            {
+                $(this).removeClass("active");
+            }
+        else{
+            $(this).addClass("active");
+        }
+    });
     
     $("#inputRechercheProjet").on("keydown", function(e){
         if(e.keyCode == 13)
@@ -49,7 +59,8 @@ $(function(){
             params.filtre.secteurs = [];
             params.filtre.domaines = [];
             params.filtre.sousDomaines = [];
-
+            params.filtre.type = [];
+            
             $("#rechercheProjet .active").each(function(e, elt){
                 var tab = elt.id.split("-");
                 switch(tab[0])
@@ -62,11 +73,18 @@ $(function(){
                         break;
                     case "sousDomaine": params.filtre.sousDomaines.push(tab[1]);
                         break;
+                    case "type": params.filtre.type.push(tab[1]);
+                        break;
                 }
             });
-            $("#params").val(JSON.stringify(params));    
-        
-            $("#rechercheProjet").submit();
+            if(params.filtre.type.length > 0)
+                {
+                    $("#params").val(JSON.stringify(params));
+                    $("#rechercheProjet").submit();
+                }
+            else{
+                alert("Veuillez choisir au moins un type de projet");
+            }
         });
     
     $("#annulerFiltre").click(function(){
@@ -216,10 +234,13 @@ $(function(){
                     document.getElementById("filtreListeSousDomaines").appendChild(aElt);
                 });
             }
+        $("#imageChargementFiltre").hide();
+        $("#tousLesFiltres").show();
+        $("#validerFiltre").prop("disabled", false);
     });
     
     var hauteur = $("#btnSubmitRechercheProjet").css("height");
-    var largeur = $("#btnSubmitRechercheProjet").css("width");;
+    var largeur = $("#btnSubmitRechercheProjet").css("width");
     
     $("#btnNum").click(function(e){
         e.preventDefault();
