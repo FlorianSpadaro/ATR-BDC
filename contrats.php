@@ -105,7 +105,9 @@
                         <input type="text" class="form-control" id="libelleContrat" name="libelleContrat" required />
                     </div>
                     <div class="form-group">
-                        <label>Miniature: </label><br/>
+                        <div>
+                            <label>Miniature: </label>
+                        </div>
                         <div id="listeMiniatures" class="container-fluid listeMiniatures">
                             <!--<?php
                             if($miniatures != null)
@@ -173,7 +175,9 @@
                         <input type="text" class="form-control" id="libelleNouveauContrat" name="libelleNouveauContrat" required />
                     </div>
                     <div class="form-group">
-                        <label>Miniature: </label><br/>
+                        <div>
+                            <label>Miniature: </label>
+                        </div>
                         <div id="listeMiniaturesNouveauContrat" class="container-fluid listeMiniatures">
                             <!--<br/><br/>
                             <?php

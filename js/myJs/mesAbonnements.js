@@ -95,6 +95,7 @@ $(function(){
                 $(this).replaceWith("<img src='img/wait.gif' height='16' width='16' class='pull-right' id='imageAttente' />");
                 
                 $.post("API/removeAbonnementById.php", {abonnement_id: id, utilisateur_id: $("#idUser").val()}, function(data){
+                    console.log("removeAbo: " + data);
                     var reponse = JSON.parse(data);
                     $("#imageAttente").replaceWith(elt);
                     if(reponse){
@@ -143,6 +144,7 @@ $(function(){
                 }
                 
                 $.post("API/addAbonnement.php", objet, function(data){
+                    console.log("addAbo: " + data);
                     var reponse = JSON.parse(data);
                     $("#imageAttente").replaceWith(elt);
                     if(reponse){
