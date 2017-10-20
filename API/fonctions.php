@@ -2074,7 +2074,7 @@
 							}
 						}
 						else{
-							$req3 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+							/*$req3 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
 							$req3->execute(array($data["projet_id"]));
 							while($data3 = $req3->fetch())
 							{
@@ -2082,6 +2082,21 @@
 								$req4->execute(array($data3["domaine_id"]));
 								while($data4 = $req4->fetch())
 								{
+									
+									$req5 = $bdd->prepare("SELECT id FROM projet WHERE sous_domaine_id = ?");
+									$req5->execute(array($data4["id"]));
+									while($data5 = $req5->fetch())
+									{
+										$abo = addAbonnement($idUser, null, null, null, $data5["id"], null);
+										return json_encode("TEST-".$abo);
+									}
+									$req5 = $bdd->prepare("SELECT projet_id FROM projet_domaine WHERE domaine_id = ?");
+									$req5->execute(array($data3["domaine_id"]));
+									while($data5 = $req5->fetch())
+									{
+										//return json_encode("TEST");
+										addAbonnement($idUser, null, null, null, $data5["projet_id"], null);
+									}
 									$req5 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND sous_domaine_id = ?");
 									$req5->execute(array($idUser, $data4["id"]));
 								}
@@ -2102,7 +2117,7 @@
 								
 								$req5 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND domaine_id = ?");
 								$req5->execute(array($idUser, $data3["domaine_id"]));
-							}
+							}*/
 						}
 					}
 				}
@@ -3527,7 +3542,6 @@
 							array_push($projetsAbo, $projet);
 						}
 					}
-					
 					//array_push($projetsAbo, $projet);
 				}
 			}
