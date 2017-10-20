@@ -117,10 +117,10 @@ $(function () {
                 $("#domaine" + contrat.domaine_id).addClass("contrat_" + contrat.contrat_id);
             })
         }
-        else
+        /*else
         {
             alert("Une erreur s'est produite, veuillez réessayer plus tard");
-        }
+        }*/
     });
     $("#listContratHeader").change(function(){
         var list_contrats = []
