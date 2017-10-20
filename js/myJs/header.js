@@ -160,7 +160,7 @@ $(function () {
                 {
                     resultSearch += '<option class="searchOption noResultOption" disabled>Pas de résultats</option>';
                 }
-            $("#searchBarOption").append( resultSearch + '</optgroup><optgroup label="Autres:"><option value="'+$("#searchBar").val()+'" id="searchOptionProjetId" class="searchOption searchOptionProjet" projet="projet">Rechercher "'+$("#searchBar").val()+'" dans le contenu des projets</option><option value="'+$("#searchBar").val()+'" class="searchOption searchOptionProjet" projet="actu" id="searchOptionActuId">Rechercher "'+$("#searchBar").val()+'" dans actu</option></optgroup>');
+            $("#searchBarOption").append( resultSearch + '</optgroup><optgroup label="Autres:"><option value="'+$("#searchBar").val()+'" id="searchOptionProjetId" class="searchOption searchOptionProjet" projet="projet">Rechercher "'+$("#searchBar").val()+'" dans le contenu des projets</option></optgroup>');
            
 
             $("#searchBarOption").attr('size',5);
@@ -168,11 +168,11 @@ $(function () {
                 {
                     $("#searchBarOption").fadeIn("fast")
                     if(searchResult != null){
-                        $("#searchBarOption").attr('size',searchResult.length + 4)
+                        $("#searchBarOption").attr('size',searchResult.length + 3)
                     }
                     else
                     {
-                         $("#searchBarOption").attr('size',5)
+                         $("#searchBarOption").attr('size',4)
                     }
                     
                 }

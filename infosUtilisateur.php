@@ -77,7 +77,7 @@ session_start();
             if($_SESSION["user_id"] == $_GET["id"])
             {
                 ?>
-                <button class="btn btn-link buttonMdp" id="buttonMdp"><span class="glyphicon glyphicon-wrench"></span> Modifier mot de passe</button>
+                <!--<button class="btn btn-link buttonMdp" id="buttonMdp"><span class="glyphicon glyphicon-wrench"></span> Modifier mot de passe</button>-->
                 <?php
             }
             ?>
