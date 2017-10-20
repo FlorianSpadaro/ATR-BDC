@@ -46,6 +46,9 @@
             .formGererAbonnement{
                 display: inline-block;
             }
+            #colonneAbonnement{
+                text-align: center;
+            }
         </style>
         
     </head>
@@ -65,11 +68,11 @@
         </header>
         
         <div class="container">
-            <button data-toggle="modal" href="#nouvelUtilisateur" class="btn btn-success" id="btnNouvelUtilisateur"><span class="glyphicon glyphicon-plus"></span> Ajouter utilisateur</button>
-            <br/><br/>
-            <div class="help-block pull-right">
+            <!--<button data-toggle="modal" href="#nouvelUtilisateur" class="btn btn-success" id="btnNouvelUtilisateur"><span class="glyphicon glyphicon-plus"></span> Ajouter utilisateur</button>
+            <br/><br/>-->
+            <!--<div class="help-block pull-right">
                 Vous ne pouvez supprimer que les utilisateurs inactifs (un utilisateur devient actif lors de sa première connexion)
-            </div>
+            </div>-->
             <table id="listeUtilisateurs" class="tablesorter table table-striped table-hover"> 
                 <thead> 
                 <tr> 
@@ -78,7 +81,7 @@
                     <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Email</a></th> 
                     <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Fonction</a></th> 
                     <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Niveau</a></th> 
-                    <th>Action</th> 
+                    <th>Abonnements</th> 
                 </tr> 
                 </thead> 
                 <tbody>
@@ -94,17 +97,17 @@
                                 <td><?php echo $user->email ?></td> 
                                 <td><?php echo $user->fonction->libelle ?></td> 
                                 <td><?php echo $user->fonction->niveau->libelle ?></td>
-                                <td>
+                                <td id="colonneAbonnement">
                                     <form class="formGererAbonnement" method="post" action="mesAbonnements.php">
                                         <input type="hidden" name="usr" value="<?php echo $user->id ?>" />
                                         <a href="#" class="submitGererAbo" type="submit" data-toggle="tooltip" title="gérer abonnements"><span class="glyphicon glyphicon-heart-empty"></span></a>
                                     </form>
-                                    <a data-toggle="modal" href="#modificationsUtilisateur" class="modifierUser" title="modifier utilisateur"><span class="glyphicon glyphicon-edit"></span></a>
+                                    <!--<a data-toggle="modal" href="#modificationsUtilisateur" class="modifierUser" title="modifier utilisateur"><span class="glyphicon glyphicon-edit"></span></a>-->
                                     <?php
                                     if(!$user->actif)
                                     {
                                         ?>
-                                        <a href="#" class="supprimerUser" data-toggle="tooltip" title="supprimer utilisateur"><span class="glyphicon glyphicon-remove-sign"></span></a>
+                                        <!--<a href="#" class="supprimerUser" data-toggle="tooltip" title="supprimer utilisateur"><span class="glyphicon glyphicon-remove-sign"></span></a>-->
                                         <?php
                                     }
                                     ?>
@@ -126,9 +129,9 @@
                 <h4 class="modal-title">Modifier utilisateur</h4>
               </div>
               <div class="modal-body">
-                  <button class="btn btn-info" id="reinitialiserMdpUser"><span class="glyphicon glyphicon-wrench"></span> Réinitialiser mot de passe</button>
+                  <!--<button class="btn btn-info" id="reinitialiserMdpUser"><span class="glyphicon glyphicon-wrench"></span> Réinitialiser mot de passe</button>
                   <img id="attenteReinitialiserMdp" src="img/wait.gif" />
-                  <hr>
+                  <hr>-->
                 <form>
                     <input type="hidden" name="idUtilisateurModif" id="idUtilisateurModif" />
                     <div>
