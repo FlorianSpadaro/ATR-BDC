@@ -3556,7 +3556,9 @@
 			$nbSousDomainesSecteur = 0;
 			$nbSousDomainesSecteurAbo = 0;
 			$nbProjetsSecteur = 0;
+			$listeIdProjetsSecteurTotal = array();
 			$nbProjetsSecteurAbo = 0;
+			$listeIdProjetsSecteur = array();
 			
 			$secteur = (object)[];
 			$secteur->id = $data["id"];
@@ -3570,7 +3572,9 @@
 				$nbSousDomainesDomaine = 0;
 				$nbSousDomainesDomaineAbo = 0;
 				$nbProjetsDomaine = 0;
+				$listeIdProjetsDomaineTotal = array();
 				$nbProjetsDomaineAbo = 0;
+				$listeIdProjetsDomaine = array();
 				
 				$nbDomainesSecteur++;
 				
@@ -3623,8 +3627,16 @@
 					$req4->execute(array($data3["id"]));
 					while($data4 = $req4->fetch())
 					{
-						$nbProjetsSecteur++;
-						$nbProjetsDomaine++;
+						if(!in_array($data4["id"], $listeIdProjetsSecteurTotal))
+						{
+							$nbProjetsSecteur++;
+							array_push($listeIdProjetsSecteurTotal, $data4["id"]);
+						}
+						if(!in_array($data4["id"], $listeIdProjetsDomaineTotal))
+						{
+							$nbProjetsDomaine++;
+							array_push($listeIdProjetsDomaineTotal, $data4["id"]);
+						}
 						$nbProjetsSousDomaine++;
 						
 						if($projetsAbo != null)
@@ -3633,8 +3645,16 @@
 							{
 								if($proAbo->id == $data4["id"])
 								{
-									$nbProjetsSecteurAbo++;
-									$nbProjetsDomaineAbo++;
+									if(!in_array($proAbo->id, $listeIdProjetsSecteur))
+									{
+										$nbProjetsSecteurAbo++;
+										array_push($listeIdProjetsSecteur, $proAbo->id);
+									}
+									if(!in_array($proAbo->id, $listeIdProjetsDomaine))
+									{
+										$nbProjetsDomaineAbo++;
+										array_push($listeIdProjetsDomaine, $proAbo->id);
+									}
 									$nbProjetsSousDomaineAbo++;
 								}
 							}
@@ -3655,8 +3675,16 @@
 					$req4->execute(array($data3["id"]));
 					while($data4 = $req4->fetch())
 					{
-						$nbProjetsSecteur++;
-						$nbProjetsDomaine++;
+						if(!in_array($data4["pid"], $listeIdProjetsSecteurTotal))
+						{
+							$nbProjetsSecteur++;
+							array_push($listeIdProjetsSecteurTotal, $data4["pid"]);
+						}
+						if(!in_array($data4["pid"], $listeIdProjetsDomaineTotal))
+						{
+							$nbProjetsDomaine++;
+							array_push($listeIdProjetsDomaineTotal, $data4["pid"]);
+						}
 						$nbProjetsSousDomaine++;
 						
 						if($projetsAbo != null)
@@ -3665,8 +3693,16 @@
 							{
 								if($proAbo->id == $data4["pid"])
 								{
-									$nbProjetsSecteurAbo++;
-									$nbProjetsDomaineAbo++;
+									if(!in_array($proAbo->id, $listeIdProjetsSecteur))
+									{
+										$nbProjetsSecteurAbo++;
+										array_push($listeIdProjetsSecteur, $proAbo->id);
+									}
+									if(!in_array($proAbo->id, $listeIdProjetsDomaine))
+									{
+										$nbProjetsDomaineAbo++;
+										array_push($listeIdProjetsDomaine, $proAbo->id);
+									}
 									$nbProjetsSousDomaineAbo++;
 								}
 							}
