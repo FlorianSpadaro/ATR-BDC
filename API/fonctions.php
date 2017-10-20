@@ -4578,8 +4578,108 @@
 	function connexion($login, $mdp)
 	{
 		include("connexionBdd.php");
+		include("connexionErp.php");
 		
 		$user = null;
+		
+		$req = $bddErp->prepare("SELECT id, ag_employee_id FROM res_users WHERE login = ? AND password = ?");
+		$req->execute(array($login, $mdp));
+		if($data = $req->fetch())
+		{
+			$req3 = $bddErp->prepare("SELECT e.name_related, e.work_email, e.image_medium, j.id jid, j.name jname FROM hr_employee e JOIN hr_job j ON e.job_id = j.id WHERE e.id = ?");
+			$req3->execute(array($data["ag_employee_id"]));
+			if($data3 = $req3->fetch())
+			{
+				if($data3['image_medium'] != null)
+				{
+					$img = "data:image/jpeg;base64, ".stream_get_contents($data3['image_medium']);
+				}
+				else{
+					$img = null;
+				}
+				$email = $data3["work_email"];
+				$tabNom = explode(" ", $data3["name_related"]);
+				$nom = $tabNom[0];
+				$tabPrenom = array();
+				for($i = 1; $i < sizeof($tabNom); $i++)
+				{
+					array_push($tabPrenom, $tabNom[$i]);
+				}
+				$prenom = implode("-", $tabPrenom);
+				
+				$idFonction = null;
+				$req2 = $bdd->prepare("SELECT id FROM fonction WHERE erp_job_id = ?");
+				$req2->execute(array($data3["jid"]));
+				if($data2 = $req2->fetch())
+				{
+					$idFonction = $data2["id"];
+				}
+				else{
+					$req3 = $bdd->prepare("INSERT INTO fonction(libelle, niveau_id, erp_job_id) VALUES(?, ?, ?) RETURNING id");
+					$req3->execute(array($data3["jname"], 1, $data3["jid"]));
+					if($data3 = $req3->fetch())
+					{
+						$idFonction = $data3["id"];
+					}
+				}
+				
+				
+				$req2 = $bdd->prepare("SELECT id, utilisateur_id FROM connexion WHERE connexion_erp_id = ?");
+				$req2->execute(array($data["id"]));
+				
+				//Si la connexion existe dans ma bdd -> je met à jour les infos
+				if($data2 = $req2->fetch())
+				{
+					if($img != null)
+					{
+						$req3 = $bdd->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, fonction_id = ?, email = ?, photo = ? WHERE id = ?");
+						$req3->execute(array($nom, $prenom, $idFonction, $email, $img, $data2["id"]));
+					}
+					else{
+						$req3 = $bdd->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, fonction_id = ?, email = ?, photo = DEFAULT WHERE id = ?");
+						$req3->execute(array($nom, $prenom, $idFonction, $email, $data2["id"]));
+					}
+					
+					$req2 = $bdd->prepare("UPDATE connexion SET login = ?, mdp = ? WHERE utilisateur_id = ?");
+					$req2->execute(array($login, json_decode(hashage($mdp)), $data2["id"]));
+					
+					$user = json_decode(getUtilisateurById($data2["utilisateur_id"]));
+					if($user->actif == false)
+					{
+						$req2 = $bdd->prepare("UPDATE utilisateur SET actif = TRUE WHERE id = ?");
+						$req2->execute(array($user->id));
+					}
+				}
+				//Sinon je crée un nouvel utilisateur
+				else{
+					if($img != null)
+					{
+						$req3 = $bdd->prepare("INSERT INTO utilisateur(nom, prenom, fonction_id, email, photo) VALUES(?, ?, ?, ?, ?) RETURNING id");
+						$req3->execute(array($nom, $prenom, $idFonction, $email, $img));
+					}
+					else{
+						$req3 = $bdd->prepare("INSERT INTO utilisateur(nom, prenom, fonction_id, email) VALUES(?, ?, ?, ?) RETURNING id");
+						$req3->execute(array($nom, $prenom, $idFonction, $email));
+					}
+					if($data3 = $req3->fetch())
+					{
+						$req4 = $bdd->prepare("INSERT INTO connexion(login, mdp, utilisateur_id, connexion_erp_id) VALUES(?, ?, ?, ?)");
+						$req4->execute(array($login, json_decode(hashage($mdp)), $data3["id"], $data["id"]));
+						
+						$user = json_decode(getUtilisateurById($data3["id"]));
+						if($user->actif == false)
+						{
+							$req2 = $bdd->prepare("UPDATE utilisateur SET actif = TRUE WHERE id = ?");
+							$req2->execute(array($user->id));
+						}
+					}
+				}
+			}
+			
+		}
+		
+		return json_encode($user);
+		/*$user = null;
 		$mdp = json_decode(hashage($mdp));
 		$req = $bdd->prepare("SELECT utilisateur_id FROM connexion WHERE login = ? AND mdp = ?");
 		$req->execute(array($login, $mdp));
@@ -4593,7 +4693,7 @@
 			}
 		}
 		
-		return json_encode($user);
+		return json_encode($user);*/
 	}
 	
 	function modifierDate($d) // retourne JJ/MM/AAAA + HH:mm:ss

@@ -28,6 +28,10 @@ session_start();
             color: red;
             display: none;
         }
+        #photoUtilisateur{
+            border-radius: 100%;
+            border: 5px solid #E0E0E0;
+        }
     </style>
 </head>
 
@@ -42,7 +46,7 @@ session_start();
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <img src="<?php echo $user->photo ?>" width="100" height="130">
+        <img id="photoUtilisateur" src="<?php echo $user->photo ?>" width="100" height="100">
         <b><?php echo strtoupper($user->nom)." ".strtoupper(substr($user->prenom, 0, 1)).strtolower(substr($user->prenom, 1)) ?></b>
     </div>
     <div class="modal-body">
