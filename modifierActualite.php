@@ -1,4 +1,9 @@
 <?php
+    if(!isset($_SESSION["niveau"]) || $_SESSION["niveau"]->niveau != 3)
+    {
+        header('Location: index.php');
+        exit();
+    }
     include("header.php");
     $actu = json_decode(getActualiteById($_GET["id"]));
 ?>
