@@ -1,4 +1,32 @@
 <?php
+	function modifierNiveauFonction($idFonction, $idNiveau)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE fonction SET niveau_id = ? WHERE id = ?");
+			$reponse = $req->execute(array($idNiveau, $idFonction));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function getNiveauByFonctionId($id)
+	{
+		include("connexionBdd.php");
+		
+		$niveau = null;
+		$req = $bdd->prepare("SELECT niveau_id FROM fonction WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$niveau = json_decode(getNiveauById($data["niveau_id"]));
+		}
+		return json_encode($niveau);
+	}
+
 	function getContratsIdByMiniatureId($id)
 	{
 		include("connexionBdd.php");
