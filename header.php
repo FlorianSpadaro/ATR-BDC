@@ -324,14 +324,14 @@
                                             </li>
                                             <?php
                                         }
-                                        if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
-                                            {
-                                                ?>
-                                                <li class="newDomaine" id="newDomaineSecteur-<?php echo $secteur->id ?>">
-                                                    <a data-toggle="modal" href="#divNouveauDomaine" tabindex="-1"><span class="glyphicon glyphicon-plus"></span> Ajouter domaine</a>
-                                                </li>
-                                                <?php
-                                            }
+                                    }
+                                if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3)
+                                    {
+                                        ?>
+                                        <li class="newDomaine" id="newDomaineSecteur-<?php echo $secteur->id ?>">
+                                            <a data-toggle="modal" href="#divNouveauDomaine" tabindex="-1"><span class="glyphicon glyphicon-plus"></span> Ajouter domaine</a>
+                                        </li>
+                                        <?php
                                     }
                                     ?>
                                 </ul>
