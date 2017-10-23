@@ -1,4 +1,32 @@
 <?php
+	function modifierNiveauFonction($idFonction, $idNiveau)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE fonction SET niveau_id = ? WHERE id = ?");
+			$reponse = $req->execute(array($idNiveau, $idFonction));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+
+	function getNiveauByFonctionId($id)
+	{
+		include("connexionBdd.php");
+		
+		$niveau = null;
+		$req = $bdd->prepare("SELECT niveau_id FROM fonction WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$niveau = json_decode(getNiveauById($data["niveau_id"]));
+		}
+		return json_encode($niveau);
+	}
+
 	function getContratsIdByMiniatureId($id)
 	{
 		include("connexionBdd.php");
@@ -2074,7 +2102,7 @@
 							}
 						}
 						else{
-							$req3 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
+							/*$req3 = $bdd->prepare("SELECT domaine_id FROM projet_domaine WHERE projet_id = ?");
 							$req3->execute(array($data["projet_id"]));
 							while($data3 = $req3->fetch())
 							{
@@ -2082,6 +2110,21 @@
 								$req4->execute(array($data3["domaine_id"]));
 								while($data4 = $req4->fetch())
 								{
+									
+									$req5 = $bdd->prepare("SELECT id FROM projet WHERE sous_domaine_id = ?");
+									$req5->execute(array($data4["id"]));
+									while($data5 = $req5->fetch())
+									{
+										$abo = addAbonnement($idUser, null, null, null, $data5["id"], null);
+										return json_encode("TEST-".$abo);
+									}
+									$req5 = $bdd->prepare("SELECT projet_id FROM projet_domaine WHERE domaine_id = ?");
+									$req5->execute(array($data3["domaine_id"]));
+									while($data5 = $req5->fetch())
+									{
+										//return json_encode("TEST");
+										addAbonnement($idUser, null, null, null, $data5["projet_id"], null);
+									}
 									$req5 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND sous_domaine_id = ?");
 									$req5->execute(array($idUser, $data4["id"]));
 								}
@@ -2102,7 +2145,7 @@
 								
 								$req5 = $bdd->prepare("DELETE FROM abonnement WHERE utilisateur_id = ? AND domaine_id = ?");
 								$req5->execute(array($idUser, $data3["domaine_id"]));
-							}
+							}*/
 						}
 					}
 				}
@@ -3527,7 +3570,6 @@
 							array_push($projetsAbo, $projet);
 						}
 					}
-					
 					//array_push($projetsAbo, $projet);
 				}
 			}
@@ -3542,7 +3584,9 @@
 			$nbSousDomainesSecteur = 0;
 			$nbSousDomainesSecteurAbo = 0;
 			$nbProjetsSecteur = 0;
+			$listeIdProjetsSecteurTotal = array();
 			$nbProjetsSecteurAbo = 0;
+			$listeIdProjetsSecteur = array();
 			
 			$secteur = (object)[];
 			$secteur->id = $data["id"];
@@ -3556,7 +3600,9 @@
 				$nbSousDomainesDomaine = 0;
 				$nbSousDomainesDomaineAbo = 0;
 				$nbProjetsDomaine = 0;
+				$listeIdProjetsDomaineTotal = array();
 				$nbProjetsDomaineAbo = 0;
+				$listeIdProjetsDomaine = array();
 				
 				$nbDomainesSecteur++;
 				
@@ -3609,8 +3655,16 @@
 					$req4->execute(array($data3["id"]));
 					while($data4 = $req4->fetch())
 					{
-						$nbProjetsSecteur++;
-						$nbProjetsDomaine++;
+						if(!in_array($data4["id"], $listeIdProjetsSecteurTotal))
+						{
+							$nbProjetsSecteur++;
+							array_push($listeIdProjetsSecteurTotal, $data4["id"]);
+						}
+						if(!in_array($data4["id"], $listeIdProjetsDomaineTotal))
+						{
+							$nbProjetsDomaine++;
+							array_push($listeIdProjetsDomaineTotal, $data4["id"]);
+						}
 						$nbProjetsSousDomaine++;
 						
 						if($projetsAbo != null)
@@ -3619,8 +3673,16 @@
 							{
 								if($proAbo->id == $data4["id"])
 								{
-									$nbProjetsSecteurAbo++;
-									$nbProjetsDomaineAbo++;
+									if(!in_array($proAbo->id, $listeIdProjetsSecteur))
+									{
+										$nbProjetsSecteurAbo++;
+										array_push($listeIdProjetsSecteur, $proAbo->id);
+									}
+									if(!in_array($proAbo->id, $listeIdProjetsDomaine))
+									{
+										$nbProjetsDomaineAbo++;
+										array_push($listeIdProjetsDomaine, $proAbo->id);
+									}
 									$nbProjetsSousDomaineAbo++;
 								}
 							}
@@ -3641,8 +3703,16 @@
 					$req4->execute(array($data3["id"]));
 					while($data4 = $req4->fetch())
 					{
-						$nbProjetsSecteur++;
-						$nbProjetsDomaine++;
+						if(!in_array($data4["pid"], $listeIdProjetsSecteurTotal))
+						{
+							$nbProjetsSecteur++;
+							array_push($listeIdProjetsSecteurTotal, $data4["pid"]);
+						}
+						if(!in_array($data4["pid"], $listeIdProjetsDomaineTotal))
+						{
+							$nbProjetsDomaine++;
+							array_push($listeIdProjetsDomaineTotal, $data4["pid"]);
+						}
 						$nbProjetsSousDomaine++;
 						
 						if($projetsAbo != null)
@@ -3651,8 +3721,16 @@
 							{
 								if($proAbo->id == $data4["pid"])
 								{
-									$nbProjetsSecteurAbo++;
-									$nbProjetsDomaineAbo++;
+									if(!in_array($proAbo->id, $listeIdProjetsSecteur))
+									{
+										$nbProjetsSecteurAbo++;
+										array_push($listeIdProjetsSecteur, $proAbo->id);
+									}
+									if(!in_array($proAbo->id, $listeIdProjetsDomaine))
+									{
+										$nbProjetsDomaineAbo++;
+										array_push($listeIdProjetsDomaine, $proAbo->id);
+									}
 									$nbProjetsSousDomaineAbo++;
 								}
 							}
@@ -4528,8 +4606,108 @@
 	function connexion($login, $mdp)
 	{
 		include("connexionBdd.php");
+		include("connexionErp.php");
 		
 		$user = null;
+		
+		$req = $bddErp->prepare("SELECT id, ag_employee_id FROM res_users WHERE login = ? AND password = ?");
+		$req->execute(array($login, $mdp));
+		if($data = $req->fetch())
+		{
+			$req3 = $bddErp->prepare("SELECT e.name_related, e.work_email, e.image_medium, j.id jid, j.name jname FROM hr_employee e JOIN hr_job j ON e.job_id = j.id WHERE e.id = ?");
+			$req3->execute(array($data["ag_employee_id"]));
+			if($data3 = $req3->fetch())
+			{
+				if($data3['image_medium'] != null)
+				{
+					$img = "data:image/jpeg;base64, ".stream_get_contents($data3['image_medium']);
+				}
+				else{
+					$img = null;
+				}
+				$email = $data3["work_email"];
+				$tabNom = explode(" ", $data3["name_related"]);
+				$nom = $tabNom[0];
+				$tabPrenom = array();
+				for($i = 1; $i < sizeof($tabNom); $i++)
+				{
+					array_push($tabPrenom, $tabNom[$i]);
+				}
+				$prenom = implode("-", $tabPrenom);
+				
+				$idFonction = null;
+				$req2 = $bdd->prepare("SELECT id FROM fonction WHERE erp_job_id = ?");
+				$req2->execute(array($data3["jid"]));
+				if($data2 = $req2->fetch())
+				{
+					$idFonction = $data2["id"];
+				}
+				else{
+					$req3 = $bdd->prepare("INSERT INTO fonction(libelle, niveau_id, erp_job_id) VALUES(?, ?, ?) RETURNING id");
+					$req3->execute(array($data3["jname"], 1, $data3["jid"]));
+					if($data3 = $req3->fetch())
+					{
+						$idFonction = $data3["id"];
+					}
+				}
+				
+				
+				$req2 = $bdd->prepare("SELECT id, utilisateur_id FROM connexion WHERE connexion_erp_id = ?");
+				$req2->execute(array($data["id"]));
+				
+				//Si la connexion existe dans ma bdd -> je met à jour les infos
+				if($data2 = $req2->fetch())
+				{
+					if($img != null)
+					{
+						$req3 = $bdd->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, fonction_id = ?, email = ?, photo = ? WHERE id = ?");
+						$req3->execute(array($nom, $prenom, $idFonction, $email, $img, $data2["id"]));
+					}
+					else{
+						$req3 = $bdd->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, fonction_id = ?, email = ?, photo = DEFAULT WHERE id = ?");
+						$req3->execute(array($nom, $prenom, $idFonction, $email, $data2["id"]));
+					}
+					
+					$req2 = $bdd->prepare("UPDATE connexion SET login = ?, mdp = ? WHERE utilisateur_id = ?");
+					$req2->execute(array($login, json_decode(hashage($mdp)), $data2["id"]));
+					
+					$user = json_decode(getUtilisateurById($data2["utilisateur_id"]));
+					if($user->actif == false)
+					{
+						$req2 = $bdd->prepare("UPDATE utilisateur SET actif = TRUE WHERE id = ?");
+						$req2->execute(array($user->id));
+					}
+				}
+				//Sinon je crée un nouvel utilisateur
+				else{
+					if($img != null)
+					{
+						$req3 = $bdd->prepare("INSERT INTO utilisateur(nom, prenom, fonction_id, email, photo) VALUES(?, ?, ?, ?, ?) RETURNING id");
+						$req3->execute(array($nom, $prenom, $idFonction, $email, $img));
+					}
+					else{
+						$req3 = $bdd->prepare("INSERT INTO utilisateur(nom, prenom, fonction_id, email) VALUES(?, ?, ?, ?) RETURNING id");
+						$req3->execute(array($nom, $prenom, $idFonction, $email));
+					}
+					if($data3 = $req3->fetch())
+					{
+						$req4 = $bdd->prepare("INSERT INTO connexion(login, mdp, utilisateur_id, connexion_erp_id) VALUES(?, ?, ?, ?)");
+						$req4->execute(array($login, json_decode(hashage($mdp)), $data3["id"], $data["id"]));
+						
+						$user = json_decode(getUtilisateurById($data3["id"]));
+						if($user->actif == false)
+						{
+							$req2 = $bdd->prepare("UPDATE utilisateur SET actif = TRUE WHERE id = ?");
+							$req2->execute(array($user->id));
+						}
+					}
+				}
+			}
+			
+		}
+		
+		return json_encode($user);
+		/*$user = null;
 		$mdp = json_decode(hashage($mdp));
 		$req = $bdd->prepare("SELECT utilisateur_id FROM connexion WHERE login = ? AND mdp = ?");
 		$req->execute(array($login, $mdp));
@@ -4543,7 +4721,7 @@
 			}
 		}
 		
-		return json_encode($user);
+		return json_encode($user);*/
 	}
 	
 	function modifierDate($d) // retourne JJ/MM/AAAA + HH:mm:ss

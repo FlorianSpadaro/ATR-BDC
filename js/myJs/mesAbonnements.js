@@ -37,6 +37,7 @@ $(function(){
                     elt.removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>").attr("id", tab[0] + "-" + idElt);
                 });
             });*/
+            $(".desabonner").removeClass("desabonner").addClass("abonner").html("S'abonner <span class=\"glyphicon glyphicon-plus-sign\"></span>");
             if(abonnements != null)
                 {
                         abonnements.forEach(function(abo){
