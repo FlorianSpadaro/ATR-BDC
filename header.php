@@ -227,6 +227,7 @@
                         {
                             ?>
                             <li><a href="listeUtilisateurs.php"><span class="glyphicon glyphicon-list-alt"></span> Liste des utilisateurs</a></li>
+                            <li><a href="gererDroits.php"><span class="glyphicon glyphicon-eye-close"></span> Gérer les droits</a></li>
                             <?php
                         }
                         ?>

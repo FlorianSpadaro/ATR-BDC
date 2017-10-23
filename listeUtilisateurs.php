@@ -1,4 +1,9 @@
 <?php
+    if(!isset($_SESSION["niveau"]) || $_SESSION["niveau"]->niveau != 3)
+    {
+        header('Location: index.php');
+        exit();
+    }
     include("header.php");
     $utilisateurs = json_decode(getUtilisateurs());
     $fonctions = json_decode(getFonctions());

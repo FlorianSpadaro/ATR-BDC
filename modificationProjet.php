@@ -1,4 +1,9 @@
 <?php
+    if(!isset($_SESSION["niveau"]) || $_SESSION["niveau"]->niveau != 3)
+    {
+        header('Location: index.php');
+        exit();
+    }
     include("header.php");
     $projet = json_decode(getProjetById($_GET["id"]));
 ?>
