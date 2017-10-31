@@ -4842,6 +4842,23 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		/*$test = "('grz', 'rqz', 'frz', true, false, false, true, true, false, false, true, false, true, 'testtest', true, false, false, true, true, false, true, false, true, false, true, false, true, true, 1, 2, 3, 4, 5, 6, 7, false, 22, NOW())";*/
 		$formulaire = json_decode($formulaire);
 		
+		if(gettype($formulaire->q2_ans1) == "boolean")
+		{
+			$formulaire->q2_ans1 = boolval( $formulaire->q2_ans1) ? 'true' : 'false';
+			if($formulaire->q2_ans1 != 'true')
+			{
+				$formulaire->q2_ans1 = "false";
+			}
+		}
+		if(gettype($formulaire->q2_ans2) == "boolean")
+		{
+			$formulaire->q2_ans2 = boolval( $formulaire->q2_ans2) ? 'true' : 'false';
+			if($formulaire->q2_ans2 != 'true')
+			{
+				$formulaire->q2_ans2 = "false";
+			}
+		}
+		
 		if(gettype($formulaire->q7_ans1) == "boolean")
 		{
 			$formulaire->q7_ans1 = boolval( $formulaire->q7_ans1) ? 'true' : 'false';
@@ -4912,8 +4929,8 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		$tab = array($formulaire->q1_ans1, 
 		 $formulaire->q1_ans2, 
 		 $formulaire->q1_ans3, 
-		(boolval($formulaire->q2_ans1) ? 'true' : 'false'), 
-		(boolval( $formulaire->q2_ans2) ? 'true' : 'false'), 
+		$formulaire->q2_ans1, 
+		$formulaire->q2_ans2, 
 		(boolval( $formulaire->q3_ans1) ? 'true' : 'false'), 
 		(boolval( $formulaire->q3_ans2) ? 'true' : 'false'), 
 		(boolval( $formulaire->q3_ans3) ? 'true' : 'false'), 

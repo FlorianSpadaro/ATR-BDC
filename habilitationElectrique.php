@@ -147,7 +147,7 @@ d’intervention
 
         <?php include("footer.php"); ?>
    
-        <<script src="js/myJs/habilitationElectrique.js"></script>
+        <script src="js/myJs/habilitationElectrique.js"></script>
 
     </body>
 

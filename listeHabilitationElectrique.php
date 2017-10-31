@@ -71,16 +71,12 @@
         </header>
         
         <div class="container">
-            <!--<button data-toggle="modal" href="#nouvelUtilisateur" class="btn btn-success" id="btnNouvelUtilisateur"><span class="glyphicon glyphicon-plus"></span> Ajouter utilisateur</button>
-            <br/><br/>-->
-            <!--<div class="help-block pull-right">
-                Vous ne pouvez supprimer que les utilisateurs inactifs (un utilisateur devient actif lors de sa première connexion)
-            </div>-->
+
             <table id="listeHabilitations" class="tablesorter table table-striped table-hover"> 
                 <thead> 
                 <tr> 
-                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Nom</a></th>
-                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Date</a></th> 
+                    <th><a href="#"><span class="glyphicon glyphicon-sort"></span> Nom</a></th>
+                    <th><a href="#"><span class="glyphicon glyphicon-sort"></span> Date</a></th> 
                     <th>Voir</th> 
                 </tr> 
                 </thead> 
@@ -96,7 +92,7 @@
                             <tr>
                                 <td><?php echo strtoupper($utilisateur->nom)." ".ucfirst(strtolower($utilisateur->prenom)) ?></td>
                                 <td><?php echo $date->jour." à ".$date->heure ?></td>
-                                <td><button class="btn btn-success">Voir</button></td>
+                                <td><a href="validationHabiliteElectrique.php?id=<?php echo $formulaire->id ?>"><button class="btn btn-success">Voir</button></a></td>
                             </tr>
                             <?php
                         }
