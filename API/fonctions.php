@@ -4818,6 +4818,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
         return json_encode($search);
         
     }
+	
 	function getContratByDomaineId()
 	{
 		include("connexionBdd.php");
@@ -4833,5 +4834,246 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 			$i++;
 		}
 		return json_encode($contrat);
+	}
+	
+	function addHabilitationElectrique($formulaire)
+	{
+		include("connexionBdd.php");
+		/*$test = "('grz', 'rqz', 'frz', true, false, false, true, true, false, false, true, false, true, 'testtest', true, false, false, true, true, false, true, false, true, false, true, false, true, true, 1, 2, 3, 4, 5, 6, 7, false, 22, NOW())";*/
+		$formulaire = json_decode($formulaire);
+		
+		if(gettype($formulaire->q7_ans1) == "boolean")
+		{
+			$formulaire->q7_ans1 = boolval( $formulaire->q7_ans1) ? 'true' : 'false';
+			if($formulaire->q7_ans1 != 'true')
+			{
+				$formulaire->q7_ans1 = "false";
+			}
+		}
+		if(gettype($formulaire->q7_ans2) == "boolean")
+		{
+			$formulaire->q7_ans2 = boolval( $formulaire->q7_ans2) ? 'true' : 'false';
+		}
+		
+		if(gettype($formulaire->q8_ans1) == "boolean")
+		{
+			$formulaire->q8_ans1 = boolval( $formulaire->q8_ans1) ? 'true' : 'false';
+		}
+		if($formulaire->q8_ans2 != null)
+		{
+			$formulaire->q8_ans2 = boolval( $formulaire->q8_ans2) ? 'true' : 'false';
+		}
+		
+		if(gettype($formulaire->q9_ans1) == "boolean")
+		{
+			$formulaire->q9_ans1 = boolval( $formulaire->q9_ans1) ? 'true' : 'false';
+		}
+		if(gettype($formulaire->q9_ans2) == "boolean")
+		{
+			$formulaire->q9_ans2 = boolval( $formulaire->q9_ans2) ? 'true' : 'false';
+		}
+		if(gettype($formulaire->q9_ans3) == "boolean")
+		{
+			$formulaire->q9_ans3 = boolval( $formulaire->q9_ans3) ? 'true' : 'false';
+		}
+		
+		if(gettype($formulaire->q10_ans1) == "boolean")
+		{
+			$formulaire->q10_ans1 = boolval( $formulaire->q10_ans1) ? 'true' : 'false';
+		}
+		
+		if(gettype($formulaire->q11_ans1) == "boolean")
+		{
+			$formulaire->q11_ans1 = boolval( $formulaire->q11_ans1) ? 'true' : 'false';
+		}
+		
+		if(gettype($formulaire->q12_ans1) == "boolean")
+		{
+			$formulaire->q12_ans1 = boolval( $formulaire->q12_ans1) ? 'true' : 'false';
+		}
+		if(gettype($formulaire->q12_ans2) == "boolean")
+		{
+			$formulaire->q12_ans2 = boolval( $formulaire->q12_ans2) ? 'true' : 'false';
+		}
+		
+		if(gettype($formulaire->q13_ans1) == "boolean")
+		{
+			$formulaire->q13_ans1 = boolval( $formulaire->q13_ans1) ? 'true' : 'false';
+		}
+		if(gettype($formulaire->q13_ans2) == "boolean")
+		{
+			$formulaire->q13_ans2 = boolval( $formulaire->q13_ans2) ? 'true' : 'false';
+		}
+		if(gettype($formulaire->q13_ans3) == "boolean")
+		{
+			$formulaire->q13_ans3 = boolval( $formulaire->q13_ans3) ? 'true' : 'false';
+		}
+		
+		$tab = array($formulaire->q1_ans1, 
+		 $formulaire->q1_ans2, 
+		 $formulaire->q1_ans3, 
+		(boolval($formulaire->q2_ans1) ? 'true' : 'false'), 
+		(boolval( $formulaire->q2_ans2) ? 'true' : 'false'), 
+		(boolval( $formulaire->q3_ans1) ? 'true' : 'false'), 
+		(boolval( $formulaire->q3_ans2) ? 'true' : 'false'), 
+		(boolval( $formulaire->q3_ans3) ? 'true' : 'false'), 
+		(boolval( $formulaire->q4_ans1) ? 'true' : 'false'), 
+		(boolval( $formulaire->q4_ans2) ? 'true' : 'false'), 
+		(boolval( $formulaire->q4_ans3) ? 'true' : 'false'), 
+		(boolval( $formulaire->q5_ans1) ? 'true' : 'false'), 
+		(boolval( $formulaire->q5_ans2) ? 'true' : 'false'), 
+		 $formulaire->q6_ans1,
+		$formulaire->q7_ans1, 
+		$formulaire->q7_ans2, 
+		$formulaire->q8_ans1, 
+		$formulaire->q8_ans2, 
+		$formulaire->q9_ans1, 
+		$formulaire->q9_ans2, 
+		$formulaire->q9_ans3, 
+		$formulaire->q10_ans1, 
+		$formulaire->q11_ans1, 
+		$formulaire->q12_ans1, 
+		$formulaire->q12_ans2, 
+		$formulaire->q13_ans1, 
+		$formulaire->q13_ans2, 
+		$formulaire->q13_ans3, 
+		 $formulaire->q14_ans1, 
+		 $formulaire->q14_ans2, 
+		 $formulaire->q14_ans3, 
+		 $formulaire->q14_ans4, 
+		 $formulaire->q14_ans5, 
+		 $formulaire->q14_ans6, 
+		 $formulaire->q14_ans7, 
+		(boolval( $formulaire->brouillon) ? 'true' : 'false'), 
+		 $formulaire->utilisateur_id
+		);
+
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO habil_elec(q1_ans1, q1_ans2, q1_ans3, q2_ans1, q2_ans2, q3_ans1, q3_ans2, q3_ans3, q4_ans1, q4_ans2, q4_ans3, q5_ans1, q5_ans2, q6_ans1, q7_ans1, q7_ans2, q8_ans1, q8_ans2, q9_ans1, q9_ans2, q9_ans3, q10_ans1, q11_ans1, q12_ans1, q12_ans2, q13_ans1, q13_ans2, q13_ans3, q14_ans1, q14_ans2, q14_ans3, q14_ans4, q14_ans5, q14_ans6, q14_ans7, brouillon, utilisateur_id, date, date_expiration) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NULL)");
+			$reponse = $req->execute($tab);
+			
+		}
+		catch(Exception $e){
+			$reponse = false;
+		}
+		
+		return json_encode($reponse);
+	}
+	
+	function getDernierFormulaireByUtilisateurId($user_id)
+	{
+		include("connexionBdd.php");
+		
+		$formulaire = null;
+		$req = $bdd->prepare("SELECT id FROM habil_elec WHERE utilisateur_id = ? ORDER BY date DESC LIMIT 1 OFFSET 0");
+		$req->execute(array($user_id));
+		if($data = $req->fetch())
+		{
+			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
+		}
+		
+		return json_encode($formulaire);
+	}
+	
+	function getFormulaireHabilitationElectriqueById($id)
+	{
+		include("connexionBdd.php");
+		
+		$formulaire = null;
+		$req = $bdd->prepare("SELECT * FROM habil_elec WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$formulaire = (object) array();
+			
+			$formulaire->id = $data["id"];
+			$formulaire->utilisateur_id = $data["utilisateur_id"];
+			$formulaire->date = $data["date"];
+			$formulaire->date_expiration = $data["date_expiration"];
+			$formulaire->brouillon = $data["brouillon"];
+			
+			$formulaire->q1_ans1 = $data["q1_ans1"];
+			$formulaire->q1_ans2 = $data["q1_ans2"];
+			$formulaire->q1_ans3 = $data["q1_ans3"];
+			
+			$formulaire->q2_ans1 = $data["q2_ans1"];
+			$formulaire->q2_ans2 = $data["q2_ans2"];
+			
+			$formulaire->q3_ans1 = $data["q3_ans1"];
+			$formulaire->q3_ans2 = $data["q3_ans2"];
+			$formulaire->q3_ans3 = $data["q3_ans3"];
+			
+			$formulaire->q4_ans1 = $data["q4_ans1"];
+			$formulaire->q4_ans2 = $data["q4_ans2"];
+			$formulaire->q4_ans3 = $data["q4_ans3"];
+			
+			$formulaire->q5_ans1 = $data["q5_ans1"];
+			$formulaire->q5_ans2 = $data["q5_ans2"];
+			
+			$formulaire->q6_ans1 = $data["q6_ans1"];
+			
+			$formulaire->q7_ans1 = $data["q7_ans1"];
+			$formulaire->q7_ans2 = $data["q7_ans2"];
+			
+			$formulaire->q8_ans1 = $data["q8_ans1"];
+			$formulaire->q8_ans2 = $data["q8_ans2"];
+			
+			$formulaire->q9_ans1 = $data["q9_ans1"];
+			$formulaire->q9_ans2 = $data["q9_ans2"];
+			$formulaire->q9_ans3 = $data["q9_ans3"];
+			
+			$formulaire->q10_ans1 = $data["q10_ans1"];
+			
+			$formulaire->q11_ans1 = $data["q11_ans1"];
+			
+			$formulaire->q12_ans1 = $data["q12_ans1"];
+			$formulaire->q12_ans2 = $data["q12_ans2"];
+			
+			$formulaire->q13_ans1 = $data["q13_ans1"];
+			$formulaire->q13_ans2 = $data["q13_ans2"];
+			$formulaire->q13_ans3 = $data["q13_ans3"];
+			
+			$formulaire->q14_ans1 = $data["q14_ans1"];
+			$formulaire->q14_ans2 = $data["q14_ans2"];
+			$formulaire->q14_ans3 = $data["q14_ans3"];
+			$formulaire->q14_ans4 = $data["q14_ans4"];
+			$formulaire->q14_ans5 = $data["q14_ans5"];
+			$formulaire->q14_ans6 = $data["q14_ans6"];
+			$formulaire->q14_ans7 = $data["q14_ans7"];
+		}
+		
+		return json_encode($formulaire);
+	}
+	
+	function removeHabilitationElectrique($idFormulaire)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM habil_elec WHERE id = ?");
+			$reponse = $req->execute(array($idFormulaire));
+		}catch(Exception $e){
+			$reponse = false;
+		}
+		
+		return json_encode($reponse);
+	}
+	
+	function getFichesHabilitationsElectriquesAValider()
+	{
+		include("connexionBdd.php");
+		
+		$listesFiches = array();
+		
+		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NULL ORDER BY date");
+		while($data = $req->fetch())
+		{
+			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
+			array_push($listesFiches, $formulaire);
+		}
+		
+		return json_encode($listesFiches);
 	}
 ?>
