@@ -1,6 +1,7 @@
 <?php
 	require_once("fonctions.php");
 	echo addHabilitationElectrique($_POST["formulaire"]);
+	
 	/*$formulaire = (object) array();
 	$formulaire->brouillon = false;
 	$formulaire->q1_ans1 = "gre";

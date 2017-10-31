@@ -1,8 +1,10 @@
 $(function(){
-    $.post("getDernierFormulaireByUtilisateurId.php", {utilisateur_id: $("user_id").val()}, function(data){
+    $.post("API/getDernierFormulaireByUtilisateurId.php", {utilisateur_id: $("#user_id").val()}, function(data){
         var formulaire = JSON.parse(data);
         if(formulaire != null && formulaire.brouillon == true)
         {
+            $("#brouillon_id").val(formulaire.id);
+
             $("#q1_ans1").val(formulaire.q1_ans1);
             $("#q1_ans2").val(formulaire.q1_ans2);
             $("#q1_ans3").val(formulaire.q1_ans3);
@@ -51,152 +53,152 @@ $(function(){
                 $("#q5_ans2").click();
             }
 
-            $("#q5_ans2").val(formulaire.q6_ans1);
+            $("#q6_ans1").val(formulaire.q6_ans1);
 
             if(formulaire.q7_ans1 == true)
             {
-                $("q7_ans1").click();
+                $("#q7_ans1").click();
             }
             else{
                 if(formulaire.q7_ans1 == false)
                 {
-                    $("q7_ans2").click();
+                    $("#q7_ans2").click();
                 }
             }
             if(formulaire.q7_ans2 == true)
             {
-                $("q7_ans3").click();
+                $("#q7_ans3").click();
             }
             else{
                 if(formulaire.q7_ans2 == false)
                 {
-                    $("q7_ans4").click();
+                    $("#q7_ans4").click();
                 }
             }
 
             if(formulaire.q8_ans1 == true)
             {
-                $("q8_ans1").click();
+                $("#q8_ans1").click();
             }
             else{
                 if(formulaire.q8_ans1 == false)
                 {
-                    $("q8_ans2").click();
+                    $("#q8_ans2").click();
                 }
             }
             if(formulaire.q8_ans2 == true)
             {
-                $("q8_ans3").click();
+                $("#q8_ans3").click();
             }
             else{
                 if(formulaire.q8_ans2 == false)
                 {
-                    $("q8_ans4").click();
+                    $("#q8_ans4").click();
                 }
             }
 
             if(formulaire.q9_ans1 == true)
             {
-                $("q9_ans1").click();
+                $("#q9_ans1").click();
             }
             else{
                 if(formulaire.q9_ans1 == false)
                 {
-                    $("q9_ans2").click();
+                    $("#q9_ans2").click();
                 }
             }
             if(formulaire.q9_ans2 == true)
             {
-                $("q9_ans3").click();
+                $("#q9_ans3").click();
             }
             else{
                 if(formulaire.q9_ans2 == false)
                 {
-                    $("q9_ans4").click();
+                    $("#q9_ans4").click();
                 }
             }
             if(formulaire.q9_ans3 == true)
             {
-                $("q9_ans5").click();
+                $("#q9_ans5").click();
             }
             else{
                 if(formulaire.q9_ans3 == false)
                 {
-                    $("q9_ans6").click();
+                    $("#q9_ans6").click();
                 }
             }
 
             if(formulaire.q10_ans1 == true)
             {
-                $("q10_ans1").click();
+                $("#q10_ans1").click();
             }
             else{
                 if(formulaire.q10_ans1 == false)
                 {
-                    $("q10_ans2").click();
+                    $("#q10_ans2").click();
                 }
             }
 
             if(formulaire.q11_ans1 == true)
             {
-                $("q11_ans1").click();
+                $("#q11_ans1").click();
             }
             else{
                 if(formulaire.q11_ans1 == false)
                 {
-                    $("q11_ans2").click();
+                    $("#q11_ans2").click();
                 }
             }
 
             if(formulaire.q12_ans1 == true)
             {
-                $("q12_ans1").click();
+                $("#q12_ans1").click();
             }
             else{
                 if(formulaire.q12_ans1 == false)
                 {
-                    $("q12_ans2").click();
+                    $("#q12_ans2").click();
                 }
             }
             if(formulaire.q12_ans2 == true)
             {
-                $("q12_ans3").click();
+                $("#q12_ans3").click();
             }
             else{
                 if(formulaire.q12_ans2 == false)
                 {
-                    $("q12_ans4").click();
+                    $("#q12_ans4").click();
                 }
             }
 
             if(formulaire.q13_ans1 == true)
             {
-                $("q13_ans1").click();
+                $("#q13_ans1").click();
             }
             else{
                 if(formulaire.q13_ans1 == false)
                 {
-                    $("q13_ans2").click();
+                    $("#q13_ans2").click();
                 }
             }
             if(formulaire.q13_ans2 == true)
             {
-                $("q13_ans3").click();
+                $("#q13_ans3").click();
             }
             else{
                 if(formulaire.q13_ans2 == false)
                 {
-                    $("q13_ans4").click();
+                    $("#q13_ans4").click();
                 }
             }
             if(formulaire.q13_ans3 == true)
             {
-                $("q13_ans5").click();
+                $("#q13_ans5").click();
             }
             else{
                 if(formulaire.q13_ans3 == false)
                 {
-                    $("q13_ans6").click();
+                    $("#q13_ans6").click();
                 }
             }
 
@@ -280,25 +282,81 @@ $(function(){
         formulaire.q6_ans1 = $("#q6_ans1").val();
 
         formulaire.q7_ans1 = $("#q7_ans1").prop("checked");
+        if(formulaire.q7_ans1 == false && $("#q7_ans2").prop("checked") == false)
+        {
+            formulaire.q7_ans1 = null;
+        }
         formulaire.q7_ans2 = $("#q7_ans3").prop("checked");
+        if(formulaire.q7_ans2 != true && $("#q7_ans4").prop("checked") != true)
+        {
+            formulaire.q7_ans2 = null;
+        }
         
         formulaire.q8_ans1 = $("#q8_ans1").prop("checked");
+        if(formulaire.q8_ans1 != true && $("#q8_ans2").prop("checked") != true)
+        {
+            formulaire.q8_ans1 = null;
+        }
         formulaire.q8_ans2 = $("#q8_ans3").prop("checked");
+        if(formulaire.q8_ans2 != true && $("#q8_ans4").prop("checked") != true)
+        {
+            formulaire.q8_ans2 = null;
+        }
 
         formulaire.q9_ans1 = $("#q9_ans1").prop("checked");
+        if(formulaire.q9_ans1 != true && $("#q9_ans2").prop("checked") != true)
+        {
+            formulaire.q9_ans1 = null;
+        }
         formulaire.q9_ans2 = $("#q9_ans3").prop("checked");
+        if(formulaire.q9_ans2 != true && $("#q9_ans4").prop("checked") != true)
+        {
+            formulaire.q9_ans2 = null;
+        }
         formulaire.q9_ans3 = $("#q9_ans5").prop("checked");
+        if(formulaire.q9_ans3 != true && $("#q9_ans6").prop("checked") != true)
+        {
+            formulaire.q9_ans3 = null;
+        }
 
         formulaire.q10_ans1 = $("#q10_ans1").prop("checked");
+        if(formulaire.q10_ans1 != true && $("#q10_ans2").prop("checked") != true)
+        {
+            formulaire.q10_ans1 = null;
+        }
 
         formulaire.q11_ans1 = $("#q11_ans1").prop("checked");
+        if(formulaire.q11_ans1 != true && $("#q11_ans2").prop("checked") != true)
+        {
+            formulaire.q11_ans1 = null;
+        }
 
         formulaire.q12_ans1 = $("#q12_ans1").prop("checked");
+        if(formulaire.q12_ans1 != true && $("#q12_ans2").prop("checked") != true)
+        {
+            formulaire.q12_ans1 = null;
+        }
         formulaire.q12_ans2 = $("#q12_ans3").prop("checked");
+        if(formulaire.q12_ans2 != true && $("#q12_ans4").prop("checked") != true)
+        {
+            formulaire.q12_ans2 = null;
+        }
 
         formulaire.q13_ans1 = $("#q13_ans1").prop("checked");
+        if(formulaire.q13_ans1 != true && $("#q13_ans2").prop("checked") != true)
+        {
+            formulaire.q13_ans1 = null;
+        }
         formulaire.q13_ans2 = $("#q13_ans3").prop("checked");
+        if(formulaire.q13_ans2 != true && $("#q13_ans4").prop("checked") != true)
+        {
+            formulaire.q13_ans2 = null;
+        }
         formulaire.q13_ans3 = $("#q13_ans5").prop("checked");
+        if(formulaire.q13_ans3 != true && $("#q13_ans6").prop("checked") != true)
+        {
+            formulaire.q13_ans3 = null;
+        }
 
         formulaire.q14_ans1 = parseInt($("#choix1").children("option:selected").text());
         formulaire.q14_ans2 = parseInt($("#choix2").children("option:selected").text());
@@ -314,15 +372,25 @@ $(function(){
     }
 
     $("#brouillon-habilitation").click(function(){
+
         var formulaire = getReponsesUtilisateur();
         formulaire.brouillon = true;
         formulaire = JSON.stringify(formulaire);
 
-        $.post("addHabilitationElectrique.php", {formulaire: formulaire}, function(data){
+        $.post("API/addHabilitationElectrique.php", {formulaire: formulaire}, function(data){
             var reponse = JSON.parse(data);
             if(reponse)
             {
-                document.location.href = "index.php";
+                if($("#brouillon_id").val() != "NULL")
+                {
+                    $.post("API/removeHabilitationElectrique.php", {formulaire_id: $("#brouillon_id").val()}, function(data){
+                        var reponse = JSON.parse(data);
+                        document.location.href = "index.php";
+                    });
+                }
+                else{
+                    document.location.href = "index.php";
+                }
             }
             else{
                 alert("Une erreur s'est produite, veuillez réessayer plus tard");
@@ -333,14 +401,22 @@ $(function(){
     $("#valid-habilitation").click(function(){
         var formulaire = getReponsesUtilisateur();
         formulaire.brouillon = false;
-        console.log(formulaire);
         formulaire = JSON.stringify(formulaire);
 
         $.post("API/addHabilitationElectrique.php", {formulaire: formulaire}, function(data){
             var reponse = JSON.parse(data);
             if(reponse)
             {
-                document.location.href = "index.php";
+                if($("#brouillon_id").val() != "NULL")
+                {
+                    $.post("API/removeHabilitationElectrique.php", {formulaire_id: $("#brouillon_id").val()}, function(data){
+                        var reponse = JSON.parse(data);
+                        document.location.href = "index.php";
+                    });
+                }
+                else{
+                    document.location.href = "index.php";
+                }
             }
             else{
                 alert("Une erreur s'est produite, veuillez réessayer plus tard");
