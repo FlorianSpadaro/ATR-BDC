@@ -222,6 +222,7 @@
                         <li><a href="mesMessages.php"><span class="glyphicon glyphicon-envelope"></span> Mes messages <span id="nbMessages" class="badge"></span></a></li>
                         <li><a href="mesAbonnements.php"><span class="glyphicon glyphicon-heart-empty"></span> Mes abonnements</a></li>
                         <li><a href="habilitationElectrique.php"><span class="glyphicon glyphicon-education"></span> Habilitations H0-B0 <span class="glyphicon glyphicon-warning-sign red pull-right"></span></a></li>
+                        <?php if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3){ ?><li><a href="listeHabilitationElectrique.php"><span class="glyphicon glyphicon-education"></span> Liste des Habilitations H0-B0 <span class="glyphicon glyphicon-warning-sign red pull-right"></span></a></li> <?php } ?>
                         <!--<li><a href="#"><span class="fa fa-question-circle"></span> Mes suggestions</a></li>-->
                         <?php
                         if((isset($_SESSION["niveau"])) && ($_SESSION["niveau"]->niveau == 3))

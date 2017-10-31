@@ -4966,8 +4966,23 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		include("connexionBdd.php");
 		
 		$formulaire = null;
-		$req = $bdd->prepare("SELECT * FROM habil_elec WHERE utilisateur_id = ? ORDER BY date DESC LIMIT 1 OFFSET 0");
+		$req = $bdd->prepare("SELECT id FROM habil_elec WHERE utilisateur_id = ? ORDER BY date DESC LIMIT 1 OFFSET 0");
 		$req->execute(array($user_id));
+		if($data = $req->fetch())
+		{
+			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
+		}
+		
+		return json_encode($formulaire);
+	}
+	
+	function getFormulaireHabilitationElectriqueById($id)
+	{
+		include("connexionBdd.php");
+		
+		$formulaire = null;
+		$req = $bdd->prepare("SELECT * FROM habil_elec WHERE id = ?");
+		$req->execute(array($id));
 		if($data = $req->fetch())
 		{
 			$formulaire = (object) array();
@@ -5044,5 +5059,21 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		}
 		
 		return json_encode($reponse);
+	}
+	
+	function getFichesHabilitationsElectriquesAValider()
+	{
+		include("connexionBdd.php");
+		
+		$listesFiches = array();
+		
+		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NULL ORDER BY date");
+		while($data = $req->fetch())
+		{
+			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
+			array_push($listesFiches, $formulaire);
+		}
+		
+		return json_encode($listesFiches);
 	}
 ?>
