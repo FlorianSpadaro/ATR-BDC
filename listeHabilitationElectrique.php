@@ -5,8 +5,7 @@
         header('Location: index.php');
         exit();
     }
-    $fonctions = json_decode(getFonctions());
-    $niveaux = json_decode(getNiveaux());
+    $listeFormulaires = json_decode(getFichesHabilitationsElectriquesAValider());
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +18,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Gérer droits</title>
+        <title>Liste des habilitations électriques</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -39,7 +38,21 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+        <style>
+            #divAjouterFonctionModif, #divAjouterFonctionNew, #attenteReinitialiserMdp{
+                display: none;
+            }
+            #erreurLibelleNouvelleFonctionModif, .erreurModifUser, #erreurLibelleNouvelleFonctionNew, .erreurNewUser{
+                color: red;
+                display: none;
+            }
+            .formGererAbonnement{
+                display: inline-block;
+            }
+            #colonneAbonnement{
+                text-align: center;
+            }
+        </style>
         
     </head>
     
@@ -49,7 +62,7 @@
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                         <div class="site-heading">
-                            <h1>Gérer droits</h1>
+                            <h1>Liste des habilitations électriques</h1>
                             <hr class="small">
                         </div>
                     </div>
@@ -63,37 +76,27 @@
             <!--<div class="help-block pull-right">
                 Vous ne pouvez supprimer que les utilisateurs inactifs (un utilisateur devient actif lors de sa première connexion)
             </div>-->
-            <table id="listeFonctions" class="tablesorter table table-striped table-hover"> 
+            <table id="listeHabilitations" class="tablesorter table table-striped table-hover"> 
                 <thead> 
                 <tr> 
-                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Fonction</a></th> 
-                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Niveau</a></th>
+                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Nom</a></th>
+                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Date</a></th> 
+                    <th>Voir</th> 
                 </tr> 
                 </thead> 
                 <tbody>
                     <?php
-                    if($fonctions != null)
+                    if(sizeof($listeFormulaires) > 0)
                     {
-                        foreach($fonctions as $fonction)
+                        foreach($listeFormulaires as $formulaire)
                         {
+                            $utilisateur = json_decode(getUtilisateurById($formulaire->utilisateur_id));
+                            $date = json_decode(modifierDate($formulaire->date));
                             ?>
                             <tr>
-                                <td><?php echo $fonction->libelle ?></td>
-                                <td>
-                                    <select id="fonction-<?php echo $fonction->id ?>" class="listeNiveaux" name="fonction-<?php echo $fonction->id ?>">
-                                        <?php
-                                        if($niveaux != null)
-                                        {
-                                            foreach($niveaux as $niveau)
-                                            {
-                                                ?>
-                                                <option value="niveau-<?php echo $niveau->niveau ?>" <?php if($fonction->niveau->id == $niveau->niveau){ echo "selected"; } ?> ><?php echo $niveau->libelle.' ('.$niveau->niveau.')' ?></option>
-                                                <?php
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </td>
+                                <td><?php echo strtoupper($utilisateur->nom)." ".ucfirst(strtolower($utilisateur->prenom)) ?></td>
+                                <td><?php echo $date->jour." à ".$date->heure ?></td>
+                                <td><button class="btn btn-success">Voir</button></td>
                             </tr>
                             <?php
                         }
@@ -102,12 +105,11 @@
                 </tbody> 
             </table> 
         </div>
-        
-        
+  
         <!--  Footer -->
 
         <?php include("footer.php"); ?> 
         <script type="text/javascript" src="vendor/tablesort/jquery.tablesorter.min.js"></script>
-        <script src="js/myJs/gererDroits.js"></script>
+        <script src="js/myJs/listeHabilitationElectrique.js"></script>
     </body>
 </html>
