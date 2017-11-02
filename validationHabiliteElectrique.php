@@ -151,7 +151,15 @@ d’intervention
  <br/>
 
         </div>
-        <div class="btn-group pull-right"><button class="btn btn-danger btn-lg" id="btnRefuserFormulaire" >Refuser</button><button class="btn btn-success btn-lg" id="btnAccepterFormulaire">Accepter</button></div>
+        <?php
+        if(gettype($formulaire->valider) != "boolean")
+        {
+            ?>
+            <div class="btn-group pull-right"><button class="btn btn-danger btn-lg" id="btnRefuserFormulaire" >Refuser</button><button class="btn btn-success btn-lg" id="btnAccepterFormulaire">Accepter</button></div>
+            <?php
+        }
+        ?>
+        
             </div>
             <br/>
             <br/><br/>
