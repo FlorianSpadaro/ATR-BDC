@@ -234,6 +234,15 @@ $(function(){
                 $("#choix7").val(formulaire.q14_ans7);
             }
         }
+        if(formulaire != null)
+        {
+            var dte = new Date();
+            var dteForm = new Date(formulaire.date.slice(0, 4), formulaire.date.slice(5, 7), formulaire.date.slice(8, 10));
+            if(formulaire.brouillon == false && formulaire.valider != false && dte < dteForm)
+            {
+                document.location.href = "index.php";
+            }
+        }
     });
 
     $(".selectQ14").change(function(){
