@@ -1,3 +1,7 @@
 $(function(){
-    $("#listeHabilitations").tablesorter();
+    $(".tablesorter").tablesorter();
+
+    $(".titreTab").click(function(e){
+        e.preventDefault();
+    });
 });

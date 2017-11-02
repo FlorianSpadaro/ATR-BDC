@@ -44,6 +44,8 @@
     </head>
 
     <body>
+
+    <input type="hidden" name="formulaire_id" id="formulaire_id" value="<?php echo $_GET["id"] ?>" />
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
             <div class="container">
                 <div class="row">
@@ -149,7 +151,7 @@ d’intervention
  <br/>
 
         </div>
-        <div class="btn-group pull-right"><button class="btn btn-danger btn-lg">Refuser</button><button class="btn btn-success btn-lg">Accepter</button></div>
+        <div class="btn-group pull-right"><button class="btn btn-danger btn-lg" id="btnRefuserFormulaire" >Refuser</button><button class="btn btn-success btn-lg" id="btnAccepterFormulaire">Accepter</button></div>
             </div>
             <br/>
             <br/><br/>

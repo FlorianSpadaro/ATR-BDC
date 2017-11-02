@@ -1,4 +1,32 @@
 $(function () {
+    $("#formulaireHabilElec").click(function(e){
+        e.preventDefault();
+        $.post("API/getDernierFormulaireByUtilisateurId.php", {utilisateur_id: $("#user_id").val()}, function(data){
+            var formulaire = JSON.parse(data);
+            if(formulaire != null)
+            {
+                var dte = new Date();
+                var dteForm = new Date(formulaire.date.slice(0, 4), formulaire.date.slice(5, 7), formulaire.date.slice(8, 10));
+                if(formulaire.brouillon == false && formulaire.valider != false && dte < dteForm)
+                {
+                    if(formulaire.date_expiration == null)
+                    {
+                        alert("Vous avez déjà répondu à ce formulaire. Merci d'attendre qu'un administrateur valide vos réponses");
+                    }
+                    else{
+                        alert("Votre formulaire a été validé. Fin de validité: " + formulaire.date_expiration.slice(0, 4) + "/" + formulaire.date_expiration.slice(5, 7) + "/" + formulaire.date_expiration.slice(8, 10));
+                    }
+                }
+                else{
+                    document.location.href = "habilitationElectrique.php";
+                }
+            }
+            else{
+                document.location.href = "habilitationElectrique.php";
+            }
+        });
+    });
+
     $("#searchBarOption").hide();
     $("#searchBar").focus(function(e){
         $(this).animate({width:"741px"},500);

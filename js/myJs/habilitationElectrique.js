@@ -1,4 +1,6 @@
 $(function(){
+
+
     $.post("API/getDernierFormulaireByUtilisateurId.php", {utilisateur_id: $("#user_id").val()}, function(data){
 
         var formulaire = JSON.parse(data);
