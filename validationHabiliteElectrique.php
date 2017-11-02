@@ -7,7 +7,7 @@
     }
     $formulaire = json_decode(getFormulaireHabilitationElectriqueById($_GET["id"]));
     $userForm = json_decode(getUtilisateurById($formulaire->utilisateur_id));
-    
+
     $reponses = (object) array();
 
     $reponses->q1_ans1 = array("TEST", "Autre Test", "DernierTest");
@@ -192,7 +192,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -209,7 +209,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -222,7 +222,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -235,7 +235,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -249,7 +249,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -262,7 +262,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -275,7 +275,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -289,7 +289,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -302,7 +302,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -319,7 +319,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -332,7 +332,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -346,7 +346,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -359,7 +359,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -373,7 +373,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -386,7 +386,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -399,7 +399,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -413,7 +413,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -427,7 +427,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -441,7 +441,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -454,7 +454,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -468,7 +468,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -481,7 +481,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -494,7 +494,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -520,7 +520,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -535,7 +535,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -550,7 +550,7 @@
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -566,7 +566,7 @@ Electricien
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -581,7 +581,7 @@ Electricien
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -596,7 +596,7 @@ Electricien
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
@@ -612,7 +612,7 @@ d’intervention
                 }
                 else{
                     ?>
-                    <label class="label label-danger">Faux</label>
+                    <label class="label label-danger erreur">Faux</label>
                     <?php
                 }
                 ?>
