@@ -4842,6 +4842,23 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		/*$test = "('grz', 'rqz', 'frz', true, false, false, true, true, false, false, true, false, true, 'testtest', true, false, false, true, true, false, true, false, true, false, true, false, true, true, 1, 2, 3, 4, 5, 6, 7, false, 22, NOW())";*/
 		$formulaire = json_decode($formulaire);
 		
+		if(gettype($formulaire->q2_ans1) == "boolean")
+		{
+			$formulaire->q2_ans1 = boolval( $formulaire->q2_ans1) ? 'true' : 'false';
+			if($formulaire->q2_ans1 != 'true')
+			{
+				$formulaire->q2_ans1 = "false";
+			}
+		}
+		if(gettype($formulaire->q2_ans2) == "boolean")
+		{
+			$formulaire->q2_ans2 = boolval( $formulaire->q2_ans2) ? 'true' : 'false';
+			if($formulaire->q2_ans2 != 'true')
+			{
+				$formulaire->q2_ans2 = "false";
+			}
+		}
+		
 		if(gettype($formulaire->q7_ans1) == "boolean")
 		{
 			$formulaire->q7_ans1 = boolval( $formulaire->q7_ans1) ? 'true' : 'false';
@@ -4912,8 +4929,8 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		$tab = array($formulaire->q1_ans1, 
 		 $formulaire->q1_ans2, 
 		 $formulaire->q1_ans3, 
-		(boolval($formulaire->q2_ans1) ? 'true' : 'false'), 
-		(boolval( $formulaire->q2_ans2) ? 'true' : 'false'), 
+		$formulaire->q2_ans1, 
+		$formulaire->q2_ans2, 
 		(boolval( $formulaire->q3_ans1) ? 'true' : 'false'), 
 		(boolval( $formulaire->q3_ans2) ? 'true' : 'false'), 
 		(boolval( $formulaire->q3_ans3) ? 'true' : 'false'), 
@@ -4992,6 +5009,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 			$formulaire->date = $data["date"];
 			$formulaire->date_expiration = $data["date_expiration"];
 			$formulaire->brouillon = $data["brouillon"];
+			$formulaire->valider = $data["valider"];
 			
 			$formulaire->q1_ans1 = $data["q1_ans1"];
 			$formulaire->q1_ans2 = $data["q1_ans2"];
@@ -5067,7 +5085,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		
 		$listesFiches = array();
 		
-		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NULL ORDER BY date");
+		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NULL AND valider IS NULL ORDER BY date DESC");
 		while($data = $req->fetch())
 		{
 			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
@@ -5075,5 +5093,67 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		}
 		
 		return json_encode($listesFiches);
+	}
+	
+	function getFichesHabilitationsElectriquesValidees()
+	{
+		include("connexionBdd.php");
+		
+		$listesFiches = array();
+		
+		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NOT NULL AND valider = TRUE ORDER BY date DESC");
+		while($data = $req->fetch())
+		{
+			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
+			array_push($listesFiches, $formulaire);
+		}
+		
+		return json_encode($listesFiches);
+	}
+	
+	function getFichesHabilitationsElectriquesRefusees()
+	{
+		include("connexionBdd.php");
+		
+		$listesFiches = array();
+		
+		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND valider = FALSE ORDER BY date DESC");
+		while($data = $req->fetch())
+		{
+			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
+			array_push($listesFiches, $formulaire);
+		}
+		
+		return json_encode($listesFiches);
+	}
+	
+	function validerHabilitationElectrique($idFormulaire)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE habil_elec SET date_expiration = DEFAULT, valider = TRUE WHERE id = ?");
+			$reponse = $req->execute(array($idFormulaire));
+		}
+		catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
+	}
+	
+	function refuserHabilitationElectrique($idFormulaire)
+	{
+		include("connexionBdd.php");
+		
+		$reponse = false;
+		try{
+			$req = $bdd->prepare("UPDATE habil_elec SET date_expiration = NULL, valider = FALSE WHERE id = ?");
+			$reponse = $req->execute(array($idFormulaire));
+		}
+		catch(Exception $e){
+			$reponse = false;
+		}
+		return json_encode($reponse);
 	}
 ?>
