@@ -1333,15 +1333,15 @@
 	{
 		include("connexionBdd.php");
 		
-		$search = strtoupper($search);
+		$search = strtolower($search);
 		$users = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT id, nom, prenom FROM utilisateur WHERE UPPER(prenom) LIKE ? OR UPPER(nom) LIKE ? ORDER BY nom, prenom LIMIT 5 OFFSET 0");
+		$req = $bdd->prepare("SELECT id, nom, prenom FROM utilisateur WHERE lower(prenom) LIKE ? OR lower(nom) LIKE ? ORDER BY nom, prenom LIMIT 5 OFFSET 0");
 		$req->execute(array($search."%", $search."%"));
 		while($data = $req->fetch())
 		{
 			$users[$i]["id"] = $data["id"];
-			$users[$i]["nom"] = strtoupper($data["nom"]);
+			$users[$i]["nom"] = strtolower($data["nom"]);
 			$users[$i]["prenom"] = ucfirst(strtolower($data["prenom"]));
 			$i++;
 		}
@@ -1407,18 +1407,18 @@
 		}
 		else{
 		$tabTexte = array();
-			$txt = strtoupper($params->texte->texte);
+			$txt = strtolower($params->texte->texte);
 			if($params->texte->titre)
 			{
-				array_push($tabTexte, "UPPER(titre) LIKE '%".$txt."%'");
+				array_push($tabTexte, "lower(titre) LIKE '%".$txt."%'");
 			}
 			if($params->texte->description)
 			{
-				array_push($tabTexte, "UPPER(description) LIKE '%".$txt."%'");
+				array_push($tabTexte, "lower(description) LIKE '%".$txt."%'");
 			}
 			if($params->texte->contenu)
 			{
-				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
+				array_push($tabTexte, "lower(contenu) LIKE '%".$txt."%'");
 			}
 			
 			$requete = "SELECT COUNT(*) nb FROM projet WHERE";
@@ -1653,18 +1653,18 @@
         }
 		else{
 			$tabTexte = array();
-			$txt = strtoupper($params->texte->texte);
+			$txt = strtolower($params->texte->texte);
 			if($params->texte->titre)
 			{
-				array_push($tabTexte, "UPPER(titre) LIKE '%".$txt."%'");
+				array_push($tabTexte, "lower(titre) LIKE '%".$txt."%'");
 			}
 			if($params->texte->description)
 			{
-				array_push($tabTexte, "UPPER(description) LIKE '%".$txt."%'");
+				array_push($tabTexte, "lower(description) LIKE '%".$txt."%'");
 			}
 			if($params->texte->contenu)
 			{
-				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
+				array_push($tabTexte, "lower(contenu) LIKE '%".$txt."%'");
 			}
 			
 			$requete = "SELECT id projet_id, titre projet_titre, description projet_description, date_creation projet_date_creation, date_derniere_maj projet_date_derniere_maj, contrat_id, sous_domaine_id FROM projet  WHERE";
@@ -4735,11 +4735,11 @@
     function getSearchProjetBySearchBar($search_text)
     {
 		include("connexionBdd.php");
-		$search_text = strtoupper($search_text);
+		$search_text = strtolower($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
-        $titresearch_sql = "UPPER(titre) like ";
-        $descsearch_sql = "UPPER(description) like ";
+        $titresearch_sql = "lower(titre) like ";
+        $descsearch_sql = "lower(description) like ";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -4754,8 +4754,8 @@
             $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
                     if($i != $countarray)
                     {
-                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
-                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
+                        $titresearch_sql = $titresearch_sql." and lower(titre) like ";
+                        $descsearch_sql = $descsearch_sql." and lower(description) like ";
                     }
             
         }
@@ -4778,12 +4778,12 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
     function getSearchProjetByProjectSearch($search_text)
     {
         include("connexionBdd.php");
-        $search_text = strtoupper($search_text);
+        $search_text = strtolower($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
-        $titresearch_sql = "UPPER(titre) like ";
-        $descsearch_sql = "UPPER(description) like ";
-        $contenu_sql = "UPPER(REGEXP_REPLACE(contenu, '<[^>]*>','')) like ";
+        $titresearch_sql = "lower(titre) like ";
+        $descsearch_sql = "lower(description) like ";
+        $contenu_sql = "lower(REGEXP_REPLACE(contenu, '<[^>]*>','')) like ";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -4800,9 +4800,9 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
             
                     if($i != $countarray)
                     {
-                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
-                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
-                        $contenu_sql = $contenu_sql." and UPPER(REGEXP_REPLACE(contenu, '<[^>]*>','')) like";
+                        $titresearch_sql = $titresearch_sql." and lower(titre) like ";
+                        $descsearch_sql = $descsearch_sql." and lower(description) like ";
+                        $contenu_sql = $contenu_sql." and lower(REGEXP_REPLACE(contenu, '<[^>]*>','')) like";
                     }
             
         }
