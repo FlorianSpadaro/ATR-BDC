@@ -5156,4 +5156,19 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		}
 		return json_encode($reponse);
 	}
+
+	function checkHabilTrue($user_id)
+	{
+		include("connexionBdd.php");
+
+		$req = $bdd->prepare("SELECT * from habil_elec WHERE utilisateur_id = ? and (date_expiration >= NOW() and valider is TRUE) or (date_expiration is null and valider is null)");
+		$req->execute(array($user_id));
+		if(!$data = $req->fetch()){
+			$html = '  <div class="alert alert-info alert-dismissable fade in" id="alert_habil">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><a href="habilitationElectrique.php">
+			<strong>Habilitation !</strong> pensez à passer votre habilitation en cliquant sur cette alerte</a>
+		  </div>';
+		  return $html;
+		}
+	}
 ?>
