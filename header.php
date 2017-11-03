@@ -122,9 +122,11 @@
     </head>
 
     <body>
+    
         <?php 
         if(isset($_SESSION["user_id"]))
         {
+            echo checkHabilTrue($_SESSION["user_id"]);
             ?>
             <div class="modal fade" id="infos<?php echo $_SESSION["user_id"] ?>">
                 <div class="modal-dialog">

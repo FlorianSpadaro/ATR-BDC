@@ -6,18 +6,19 @@
         exit();
     }
     $formulaire = json_decode(getFormulaireHabilitationElectriqueById($_GET["id"]));
+    
     $userForm = json_decode(getUtilisateurById($formulaire->utilisateur_id));
 
     $reponses = (object) array();
 
     $reponses->q1_ans1 = array("TEST", "Autre Test", "DernierTest");
 
-    $reponses->q2_ans1 = false;
-    $reponses->q2_ans2 = true;
+    $reponses->q2_ans1 = true;
+    $reponses->q2_ans2 = false;
 
     $reponses->q3_ans1 = false;
-    $reponses->q3_ans2 = true;
-    $reponses->q3_ans3 = false;
+    $reponses->q3_ans2 = false;
+    $reponses->q3_ans3 = true;
 
     $reponses->q4_ans1 = false;
     $reponses->q4_ans2 = true;
@@ -26,19 +27,19 @@
     $reponses->q5_ans1 = false;
     $reponses->q5_ans2 = true;
 
-    $reponses->q6_ans1 = array("reponse1", "reponse2", "reponse3");
+    $reponses->q6_ans1 = array("30cm");
 
-    $reponses->q7_ans1 = false;
-    $reponses->q7_ans2 = true;
+    $reponses->q7_ans1 = true;
+    $reponses->q7_ans2 = false;
 
-    $reponses->q8_ans1 = false;
-    $reponses->q8_ans2 = true;
+    $reponses->q8_ans1 = true;
+    $reponses->q8_ans2 = false;
 
     $reponses->q9_ans1 = false;
-    $reponses->q9_ans2 = true;
+    $reponses->q9_ans2 = false;
     $reponses->q9_ans3 = false;
 
-    $reponses->q10_ans1 = true;
+    $reponses->q10_ans1 = false;
 
     $reponses->q11_ans1 = true;
 
@@ -46,16 +47,16 @@
     $reponses->q12_ans2 = true;
 
     $reponses->q13_ans1 = false;
-    $reponses->q13_ans2 = true;
-    $reponses->q13_ans3 = false;
+    $reponses->q13_ans2 = false;
+    $reponses->q13_ans3 = true;
 
-    $reponses->q14_ans1 = 1;
-    $reponses->q14_ans2 = 2;
-    $reponses->q14_ans3 = 3;
-    $reponses->q14_ans4 = 4;
-    $reponses->q14_ans5 = 5;
-    $reponses->q14_ans6 = 6;
-    $reponses->q14_ans7 = 7;
+    $reponses->q14_ans1 = 5;
+    $reponses->q14_ans2 = 1;
+    $reponses->q14_ans3 = 6;
+    $reponses->q14_ans4 = 2;
+    $reponses->q14_ans5 = 3;
+    $reponses->q14_ans6 = 7;
+    $reponses->q14_ans7 = 4;
 ?>
 
     <!DOCTYPE html>
