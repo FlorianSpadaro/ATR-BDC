@@ -4737,6 +4737,48 @@
 		include("connexionBdd.php");
 		$search_text = strtolower($search_text);
         $searcharray = explode(" ",$search_text);
+		$tab = array();
+        $countarray = count($searcharray);
+        $titresearch_sql = "lower(titre) like :search0";
+        $descsearch_sql = "lower(description) like :search0";
+        $z = 0;
+        $search = null;
+        for($i = 1; $i <= $countarray; $i++)
+        {
+            
+				$key = ':search'.($i-1);
+                //$searcharray[$i - 1] = "':search".$i."' => %".$searcharray[$i - 1]."%";
+                 $tab[$key] = "%".$searcharray[$i - 1]."%";
+                 
+           
+            
+            /*$titresearch_sql = $titresearch_sql."'".$searcharray[$i - 1]."'";
+            $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";*/
+                    if($i != $countarray)
+                    {
+                        $titresearch_sql = $titresearch_sql." and lower(titre) like :search".$i;
+                        $descsearch_sql = $descsearch_sql." and lower(description) like :search".$i;
+                    }
+            
+        }
+        
+        $sql_return = "select id,titre,description from projet where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
+        //return json_encode($tab);
+		$req = $bdd->prepare($sql_return);
+		$req->execute($tab);
+        while($data = $req->fetch())
+        {
+            $search[$z]['id'] = $data['id'];
+            $search[$z]['titre'] = $data['titre'];
+            $search[$z]['description'] = $data['description'];
+            
+            $z++;
+        }
+        return json_encode($search);
+		
+		/*include("connexionBdd.php");
+		$search_text = strtolower($search_text);
+        $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
         $titresearch_sql = "lower(titre) like ";
         $descsearch_sql = "lower(description) like ";
@@ -4771,13 +4813,56 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
             
             $z++;
         }
-        return json_encode($search);
+        return json_encode($search);*/
         
     }
 	
     function getSearchProjetByProjectSearch($search_text)
     {
-        include("connexionBdd.php");
+		include("connexionBdd.php");
+        $search_text = strtolower($search_text);
+        $searcharray = explode(" ",$search_text);
+        $countarray = count($searcharray);
+		$tab = array();
+        $titresearch_sql = "lower(titre) like :search0";
+        $descsearch_sql = "lower(description) like :search0";
+        $contenu_sql = "lower(REGEXP_REPLACE(contenu, '<[^>]*>','')) like :search0";
+        $z = 0;
+        $search = null;
+        for($i = 1; $i <= $countarray; $i++)
+        {
+            
+          
+                //$searcharray[$i - 1] = "%".$searcharray[$i - 1]."%";
+                $key = ':search'.($i-1);
+				$tab[$key] = "%".$searcharray[$i - 1]."%";
+           
+            
+            /*$titresearch_sql = $titresearch_sql."'".$searcharray[$i - 1]."'";
+            $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
+            $contenu_sql = $contenu_sql."'".$searcharray[$i - 1]."'";*/
+            
+                    if($i != $countarray)
+                    {
+                        $titresearch_sql = $titresearch_sql." and lower(titre) like :search".$i;
+                        $descsearch_sql = $descsearch_sql." and lower(description) like :search".$i;
+                        $contenu_sql = $contenu_sql." and lower(REGEXP_REPLACE(contenu, '<[^>]*>','')) like :search".$i;
+                    }
+            
+        }
+        
+        $sql_return = "select id,titre,description from projet where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
+		//return json_encode($tab);
+        $req = $bdd->prepare($sql_return);
+		$req->execute($tab);
+        while($data = $req->fetch())
+        {
+            $search[$z]['id'] = $data['id']; 
+            $z++;
+        }
+        return json_encode($search);
+		
+        /*include("connexionBdd.php");
         $search_text = strtolower($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
@@ -4815,7 +4900,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
             $search[$z]['id'] = $data['id']; 
             $z++;
         }
-        return json_encode($search);
+        return json_encode($search);*/
         
     }
 	
