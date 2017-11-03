@@ -1,0 +1,102 @@
+body
+{
+    font-family:calibri;
+    font-size:10pt;
+}
+#contour
+{
+    background-color:#A2F8AA;
+    width:17.8cm;
+    height:9.3cm;
+    padding-top: 0.5cm;
+}
+#entete
+{
+
+    width:17.8cm;
+    height:2.3cm;
+}
+#centre
+{
+
+    width:17.8cm;
+    height:4.2cm;
+}
+#bas
+{
+
+    width:17.8cm;
+    height:2.3cm;
+}
+table
+{
+    margin-left:0.7cm;
+    margin-right:0.7cm;
+}
+.col_1
+{
+    width:1.8cm;
+}
+.col_2
+{
+    max-width:3.7cm;
+    white-space:nowrap;
+}
+.col_3
+{
+    
+}
+.col_4
+{
+    
+}
+#titre
+{
+    font-weight:bold;
+    text-align:center;
+}
+#tablecentre
+{
+     border-collapse: collapse; 
+    font-size:8pt;
+    text-align: center;
+}
+#tablecentre tr td
+{
+    border:solid 1px black;
+
+}
+.t2_col1
+{
+    min-width:4.7cm;
+    max-width:4.7cm;
+    height: 0.5cm;
+}
+.t2_col2
+{
+    width:2.1cm;
+}
+.t2_col3
+{
+    width:2.5cm;
+}
+.t2_col4
+{
+    width:2.8cm;
+}
+.t2_col5
+{
+    width:4cm;
+}
+.t3_col1
+{
+    width: 6.9cm;
+}
+.t3_col2
+{
+    width:5.4cm;
+}
+.t3_col3
+{
+    width:2.5cm;
+}

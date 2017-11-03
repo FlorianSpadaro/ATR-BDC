@@ -6,6 +6,11 @@
         exit();
     }
     $listeFormulaires = json_decode(getFichesHabilitationsElectriquesAValider());
+<<<<<<< HEAD
+=======
+    $listeFormulairesValides = json_decode(getFichesHabilitationsElectriquesValidees());
+    $listeFormulairesRefuses = json_decode(getFichesHabilitationsElectriquesRefusees());
+>>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 ?>
 
 <!DOCTYPE html>
@@ -71,12 +76,24 @@
         </header>
         
         <div class="container">
+<<<<<<< HEAD
             <!--<button data-toggle="modal" href="#nouvelUtilisateur" class="btn btn-success" id="btnNouvelUtilisateur"><span class="glyphicon glyphicon-plus"></span> Ajouter utilisateur</button>
             <br/><br/>-->
             <!--<div class="help-block pull-right">
                 Vous ne pouvez supprimer que les utilisateurs inactifs (un utilisateur devient actif lors de sa première connexion)
             </div>-->
             <table id="listeHabilitations" class="tablesorter table table-striped table-hover"> 
+=======
+
+        <ul class="nav nav-pills container">
+            <li class="active"><a href="#listeHabilitations" data-toggle="tab">En Attente</a></li>
+            <li><a href="#listeHabilitationsValidees" data-toggle="tab">Validés</a></li>
+            <li><a href="#listeHabilitationsRefusees" data-toggle="tab">Refusés</a></li>
+        </ul>
+        <div class="tab-content">
+        <div id="listeHabilitations" class="tab-pane active fade in">
+            <table id="tableListeHabilitations" class="tablesorter table table-striped table-hover"> 
+>>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
                 <thead> 
                 <tr> 
                     <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Nom</a></th>
@@ -96,7 +113,41 @@
                             <tr>
                                 <td><?php echo strtoupper($utilisateur->nom)." ".ucfirst(strtolower($utilisateur->prenom)) ?></td>
                                 <td><?php echo $date->jour." à ".$date->heure ?></td>
+<<<<<<< HEAD
                                 <td><button class="btn btn-success">Voir</button></td>
+=======
+                                <td><a href="validationHabiliteElectrique.php?id=<?php echo $formulaire->id ?>"><button class="btn btn-success">Voir</button></a></td>
+                            </tr>
+                            <?php
+                        }
+                    }
+                    ?>
+                </tbody> 
+            </table>
+        </div>
+        <div id="listeHabilitationsValidees" class="tab-pane fade">
+            <table class="tablesorter table table-striped table-hover"> 
+                <thead> 
+                <tr> 
+                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Nom</a></th>
+                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Date</a></th> 
+                    <th>Voir</th> 
+                </tr> 
+                </thead> 
+                <tbody>
+                    <?php
+                    if(sizeof($listeFormulairesValides) > 0)
+                    {
+                        foreach($listeFormulairesValides as $formulaire)
+                        {
+                            $utilisateur = json_decode(getUtilisateurById($formulaire->utilisateur_id));
+                            $date = json_decode(modifierDate($formulaire->date));
+                            ?>
+                            <tr>
+                                <td><?php echo strtoupper($utilisateur->nom)." ".ucfirst(strtolower($utilisateur->prenom)) ?></td>
+                                <td><?php echo $date->jour." à ".$date->heure ?></td>
+                                <td><a href="validationHabiliteElectrique.php?id=<?php echo $formulaire->id ?>"><button class="btn btn-success">Voir</button></a></td>
+>>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
                             </tr>
                             <?php
                         }
@@ -105,6 +156,41 @@
                 </tbody> 
             </table> 
         </div>
+<<<<<<< HEAD
+=======
+        <div id="listeHabilitationsRefusees" class="tab-pane fade">
+            <table id="tableListeHabilitationsRefusees" class="tablesorter table table-striped table-hover"> 
+                <thead> 
+                <tr> 
+                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Nom</a></th>
+                    <th><a href="#" class="titreTab"><span class="glyphicon glyphicon-sort"></span> Date</a></th> 
+                    <th>Voir</th> 
+                </tr> 
+                </thead> 
+                <tbody>
+                    <?php
+                    if(sizeof($listeFormulairesRefuses) > 0)
+                    {
+                        foreach($listeFormulairesRefuses as $formulaire)
+                        {
+                            $utilisateur = json_decode(getUtilisateurById($formulaire->utilisateur_id));
+                            $date = json_decode(modifierDate($formulaire->date));
+                            ?>
+                            <tr>
+                                <td><?php echo strtoupper($utilisateur->nom)." ".ucfirst(strtolower($utilisateur->prenom)) ?></td>
+                                <td><?php echo $date->jour." à ".$date->heure ?></td>
+                                <td><a href="validationHabiliteElectrique.php?id=<?php echo $formulaire->id ?>"><button class="btn btn-success">Voir</button></a></td>
+                            </tr>
+                            <?php
+                        }
+                    }
+                    ?>
+                </tbody> 
+            </table>
+        </div>
+        </div>
+        </div>
+>>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
   
         <!--  Footer -->
 

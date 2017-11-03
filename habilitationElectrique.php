@@ -120,6 +120,7 @@
                 <label class="form-control"><span class="badge">7</span> T </label>
         </div>
         <div style="display:flex;">
+<<<<<<< HEAD
                 <label class="form-control q14_box" style="height:90px"><span class="badge"><select id="choix1" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Chargé de Consignation </label>
 
                 <label class="form-control q14_box" style="height:90px"><span class="badge"><select id="choix2" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Non-Electricien 
@@ -136,6 +137,24 @@ Electricien
                 <label class="form-control q14_box" style="height:90px"><span class="badge"><select id="choix6" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Travail sous Tension  </label>
 
                 <label class="form-control q14_box" style="height:90px"><span class="badge"><select id="choix7" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Chargé 
+=======
+                <label class="form-control" style="height:60px"><span class="badge"><select id="choix1" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Chargé de Consignation </label>
+
+                <label class="form-control" style="height:60px"><span class="badge"><select id="choix2" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Non-Electricien 
+</label>
+
+                <label class="form-control" style="height:60px"><span class="badge"><select id="choix3" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Travail au Voisinage  </label>
+
+                <label class="form-control" style="height:60px"><span class="badge"><select id="choix4" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Exécutant 
+Electricien 
+ </label>
+
+                <label class="form-control" style="height:60px"><span class="badge"><select id="choix5" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Chargé de Travaux  </label>
+
+                <label class="form-control" style="height:60px"><span class="badge"><select id="choix6" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Travail sous Tension  </label>
+
+                <label class="form-control" style="height:60px"><span class="badge"><select id="choix7" class="form-control selectQ14"><option class="firstOption"></option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></span> Chargé 
+>>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 d’intervention 
  </label><br/>
 
@@ -147,7 +166,11 @@ d’intervention
 
         <?php include("footer.php"); ?>
    
+<<<<<<< HEAD
         <<script src="js/myJs/habilitationElectrique.js"></script>
+=======
+        <script src="js/myJs/habilitationElectrique.js"></script>
+>>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 
     </body>
 
