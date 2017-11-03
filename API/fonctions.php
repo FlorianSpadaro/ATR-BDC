@@ -4735,7 +4735,7 @@
     function getSearchProjetBySearchBar($search_text)
     {
 		include("connexionBdd.php");
-		$search_text = strtoupper(strip_tags($search_text));
+		$search_text = strtoupper($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
         $titresearch_sql = "UPPER(titre) like ";
@@ -4783,7 +4783,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
         $countarray = count($searcharray);
         $titresearch_sql = "UPPER(titre) like ";
         $descsearch_sql = "UPPER(description) like ";
-        $contenu_sql = "UPPER(contenu) like ";
+        $contenu_sql = "UPPER(REGEXP_REPLACE(contenu, '<[^>]*>','')) like ";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -4802,7 +4802,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
                     {
                         $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
                         $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
-                        $contenu_sql = $contenu_sql." and UPPER(contenu) like";
+                        $contenu_sql = $contenu_sql." and UPPER(REGEXP_REPLACE(contenu, '<[^>]*>','')) like";
                     }
             
         }
