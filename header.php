@@ -221,11 +221,7 @@
                         <li><a href="mesNotifications.php"><span class="glyphicon glyphicon-tags"></span> Notifications <span id="nbNotifs" class="badge">0</span></a></li>
                         <li><a href="mesMessages.php"><span class="glyphicon glyphicon-envelope"></span> Mes messages <span id="nbMessages" class="badge"></span></a></li>
                         <li><a href="mesAbonnements.php"><span class="glyphicon glyphicon-heart-empty"></span> Mes abonnements</a></li>
-<<<<<<< HEAD
-                        <li><a href="habilitationElectrique.php"><span class="glyphicon glyphicon-education"></span> Habilitations H0-B0 <span class="glyphicon glyphicon-warning-sign red pull-right"></span></a></li>
-=======
                         <li><a href="habilitationElectrique.php" id="formulaireHabilElec"><span class="glyphicon glyphicon-education"></span> Habilitations H0-B0 <span class="glyphicon glyphicon-warning-sign red pull-right"></span></a></li>
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
                         <?php if(isset($_SESSION["niveau"]) && $_SESSION["niveau"]->niveau == 3){ ?><li><a href="listeHabilitationElectrique.php"><span class="glyphicon glyphicon-education"></span> Liste des Habilitations H0-B0 <span class="glyphicon glyphicon-warning-sign red pull-right"></span></a></li> <?php } ?>
                         <!--<li><a href="#"><span class="fa fa-question-circle"></span> Mes suggestions</a></li>-->
                         <?php
@@ -344,7 +340,6 @@
                                 </ul>
                             </li>
                             <?php
-
                         }
                         ?>
                                 <!--<li class="dropdown">
@@ -378,5 +373,6 @@
 
         <!-- Page Header -->
         <!-- Set your background image for this header on the line below. -->
+
     </body>
     </html>

@@ -1,12 +1,8 @@
 $(function(){
-<<<<<<< HEAD
-    $.post("API/getDernierFormulaireByUtilisateurId.php", {utilisateur_id: $("#user_id").val()}, function(data){
-=======
 
 
     $.post("API/getDernierFormulaireByUtilisateurId.php", {utilisateur_id: $("#user_id").val()}, function(data){
 
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
         var formulaire = JSON.parse(data);
         if(formulaire != null && formulaire.brouillon == true)
         {
@@ -238,8 +234,6 @@ $(function(){
                 $("#choix7").val(formulaire.q14_ans7);
             }
         }
-<<<<<<< HEAD
-=======
         if(formulaire != null)
         {
             var dte = new Date();
@@ -249,7 +243,6 @@ $(function(){
                 document.location.href = "index.php";
             }
         }
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
     });
 
     $(".selectQ14").change(function(){
@@ -278,16 +271,6 @@ $(function(){
         formulaire.q1_ans3 = $("#q1_ans3").val();
 
         formulaire.q2_ans1 = $("#q2_ans1").prop("checked");
-<<<<<<< HEAD
-        if(formulaire.q2_ans1 == 1)
-        {
-            formulaire.q2_ans1 = true;
-        }
-        else{
-            formulaire.q2_ans1 = false;
-        }
-        formulaire.q2_ans2 = $("#q2_ans1").prop("checked");
-=======
         if(formulaire.q2_ans1 != true)
         {
             if($("#q2_ans1").prop("checked"))
@@ -303,7 +286,6 @@ $(function(){
             formulaire.q2_ans2 = false;
         }
         //formulaire.q2_ans2 = $("#q2_ans1").prop("checked");
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 
         formulaire.q3_ans1 = $("#q3_ans1").prop("checked");
         formulaire.q3_ans2 = $("#q3_ans2").prop("checked");

@@ -1333,15 +1333,15 @@
 	{
 		include("connexionBdd.php");
 		
-		$search = strtolower($search);
+		$search = strtoupper($search);
 		$users = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT id, nom, prenom FROM utilisateur WHERE LOWER(prenom) LIKE ? OR LOWER(nom) LIKE ? ORDER BY nom, prenom LIMIT 5 OFFSET 0");
+		$req = $bdd->prepare("SELECT id, nom, prenom FROM utilisateur WHERE UPPER(prenom) LIKE ? OR UPPER(nom) LIKE ? ORDER BY nom, prenom LIMIT 5 OFFSET 0");
 		$req->execute(array($search."%", $search."%"));
 		while($data = $req->fetch())
 		{
 			$users[$i]["id"] = $data["id"];
-			$users[$i]["nom"] = strtolower($data["nom"]);
+			$users[$i]["nom"] = strtoupper($data["nom"]);
 			$users[$i]["prenom"] = ucfirst(strtolower($data["prenom"]));
 			$i++;
 		}
@@ -1407,18 +1407,18 @@
 		}
 		else{
 		$tabTexte = array();
-			$txt = strtolower($params->texte->texte);
+			$txt = strtoupper($params->texte->texte);
 			if($params->texte->titre)
 			{
-				array_push($tabTexte, "LOWER(titre) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(titre) LIKE '%".$txt."%'");
 			}
 			if($params->texte->description)
 			{
-				array_push($tabTexte, "LOWER(description) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(description) LIKE '%".$txt."%'");
 			}
 			if($params->texte->contenu)
 			{
-				array_push($tabTexte, "LOWER(contenu) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
 			}
 			
 			$requete = "SELECT COUNT(*) nb FROM projet WHERE";
@@ -1653,18 +1653,18 @@
         }
 		else{
 			$tabTexte = array();
-			$txt = strtolower($params->texte->texte);
+			$txt = strtoupper($params->texte->texte);
 			if($params->texte->titre)
 			{
-				array_push($tabTexte, "LOWER(titre) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(titre) LIKE '%".$txt."%'");
 			}
 			if($params->texte->description)
 			{
-				array_push($tabTexte, "LOWER(description) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(description) LIKE '%".$txt."%'");
 			}
 			if($params->texte->contenu)
 			{
-				array_push($tabTexte, "LOWER(contenu) LIKE '%".$txt."%'");
+				array_push($tabTexte, "UPPER(contenu) LIKE '%".$txt."%'");
 			}
 			
 			$requete = "SELECT id projet_id, titre projet_titre, description projet_description, date_creation projet_date_creation, date_derniere_maj projet_date_derniere_maj, contrat_id, sous_domaine_id FROM projet  WHERE";
@@ -4735,11 +4735,11 @@
     function getSearchProjetBySearchBar($search_text)
     {
 		include("connexionBdd.php");
-		$search_text = strtolower($search_text);
+		$search_text = strtoupper($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
-        $titresearch_sql = "LOWER(titre) like ";
-        $descsearch_sql = "LOWER(description) like ";
+        $titresearch_sql = "UPPER(titre) like ";
+        $descsearch_sql = "UPPER(description) like ";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -4754,8 +4754,8 @@
             $descsearch_sql = $descsearch_sql."'".$searcharray[$i - 1]."'";
                     if($i != $countarray)
                     {
-                        $titresearch_sql = $titresearch_sql." and LOWER(titre) like ";
-                        $descsearch_sql = $descsearch_sql." and LOWER(description) like ";
+                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
+                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
                     }
             
         }
@@ -4778,12 +4778,12 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
     function getSearchProjetByProjectSearch($search_text)
     {
         include("connexionBdd.php");
-        $search_text = strtolower($search_text);
+        $search_text = strtoupper($search_text);
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
-        $titresearch_sql = " LOWER(titre) like ";
-        $descsearch_sql = " LOWER(description) like ";
-        $contenu_sql = " LOWER(contenu) like ";
+        $titresearch_sql = "UPPER(titre) like ";
+        $descsearch_sql = "UPPER(description) like ";
+        $contenu_sql = "UPPER(contenu) like ";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -4800,9 +4800,9 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
             
                     if($i != $countarray)
                     {
-                        $titresearch_sql = $titresearch_sql." and  LOWER(titre) like ";
-                        $descsearch_sql = $descsearch_sql." and  LOWER(description) like ";
-                        $contenu_sql = $contenu_sql." and LOWER(contenu) like";
+                        $titresearch_sql = $titresearch_sql." and UPPER(titre) like ";
+                        $descsearch_sql = $descsearch_sql." and UPPER(description) like ";
+                        $contenu_sql = $contenu_sql." and UPPER(contenu) like";
                     }
             
         }
@@ -4842,8 +4842,6 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		/*$test = "('grz', 'rqz', 'frz', true, false, false, true, true, false, false, true, false, true, 'testtest', true, false, false, true, true, false, true, false, true, false, true, false, true, true, 1, 2, 3, 4, 5, 6, 7, false, 22, NOW())";*/
 		$formulaire = json_decode($formulaire);
 		
-<<<<<<< HEAD
-=======
 		if(gettype($formulaire->q2_ans1) == "boolean")
 		{
 			$formulaire->q2_ans1 = boolval( $formulaire->q2_ans1) ? 'true' : 'false';
@@ -4861,7 +4859,6 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 			}
 		}
 		
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 		if(gettype($formulaire->q7_ans1) == "boolean")
 		{
 			$formulaire->q7_ans1 = boolval( $formulaire->q7_ans1) ? 'true' : 'false';
@@ -4932,13 +4929,8 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		$tab = array($formulaire->q1_ans1, 
 		 $formulaire->q1_ans2, 
 		 $formulaire->q1_ans3, 
-<<<<<<< HEAD
-		(boolval($formulaire->q2_ans1) ? 'true' : 'false'), 
-		(boolval( $formulaire->q2_ans2) ? 'true' : 'false'), 
-=======
 		$formulaire->q2_ans1, 
 		$formulaire->q2_ans2, 
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 		(boolval( $formulaire->q3_ans1) ? 'true' : 'false'), 
 		(boolval( $formulaire->q3_ans2) ? 'true' : 'false'), 
 		(boolval( $formulaire->q3_ans3) ? 'true' : 'false'), 
@@ -5017,10 +5009,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 			$formulaire->date = $data["date"];
 			$formulaire->date_expiration = $data["date_expiration"];
 			$formulaire->brouillon = $data["brouillon"];
-<<<<<<< HEAD
-=======
 			$formulaire->valider = $data["valider"];
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 			
 			$formulaire->q1_ans1 = $data["q1_ans1"];
 			$formulaire->q1_ans2 = $data["q1_ans2"];
@@ -5096,9 +5085,6 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		
 		$listesFiches = array();
 		
-<<<<<<< HEAD
-		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NULL ORDER BY date");
-=======
 		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NULL AND valider IS NULL ORDER BY date DESC");
 		while($data = $req->fetch())
 		{
@@ -5116,7 +5102,6 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		$listesFiches = array();
 		
 		$req = $bdd->query("SELECT id FROM habil_elec WHERE brouillon = FALSE AND date_expiration IS NOT NULL AND valider = TRUE ORDER BY date DESC");
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 		while($data = $req->fetch())
 		{
 			$formulaire = json_decode(getFormulaireHabilitationElectriqueById($data["id"]));
@@ -5125,8 +5110,6 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		
 		return json_encode($listesFiches);
 	}
-<<<<<<< HEAD
-=======
 	
 	function getFichesHabilitationsElectriquesRefusees()
 	{
@@ -5173,5 +5156,4 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		}
 		return json_encode($reponse);
 	}
->>>>>>> 00b6ebfca65d48959f11399a6a0ccfc2405c6b68
 ?>

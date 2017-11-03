@@ -29,7 +29,7 @@ $(function () {
 
     $("#searchBarOption").hide();
     $("#searchBar").focus(function(e){
-        $(this).animate({width:"741px"},400);
+        $(this).animate({width:"741px"},500);
     });
     $("#searchBar").click(function(e){
         e.stopPropagation();
@@ -224,7 +224,6 @@ $(function () {
              
          });
     });
-    
     
 
         $("#searchBarOption").click(function() {

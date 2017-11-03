@@ -66,5 +66,6 @@ $(function () {
     };
     
     chargerActus(0, 5);
+        
 });
 
