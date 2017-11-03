@@ -49,3 +49,12 @@
 #divEnvoiMail{
     text-align: right;
 }
+.q14_box
+{
+    display:flex;
+    flex-direction:column;
+}
+.q14_box
+{
+ text-align:center;
+}

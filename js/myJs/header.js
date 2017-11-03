@@ -197,6 +197,7 @@ $(function () {
          });
     });
     
+    
 
         $("#searchBarOption").click(function() {
             var projet_id = $('option:selected', this).attr('projet');
