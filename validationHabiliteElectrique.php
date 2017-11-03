@@ -160,6 +160,28 @@
         </div>
     </div>
 
+    <div class="modal" id="titreHabilElec">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h4 class="modal-title">Prévisualisation du titre d'habilitation éléctrique</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div id="divHabilElec" class="col-xs-10 col-xs-offset-1">
+                </div>
+                <div id="editor"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group" >
+                    <button class="btn btn-default" id="enregistrerTitreHabilElec" >Enregistrer</button>
+                    <button class="btn btn-info" id="btnImprimer" >Imprimer</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <input type="hidden" name="formulaire_id" id="formulaire_id" value="<?php echo $_GET["id"] ?>" />
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
             <div class="container">
@@ -624,17 +646,27 @@ d’intervention
         if(gettype($formulaire->valider) != "boolean")
         {
             ?>
+            <br/>
             <div class="btn-group pull-right"><button class="btn btn-danger btn-lg" id="btnRefuserFormulaire" >Refuser</button><button class="btn btn-success btn-lg" id="btnAccepterFormulaire">Accepter</button></div>
             <?php
+        }
+        else{
+            if($formulaire->valider)
+            {
+                ?>
+                <br/>
+                <button data-toggle="modal" href="#titreHabilElec" id="btnTitreHabilElec" class="btn btn-primary pull-right">Voir titre habiliation électrique</button>
+                <?php
+            }
         }
         ?>
         
             </div>
             <br/>
             <br/><br/>
+            
 
         <?php include("footer.php"); ?>
-   
         <script src="js/myJs/validationHabiliteElectrique.js"></script>
 
     </body>
