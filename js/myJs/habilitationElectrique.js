@@ -395,7 +395,6 @@ $(function(){
         var formulaire = getReponsesUtilisateur();
         formulaire.brouillon = true;
         formulaire = JSON.stringify(formulaire);
-
         $.post("API/addHabilitationElectrique.php", {formulaire: formulaire}, function(data){
             var reponse = JSON.parse(data);
             if(reponse)

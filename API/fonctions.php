@@ -4876,7 +4876,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 		{
 			$formulaire->q8_ans1 = boolval( $formulaire->q8_ans1) ? 'true' : 'false';
 		}
-		if($formulaire->q8_ans2 != null)
+		if(gettype($formulaire->q8_ans2) == "boolean")
 		{
 			$formulaire->q8_ans2 = boolval( $formulaire->q8_ans2) ? 'true' : 'false';
 		}

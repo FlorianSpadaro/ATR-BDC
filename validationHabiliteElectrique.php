@@ -333,7 +333,7 @@
                 <input type="text" name="q6_ans1" placeholder="au plus" id="q6_ans1" value="<?php echo $formulaire->q6_ans1 ?>" readonly>
 
                 <p><h4>7.</h4>Une habilitation seulement B0V vous permet-elle de travailler à moins de 0,30 m de pièces conductrices sous tension :  </p>
-                <label>-	Au voisinage d'une tension de 50 à 1000 volts ? </label> <label for="q7_ans1"><input type="radio" name="q7_ans1" id="q7_ans1" <?php if($formulaire->q7_ans1){ echo "checked"; } ?>> Oui</label> <label for="q7_ans2"><input type="radio" name="q7_ans1" id="q7_ans2" <?php if($formulaire->q7_ans1 == false && $formulaire->q7_ans1 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Au voisinage d'une tension de 50 à 1000 volts ? </label> <label for="q7_ans1"><input type="radio" name="q7_ans1" id="q7_ans1" <?php if($formulaire->q7_ans1){ echo "checked"; } ?>> Oui</label> <label for="q7_ans2"><input type="radio" name="q7_ans1" id="q7_ans2" <?php if($formulaire->q7_ans1 == false && gettype($formulaire->q7_ans1) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q7_ans1 == $formulaire->q7_ans1 && gettype($formulaire->q7_ans1) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -346,7 +346,7 @@
                 }
                 ?>
                 <br/>
-                <label>-	Au voisinage d'une tension de plus de 1000 volts ? </label> <label for="q7_ans3"><input type="radio" name="q7_ans2" id="q7_ans3" <?php if($formulaire->q7_ans2){ echo "checked"; } ?>> Oui</label> <label for="q7_ans4"><input type="radio" name="q7_ans2" id="q7_ans4" <?php if($formulaire->q7_ans2 == false  && $formulaire->q7_ans2 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Au voisinage d'une tension de plus de 1000 volts ? </label> <label for="q7_ans3"><input type="radio" name="q7_ans2" id="q7_ans3" <?php if($formulaire->q7_ans2){ echo "checked"; } ?>> Oui</label> <label for="q7_ans4"><input type="radio" name="q7_ans2" id="q7_ans4" <?php if($formulaire->q7_ans2 == false  && gettype($formulaire->q7_ans2) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q7_ans2 == $formulaire->q7_ans2 && gettype($formulaire->q7_ans2) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -360,7 +360,7 @@
                 ?>
 
                 <p><h4>8.</h4>Si vous êtes habilité B0-H0, pouvez-vous : </p>
-                <label>-	Recevoir une autorisation de travail ? </label> <label for="q8_ans1"><input type="radio" name="q8_ans1" id="q8_ans1" <?php if($formulaire->q8_ans1){ echo "checked"; } ?>> Oui</label> <label for="q8_ans2"><input type="radio" name="q8_ans1" id="q8_ans2" <?php if($formulaire->q8_ans1 == false  && $formulaire->q8_ans1 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Recevoir une autorisation de travail ? </label> <label for="q8_ans1"><input type="radio" name="q8_ans1" id="q8_ans1" <?php if($formulaire->q8_ans1){ echo "checked"; } ?>> Oui</label> <label for="q8_ans2"><input type="radio" name="q8_ans1" id="q8_ans2" <?php if($formulaire->q8_ans1 == false  && gettype($formulaire->q8_ans1) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q8_ans1 == $formulaire->q8_ans1 && gettype($formulaire->q8_ans1) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -373,7 +373,7 @@
                 }
                 ?>
                 <br/>
-                <label>-	Etre surveillant de sécurité électrique ? </label> <label for="q8_ans3"><input type="radio" name="q8_ans2" id="q8_ans3" <?php if($formulaire->q8_ans2){ echo "checked"; } ?>> Oui</label> <label for="q8_ans4"><input type="radio" name="q8_ans2" id="q8_ans4" <?php if($formulaire->q8_ans2 == false  && $formulaire->q8_ans2 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Etre surveillant de sécurité électrique ? </label> <label for="q8_ans3"><input type="radio" name="q8_ans2" id="q8_ans3" <?php if($formulaire->q8_ans2){ echo "checked"; } ?>> Oui</label> <label for="q8_ans4"><input type="radio" name="q8_ans2" id="q8_ans4" <?php if($formulaire->q8_ans2 == false  && gettype($formulaire->q8_ans2) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q8_ans2 == $formulaire->q8_ans2 && gettype($formulaire->q8_ans2) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -387,7 +387,7 @@
                 ?>
 
                 <p><h4>9.</h4>Etant habilité B0V pouvez-vous changer un fusible BT sous tension qui présente : </p>
-                <label>-	Un risque de contact direct avec une partie électrique ? </label> <label for="q9_ans1"><input type="radio" name="q9_ans1" id="q9_ans1" <?php if($formulaire->q9_ans1){ echo "checked"; } ?>> Oui</label> <label for="q9_ans2"><input type="radio" name="q9_ans1" id="q9_ans2" <?php if($formulaire->q9_ans1 == false  && $formulaire->q9_ans1 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Un risque de contact direct avec une partie électrique ? </label> <label for="q9_ans1"><input type="radio" name="q9_ans1" id="q9_ans1" <?php if($formulaire->q9_ans1){ echo "checked"; } ?>> Oui</label> <label for="q9_ans2"><input type="radio" name="q9_ans1" id="q9_ans2" <?php if($formulaire->q9_ans1 == false  && gettype($formulaire->q9_ans1) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q9_ans1 == $formulaire->q9_ans1 && gettype($formulaire->q9_ans1) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -400,7 +400,7 @@
                 }
                 ?>
                 <br/>
-                <label>-	Un risque de projection sans risque de contact direct ?  </label> <label for="q9_ans3"><input type="radio" name="q9_ans2" id="q9_ans3" <?php if($formulaire->q9_ans2){ echo "checked"; } ?>> Oui</label> <label for="q9_ans4"><input type="radio" name="q9_ans2" id="q9_ans4" <?php if($formulaire->q9_ans2 == false  && $formulaire->q9_ans2 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Un risque de projection sans risque de contact direct ?  </label> <label for="q9_ans3"><input type="radio" name="q9_ans2" id="q9_ans3" <?php if($formulaire->q9_ans2){ echo "checked"; } ?>> Oui</label> <label for="q9_ans4"><input type="radio" name="q9_ans2" id="q9_ans4" <?php if($formulaire->q9_ans2 == false  && gettype($formulaire->q9_ans2) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q9_ans2 == $formulaire->q9_ans2 && gettype($formulaire->q9_ans2) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -413,7 +413,7 @@
                 }
                 ?>
                 <br/>
-                <label>-	Aucun de ces risques ?  </label> <label for="q9_ans5"><input type="radio" name="q9_ans3" id="q9_ans5" <?php if($formulaire->q9_ans3){ echo "checked"; } ?>> Oui</label> <label for="q9_ans6"><input type="radio" name="q9_ans3" id="q9_ans6" <?php if($formulaire->q9_ans3 == false  && $formulaire->q9_ans3 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Aucun de ces risques ?  </label> <label for="q9_ans5"><input type="radio" name="q9_ans3" id="q9_ans5" <?php if($formulaire->q9_ans3){ echo "checked"; } ?>> Oui</label> <label for="q9_ans6"><input type="radio" name="q9_ans3" id="q9_ans6" <?php if($formulaire->q9_ans3 == false  && gettype($formulaire->q9_ans3) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q9_ans3 == $formulaire->q9_ans3 && gettype($formulaire->q9_ans3) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -427,7 +427,7 @@
                 ?>
 
                 <p><h4>10.</h4>Habilité B0-H0, pouvez-vous ouvrir une armoire électrique (avec des pièces nues sous tension accessibles) sans autorisation ?  </p>
-                <label for="q10_ans1"><input type="radio" name="q10_ans1" id="q10_ans1" <?php if($formulaire->q10_ans1){ echo "checked"; } ?>> Oui</label> <label for="q10_ans2"><input type="radio" name="q10_ans1" id="q10_ans2" <?php if($formulaire->q10_ans1 == false && $formulaire->q10_ans1 != null){ echo "checked"; } ?>> Non</label>
+                <label for="q10_ans1"><input type="radio" name="q10_ans1" id="q10_ans1" <?php if($formulaire->q10_ans1){ echo "checked"; } ?>> Oui</label> <label for="q10_ans2"><input type="radio" name="q10_ans1" id="q10_ans2" <?php if($formulaire->q10_ans1 == false && gettype($formulaire->q10_ans1) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q10_ans1 == $formulaire->q10_ans1 && gettype($formulaire->q10_ans1) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -441,7 +441,7 @@
                 ?>
 
                 <p><h4>11.</h4>L'habilitation B0-H0 vous permet-elle d'être désigné pour entrer, sans surveillance, dans un local d'accès réservé aux électriciens ?  </p>
-                <label for="q11_ans1"><input type="radio" name="q11_ans1" id="q11_ans1" <?php if($formulaire->q11_ans1){ echo "checked"; } ?>> Oui</label> <label for="q11_ans2"><input type="radio" name="q11_ans1" id="q11_ans2" <?php if($formulaire->q11_ans1 == false && $formulaire->q11_ans1 != null){ echo "checked"; } ?>> Non</label>
+                <label for="q11_ans1"><input type="radio" name="q11_ans1" id="q11_ans1" <?php if($formulaire->q11_ans1){ echo "checked"; } ?>> Oui</label> <label for="q11_ans2"><input type="radio" name="q11_ans1" id="q11_ans2" <?php if($formulaire->q11_ans1 == false && gettype($formulaire->q11_ans1) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q11_ans1 == $formulaire->q11_ans1 && gettype($formulaire->q11_ans1) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -455,7 +455,7 @@
                 ?>
 
                 <p><h4>12.</h4>L'habilitation est-elle : </p>
-                <label>-	La preuve d'une qualification professionnelle ? </label> <label for="q12_ans1"><input type="radio" name="q12_ans1" id="q12_ans1" <?php if($formulaire->q12_ans1){ echo "checked"; } ?>> Oui</label> <label for="q12_ans2"><input type="radio" name="q12_ans1" id="q12_ans2" <?php if($formulaire->q12_ans1 == false && $formulaire->q12_ans1 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	La preuve d'une qualification professionnelle ? </label> <label for="q12_ans1"><input type="radio" name="q12_ans1" id="q12_ans1" <?php if($formulaire->q12_ans1){ echo "checked"; } ?>> Oui</label> <label for="q12_ans2"><input type="radio" name="q12_ans1" id="q12_ans2" <?php if($formulaire->q12_ans1 == false && gettype($formulaire->q12_ans1) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q12_ans1 == $formulaire->q12_ans1 && gettype($formulaire->q12_ans1) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -468,7 +468,7 @@
                 }
                 ?>
                 <br/>
-                <label>-	La reconnaissance, par votre employeur, de votre capacité à travailler en sécurité ? </label> <label for="q12_ans3"><input type="radio" name="q12_ans2" id="q12_ans3" <?php if($formulaire->q12_ans2){ echo "checked"; } ?>> Oui</label> <label for="q12_ans4"><input type="radio" name="q12_ans2" id="q12_ans4" <?php if($formulaire->q12_ans2 == false && $formulaire->q12_ans2 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	La reconnaissance, par votre employeur, de votre capacité à travailler en sécurité ? </label> <label for="q12_ans3"><input type="radio" name="q12_ans2" id="q12_ans3" <?php if($formulaire->q12_ans2){ echo "checked"; } ?>> Oui</label> <label for="q12_ans4"><input type="radio" name="q12_ans2" id="q12_ans4" <?php if($formulaire->q12_ans2 == false && gettype($formulaire->q12_ans2) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q12_ans2 == $formulaire->q12_ans2 && gettype($formulaire->q12_ans2) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -482,7 +482,7 @@
                 ?>
 
                 <p><h4>13.</h4>Vous laissez tomber un outil dans une zone balisée, du côté des ouvrages sous tension : </p>
-                <label>-	Vous franchissez le balisage ? </label> <label for="q13_ans1"><input type="radio" name="q13_ans1" id="q13_ans1" <?php if($formulaire->q13_ans1){ echo "checked"; } ?>> Oui</label> <label for="q13_ans2"><input type="radio" name="q13_ans1" id="q13_ans2" <?php if($formulaire->q13_ans1 == false && $formulaire->q13_ans1 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Vous franchissez le balisage ? </label> <label for="q13_ans1"><input type="radio" name="q13_ans1" id="q13_ans1" <?php if($formulaire->q13_ans1){ echo "checked"; } ?>> Oui</label> <label for="q13_ans2"><input type="radio" name="q13_ans1" id="q13_ans2" <?php if($formulaire->q13_ans1 == false && gettype($formulaire->q13_ans1) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q13_ans1 == $formulaire->q13_ans1 && gettype($formulaire->q13_ans1) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -495,7 +495,7 @@
                 }
                 ?>
                 <br/>
-                <label>-	Vous coupez le courant et ensuite franchissez le balisage ? </label> <label for="q13_ans3"><input type="radio" name="q13_ans2" id="q13_ans3" <?php if($formulaire->q13_ans2){ echo "checked"; } ?>> Oui</label> <label for="q13_ans4"><input type="radio" name="q13_ans2" id="q13_ans4" <?php if($formulaire->q13_ans2 == false && $formulaire->q13_ans2 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Vous coupez le courant et ensuite franchissez le balisage ? </label> <label for="q13_ans3"><input type="radio" name="q13_ans2" id="q13_ans3" <?php if($formulaire->q13_ans2){ echo "checked"; } ?>> Oui</label> <label for="q13_ans4"><input type="radio" name="q13_ans2" id="q13_ans4" <?php if($formulaire->q13_ans2 == false && gettype($formulaire->q13_ans2) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q13_ans2 == $formulaire->q13_ans2 && gettype($formulaire->q13_ans2) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -508,7 +508,7 @@
                 }
                 ?>
                 <br/>
-                <label>-	Vous demandez des instructions au chargé de travaux ?  </label> <label for="q13_ans5"><input type="radio" name="q13_ans3" id="q13_ans5" <?php if($formulaire->q13_ans3){ echo "checked"; } ?>> Oui</label> <label for="q13_ans6"><input type="radio" name="q13_ans3" id="q13_ans6" <?php if($formulaire->q13_ans3 == false && $formulaire->q13_ans3 != null){ echo "checked"; } ?>> Non</label>
+                <label>-	Vous demandez des instructions au chargé de travaux ?  </label> <label for="q13_ans5"><input type="radio" name="q13_ans3" id="q13_ans5" <?php if($formulaire->q13_ans3){ echo "checked"; } ?>> Oui</label> <label for="q13_ans6"><input type="radio" name="q13_ans3" id="q13_ans6" <?php if($formulaire->q13_ans3 == false && gettype($formulaire->q13_ans3) == "boolean"){ echo "checked"; } ?>> Non</label>
                 <?php if($reponses->q13_ans3 == $formulaire->q13_ans3 && gettype($formulaire->q13_ans3) == "boolean"){
                     ?>
                     <label class="label label-success">Vrai</label>
@@ -667,6 +667,8 @@ d’intervention
             
 
         <?php include("footer.php"); ?>
+        <script src="jspdf/jspdf.min.js"></script>
+        <script src="js/html2canvas.js"></script>
         <script src="js/myJs/validationHabiliteElectrique.js"></script>
 
     </body>
