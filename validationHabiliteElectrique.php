@@ -174,7 +174,7 @@
             </div>
             <div class="modal-footer">
                 <div class="btn-group" >
-                    <button class="btn btn-default" id="enregistrerTitreHabilElec" >Enregistrer</button>
+                    <!--<button class="btn btn-default" id="enregistrerTitreHabilElec" >Enregistrer</button>-->
                     <button class="btn btn-info" id="btnImprimer" >Imprimer</button>
                 </div>
             </div>
