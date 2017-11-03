@@ -4735,7 +4735,7 @@
     function getSearchProjetBySearchBar($search_text)
     {
 		include("connexionBdd.php");
-		$search_text = strtoupper($search_text);
+		$search_text = strtoupper(strip_tags($search_text));
         $searcharray = explode(" ",$search_text);
         $countarray = count($searcharray);
         $titresearch_sql = "UPPER(titre) like ";
