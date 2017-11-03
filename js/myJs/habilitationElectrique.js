@@ -1,5 +1,8 @@
 $(function(){
+
+
     $.post("API/getDernierFormulaireByUtilisateurId.php", {utilisateur_id: $("#user_id").val()}, function(data){
+
         var formulaire = JSON.parse(data);
         if(formulaire != null && formulaire.brouillon == true)
         {
@@ -231,6 +234,15 @@ $(function(){
                 $("#choix7").val(formulaire.q14_ans7);
             }
         }
+        if(formulaire != null)
+        {
+            var dte = new Date();
+            var dteForm = new Date(formulaire.date.slice(0, 4), formulaire.date.slice(5, 7), formulaire.date.slice(8, 10));
+            if(formulaire.brouillon == false && formulaire.valider != false && dte < dteForm)
+            {
+                document.location.href = "index.php";
+            }
+        }
     });
 
     $(".selectQ14").change(function(){
@@ -259,14 +271,21 @@ $(function(){
         formulaire.q1_ans3 = $("#q1_ans3").val();
 
         formulaire.q2_ans1 = $("#q2_ans1").prop("checked");
-        if(formulaire.q2_ans1 == 1)
+        if(formulaire.q2_ans1 != true)
         {
-            formulaire.q2_ans1 = true;
+            if($("#q2_ans1").prop("checked"))
+            {
+                formulaire.q2_ans2 = false;
+            }
+            else{
+                formulaire.q2_ans1 = null;
+                formulaire.q2_ans2 = null;
+            }
         }
         else{
-            formulaire.q2_ans1 = false;
+            formulaire.q2_ans2 = false;
         }
-        formulaire.q2_ans2 = $("#q2_ans1").prop("checked");
+        //formulaire.q2_ans2 = $("#q2_ans1").prop("checked");
 
         formulaire.q3_ans1 = $("#q3_ans1").prop("checked");
         formulaire.q3_ans2 = $("#q3_ans2").prop("checked");
