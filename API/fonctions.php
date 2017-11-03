@@ -5160,15 +5160,20 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") or (".$contenu_sql.")";
 	function checkHabilTrue($user_id)
 	{
 		include("connexionBdd.php");
-
-		$req = $bdd->prepare("SELECT * from habil_elec WHERE utilisateur_id = ? and (date_expiration >= NOW() and valider is TRUE) or (date_expiration is null and valider is null)");
-		$req->execute(array($user_id));
-		if(!$data = $req->fetch()){
-			$html = '  <div class="alert alert-info alert-dismissable fade in" id="alert_habil">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><a href="habilitationElectrique.php">
-			<strong>Habilitation !</strong> pensez à passer votre habilitation en cliquant sur cette alerte</a>
-		  </div>';
-		  return $html;
+		
+		$req2 = $bdd->prepare("SELECT f.id FROM fonction f JOIN utilisateur u ON u.fonction_id = f.id WHERE u.id = ? AND f.erp_job_id IN(16, 17, 18, 31)");
+		$req2->execute(array($user_id));
+		if($data2 = $req2->fetch())
+		{
+			$req = $bdd->prepare("SELECT * from habil_elec WHERE utilisateur_id = ? and (date_expiration >= NOW() and valider is TRUE) or (date_expiration is null and valider is null)");
+			$req->execute(array($user_id));
+			if(!$data = $req->fetch()){
+				$html = '  <div class="alert alert-info alert-dismissable fade in" id="alert_habil">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><a href="habilitationElectrique.php">
+				<strong>Habilitation !</strong> pensez à passer votre habilitation en cliquant sur cette alerte</a>
+			  </div>';
+			  return $html;
+			}
 		}
 	}
 ?>
