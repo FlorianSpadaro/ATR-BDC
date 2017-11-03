@@ -39,6 +39,28 @@ $(function(){
         });
     });
 
+    $('#enregistrerTitreHabilElec').click(function () {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        pdf.addHTML($('#divHabilElec')[0], function () {
+            pdf.save('Test.pdf');
+        });
+    });
+
+    /*var doc = new jsPDF();
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+    
+    $('#btnImprimer').click(function () {
+        doc.addHTML($('#divHabilElec').html(), 15, 15, {
+            'width': 170,
+                'elementHandlers': specialElementHandlers
+        });
+        doc.save('titreHabilElec.pdf');
+    });*/
+
     $("#btnImprimer").click(function(){
         var divToPrint= document.getElementById('divHabilElec');
 
