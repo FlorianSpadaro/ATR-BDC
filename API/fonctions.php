@@ -4889,7 +4889,6 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
                         $descsearch_sql = $descsearch_sql." and lower(description) like ";
                         $contenu_sql = $contenu_sql." and lower(REGEXP_REPLACE(contenu, '<[^>]*>','')) like";
                     }
-            
         }
         
         $sql_return = "select id,titre,description from projet
