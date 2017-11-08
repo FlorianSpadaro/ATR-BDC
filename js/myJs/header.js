@@ -213,7 +213,6 @@ $(function () {
          $.post("API/getSearchProjetByProjectSearch.php",{search_text: $("#searchBar").val()}, function(data){
              var result = JSON.parse(data);
              if(result == null){
-                 console.log("0");
                  $("#searchOptionProjetId").append(" (0)");
              }
              else
