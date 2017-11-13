@@ -3,7 +3,7 @@
 	
 	if (isset($_FILES['file']) AND $_FILES['file']['error'] == 0)
 	{
-			if ($_FILES['file']['size'] <= 1000000)
+			if ($_FILES['file']['size'] <= 10000000)
 			{
 				$name = $_FILES['file']['name'];
 				$infosfichier = pathinfo($_FILES['file']['name']);

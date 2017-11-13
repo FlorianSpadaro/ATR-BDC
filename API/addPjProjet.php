@@ -8,7 +8,7 @@
 	
 	if (isset($_FILES['pj']) AND $_FILES['pj']['error'] == 0)
 	{
-			if ($_FILES['pj']['size'] <= 1000000)
+			if ($_FILES['pj']['size'] <= 10000000)
 			{
 					$infosfichier = pathinfo($_FILES['pj']['name']);
 					$extension_upload = $infosfichier['extension'];
