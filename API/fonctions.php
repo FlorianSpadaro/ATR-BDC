@@ -4826,7 +4826,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
 		$tab = array();
         $titresearch_sql = "lower(titre) like :search0";
         $descsearch_sql = "lower(description) like :search0";
-        $contenu_sql = "lower(REGEXP_REPLACE(contenu, '<[^>]*>','')) like :search0";
+        $contenu_sql = "lower(strip_tags(contenu)) like :search0";
         $z = 0;
         $search = null;
         for($i = 1; $i <= $countarray; $i++)
@@ -4846,7 +4846,7 @@ where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
                     {
                         $titresearch_sql = $titresearch_sql." and lower(titre) like :search".$i;
                         $descsearch_sql = $descsearch_sql." and lower(description) like :search".$i;
-                        $contenu_sql = $contenu_sql." and lower(REGEXP_REPLACE(contenu, '<[^>]*>','')) like :search".$i;
+                        $contenu_sql = $contenu_sql." and lower(strip_tags(contenu)) like :search".$i;
                     }
             
         }
