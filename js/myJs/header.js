@@ -180,7 +180,7 @@ $(function () {
             if(searchResult != null)
                 {
                     for( i ; i <= searchResult.length;i++){
-               resultSearch += '<option class="searchOption" projet="'+searchResult[i - 1].id+'">'+searchResult[i - 1].titre+'</option>';
+               resultSearch += '<option class="searchOption" projet="'+searchResult[i - 1].id+'">'+searchResult[i - 1].titre+' (màj le ' + searchResult[i - 1].date_derniere_maj.jour + ')</option>';
                      
             }
                 }
