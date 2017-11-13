@@ -354,7 +354,7 @@
                             <a href="contact.html">Vie de l'entreprise</a>
                         </li>-->
                                 <li>
-                                    <a href="projets.php">Projets</a>
+                                    <a href="projets.php">Articles</a>
                                 </li>
                         <?php
                         if((isset($_SESSION["niveau"])) && ($_SESSION["niveau"]->niveau == 3))
