@@ -197,7 +197,7 @@
                 <tr>
                     <td class="t3_col1">Le titulaire</td>
                     <td class="t3_col2">Pour l'employeur</td>
-                    <td class="t3_col3" id="dateAcquis">Date: <?php echo date("d/m/Y") ?></td>
+                    <td class="t3_col3" id="dateAcquis">Date: <?php echo substr($_POST["date"], 8, 2)."/".substr($_POST["date"], 5, 2)."/".substr($_POST["date"], 0, 4) ?></td>
                 </tr>
                 <tr>
                     <td class="t3_col1">Signature:</td>

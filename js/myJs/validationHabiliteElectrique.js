@@ -7,7 +7,7 @@ $(function(){
         var formulaire = JSON.parse(data);
         $.post("API/getUtilisateurById.php", {user_id: formulaire.utilisateur_id}, function(data){
             var user = JSON.parse(data);
-            $("#divHabilElec").load("titreHabilitationElectrique/habil.php", {nom: user.nom, prenom: user.prenom, fonction: "Chargé d'affaire / Ingenieriste"}, function(){
+            $("#divHabilElec").load("titreHabilitationElectrique/habil.php", {nom: user.nom, prenom: user.prenom, fonction: "Chargé d'affaire / Ingenieriste", date: formulaire.date}, function(){
                 
             });
         });

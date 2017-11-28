@@ -4762,7 +4762,7 @@
             
         }
         
-        $sql_return = "select id,titre,description from projet where (".$titresearch_sql.") or (".$descsearch_sql.") limit 10";
+        $sql_return = "select id,titre,description, date_derniere_maj from projet where (".$titresearch_sql.") or (".$descsearch_sql.") ORDER BY date_derniere_maj DESC limit 10";
         //return json_encode($tab);
 		$req = $bdd->prepare($sql_return);
 		$req->execute($tab);
@@ -4771,6 +4771,7 @@
             $search[$z]['id'] = $data['id'];
             $search[$z]['titre'] = $data['titre'];
             $search[$z]['description'] = $data['description'];
+            $search[$z]['date_derniere_maj'] = json_decode(modifierDate($data['date_derniere_maj']));
             
             $z++;
         }
