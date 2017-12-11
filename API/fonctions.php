@@ -3919,7 +3919,7 @@
 		$sousDomaines = null;
 		$i = 0;
 		$j = 0;
-		$req = $bdd->prepare("SELECT id, contrat_id, libelle, description FROM sous_domaine WHERE domaine_id = ?");
+		$req = $bdd->prepare("SELECT id, contrat_id, libelle, description FROM sous_domaine WHERE domaine_id = ? ORDER BY libelle");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
@@ -3927,7 +3927,7 @@
 			$sousDomaines[$i]["libelle"] = $data["libelle"];
 			$sousDomaines[$i]["description"] = $data["description"];
 			$sousDomaines[$i]["contrat_id"] = $data["contrat_id"];
-			$req2 = $bdd->prepare("SELECT id, titre, description, contenu, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ?");
+			$req2 = $bdd->prepare("SELECT id, titre, description, contenu, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ? ORDER BY titre");
 			$req2->execute(array($data["id"]));
 			while($data2 = $req2->fetch())
 			{
@@ -4367,14 +4367,14 @@
 			$secteurs[$i]["id"] = $data["id"];
 			$secteurs[$i]["libelle"] = $data["libelle"];
 			
-			$req2 = $bdd->prepare("SELECT id, libelle FROM domaine WHERE secteur_id = ?");
+			$req2 = $bdd->prepare("SELECT id, libelle FROM domaine WHERE secteur_id = ? ORDER BY libelle");
 			$req2->execute(array($data["id"]));
 			while($data2 = $req2->fetch())
 			{
 				$secteurs[$i]["domaines"][$j]["id"] = $data2["id"];
 				$secteurs[$i]["domaines"][$j]["libelle"] = $data2["libelle"];
 				
-				$req3 = $bdd->prepare("SELECT id, libelle FROM sous_domaine WHERE domaine_id = ?");
+				$req3 = $bdd->prepare("SELECT id, libelle FROM sous_domaine WHERE domaine_id = ? ORDER BY libelle");
 				$req3->execute(array($data2["id"]));
 				while($data3 = $req3->fetch())
 				{
