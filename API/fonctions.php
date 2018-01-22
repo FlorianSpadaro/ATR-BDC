@@ -3987,6 +3987,48 @@
 		return json_encode($sousDomaines);
 	}
 
+	function getSecteursDomainesSousdomaines()
+	{
+		include("connexionBdd.php");
+
+		$liste = array();
+		$req = $bdd->query("SELECT id, libelle FROM secteur");
+		while($data = $req->fetch())
+		{
+			$secteur = (object) array();
+			$secteur->id = $data["id"];
+			$secteur->libelle = $data["libelle"];
+			$secteur->domaines = array();
+
+			$req2 = $bdd->prepare("SELECT id, libelle, description FROM domaine WHERE secteur_id = ?");
+			$req2->execute(array($secteur->id));
+			while($data2 = $req2->fetch())
+			{
+				$domaine = (object) array();
+				$domaine->id = $data2["id"];
+				$domaine->libelle = $data2["libelle"];
+				$domaine->description = $data2["description"];
+				$domaine->sousDomaines = array();
+
+				$req3 = $bdd->prepare("SELECT id, libelle, description FROM sous_domaine WHERE domaine_id = ?");
+				$req3->execute(array($domaine->id));
+				while($data3 = $req3->fetch())
+				{
+					$sousDomaine = (object) array();
+					$sousDomaine->id = $data3["id"];
+					$sousDomaine->libelle = $data3["libelle"];
+					$sousDomaine->description = $data3["description"];
+					
+					array_push($domaine->sousDomaines, $sousDomaine);
+				}
+				array_push($secteur->domaines, $domaine);
+			}
+			array_push($liste, $secteur);
+		}
+
+		return json_encode($liste);
+	}
+
 	function deleteAllAnciennesNotificationsUtilisateur($idUser)
 	{
 		include("connexionBdd.php");
