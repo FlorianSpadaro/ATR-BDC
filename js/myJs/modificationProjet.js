@@ -9,6 +9,9 @@ $(function(){
     var summerNoteVide = $("#summernote").summernote('code');
     
     function actualiserHautFormulaire(idSd, tabIdsDoms){
+        $("#domainesProjet").html("");
+        $("#sousDomaineProjet").html("");
+
         var idSecteur = $("#secteurProjet").val();
         $.post("API/getDomainesBySecteurId.php", {secteur_id: idSecteur}, function(data){
             var domaines = JSON.parse(data);
@@ -890,7 +893,9 @@ $(function(){
         window.location.reload();
     });
     
-    
+    $("#secteurProjet").change(function(){
+        actualiserHautFormulaire(null, null);
+    });
     
     
     $("[name='typeProjet']").change(function(){
