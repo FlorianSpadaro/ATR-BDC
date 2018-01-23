@@ -103,9 +103,6 @@
                             {*/
                                 ?>
                                 <br/>
-                                <div>
-                                        <b>Contrat: </b><?php/* echo $actualite->contrat->libelle*/ ?> <img src="<?php /*echo $actualite->contrat->miniature->url*/ ?>" alt="<?php /*echo $actualite->contrat->libelle*/ ?>" width="50" height="50" />
-                                </div>
                                 <?php
                             //}
                             ?>-->

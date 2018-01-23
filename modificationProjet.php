@@ -6,6 +6,7 @@
         exit();
     }
     $projet = json_decode(getProjetById($_GET["id"]));
+    $listeSecteurs = json_decode(getSecteursDomainesSousdomaines());
 ?>
 
 <!DOCTYPE html>
@@ -69,7 +70,7 @@
     </head>
     
     <body>
-        
+        <div id="listeSecteurs" style="display:none"><?php echo json_encode($listeSecteurs) ?></div>
         <input type="hidden" id="idProjet" name="idProjet" value="<?php echo $_GET["id"] ?>" />
         
         <header class="intro-header" style="background-image: url('<?php echo $projet->image_entete ?>')">

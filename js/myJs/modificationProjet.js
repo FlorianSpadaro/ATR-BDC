@@ -1,4 +1,6 @@
 $(function(){
+    var listeSecteurs = JSON.parse($("#listeSecteurs").text());
+
     $("#summernote").summernote({
         height: 300,
         lang: 'fr-FR'
@@ -9,7 +11,44 @@ $(function(){
     var summerNoteVide = $("#summernote").summernote('code');
     
     function actualiserHautFormulaire(idSd, tabIdsDoms){
-        $("#domainesProjet").html("");
+        listeSecteurs.forEach(function(secteur){
+            if(secteur.id == $("#secteurProjet").val())
+            {
+                var htmlDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    if(tabIdsDoms != null && tabIdsDoms.indexOf(domaine.id) != -1)
+                    {
+                        htmlDomaine += "<option id='" + domaine.id + "' selected >" + domaine.libelle + "</option>";
+                    }
+                    else{
+                        htmlDomaine += "<option id='" + domaine.id + "'>" + domaine.libelle + "</option>";
+                    }
+                });
+                $("#domainesProjet").html(htmlDomaine);
+                $("#domainesProjet").trigger("chosen:updated");
+
+                var htmlSousDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    htmlSousDomaine += "<optgroup label='" + domaine.libelle + "' >"
+                    console.log(domaine);
+                    domaine.sousDomaines.forEach(function(sd){
+                        if(idSd != null && idSd == sd.id)
+                        {
+                            htmlSousDomaine += "<option id='" + sd.id + "' selected >" + sd.libelle + "</option>";
+                        }
+                        else{
+                            htmlSousDomaine += "<option id='" + sd.id + "'>" + sd.libelle + "</option>";
+                        }
+                    });
+                    htmlSousDomaine += "</optgroup>";
+                });
+                /*$("#sousDomaineProjet").html("");
+                $("#sousDomaineProjet").trigger("chosen:updated");*/
+                $("#sousDomaineProjet").html(htmlSousDomaine);
+                $("#sousDomaineProjet").trigger("chosen:updated");
+            }
+        });
+        /*$("#domainesProjet").html("");
         $("#sousDomaineProjet").html("");
 
         var idSecteur = $("#secteurProjet").val();
@@ -52,7 +91,7 @@ $(function(){
                 });
             });
             $("#domainesProjet").trigger("chosen:updated");
-        });
+        });*/
     }
     
     var tabSuppression = [];
@@ -894,7 +933,36 @@ $(function(){
     });
     
     $("#secteurProjet").change(function(){
+        /*listeSecteurs.forEach(function(secteur){
+            if(secteur.id == $("#secteurProjet").val())
+            {
+                var htmlDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    htmlDomaine += "<option id='" + domaine.id + "'>" + domaine.libelle + "</option>";
+                });
+                $("#domainesProjet").html(htmlDomaine);
+                $("#domainesProjet").trigger("chosen:updated");
+
+                var htmlSousDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    htmlSousDomaine += "<optgroup label='" + domaine.libelle + "' >"
+                    console.log(domaine);
+                    domaine.sousDomaines.forEach(function(sd){
+                        htmlSousDomaine += "<option id='" + sd.id + "'>" + sd.libelle + "</option>";
+                    });
+                    htmlSousDomaine += "</optgroup>";
+                });
+                $("#sousDomaineProjet").html("");
+                $("#sousDomaineProjet").trigger("chosen:updated");
+                $("#sousDomaineProjet").html(htmlSousDomaine);
+                $("#sousDomaineProjet").trigger("chosen:updated");
+            }
+        });*/
         actualiserHautFormulaire(null, null);
+    });
+
+    $("#domainesProjet").change(function(){
+        console.log("TEST");
     });
     
     
@@ -903,15 +971,15 @@ $(function(){
             {
                 $("#divProjetGenerique").show("fade");
                 $("#divProjetSpecifique").hide();
-                $("#domainesProjet").trigger("chosen:updated");
                 $("#domainesProjet").chosen();
+                $("#domainesProjet").trigger("chosen:updated");
             }
         else if($(this).val() == "projetSpecifique")
             {
                 $("#divProjetSpecifique").show("fade");
                 $("#divProjetGenerique").hide();
-                $("#sousDomaineProjet").trigger("chosen:updated");
                 $("#sousDomaineProjet").chosen();
+                $("#sousDomaineProjet").trigger("chosen:updated");
             }
     });
     

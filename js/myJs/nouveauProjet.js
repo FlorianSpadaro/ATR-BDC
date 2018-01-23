@@ -1,5 +1,6 @@
 $(function(){
-    
+    var listeSecteurs = JSON.parse($("#listeSecteurs").text());
+
     $("#summernote").summernote({
         height: 300,
         lang: 'fr-FR'
@@ -9,7 +10,33 @@ $(function(){
     $("#envoiMail").bootstrapToggle();
     
     function actualiserHautFormulaire(){
-        var idSecteur = $("#secteurProjet").val();
+        listeSecteurs.forEach(function(secteur){
+            if(secteur.id == $("#secteurProjet").val())
+            {
+                var htmlDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    htmlDomaine += "<option id='" + domaine.id + "'>" + domaine.libelle + "</option>";
+                });
+                $("#domainesProjet").html(htmlDomaine);
+                $("#domainesProjet").trigger("chosen:updated");
+
+                var htmlSousDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    htmlSousDomaine += "<optgroup label='" + domaine.libelle + "' >"
+                    console.log(domaine);
+                    domaine.sousDomaines.forEach(function(sd){
+                        htmlSousDomaine += "<option id='" + sd.id + "'>" + sd.libelle + "</option>";
+                    });
+                    htmlSousDomaine += "</optgroup>";
+                });
+                /*$("#sousDomaineProjet").html("");
+                $("#sousDomaineProjet").trigger("chosen:updated");*/
+                $("#sousDomaineProjet").html(htmlSousDomaine);
+                $("#sousDomaineProjet").trigger("chosen:updated");
+            }
+        });
+
+        /*var idSecteur = $("#secteurProjet").val();
         $.post("API/getDomainesBySecteurId.php", {secteur_id: idSecteur}, function(data){
             var domaines = JSON.parse(data);
             domaines.forEach(function(dom){
@@ -39,7 +66,7 @@ $(function(){
                 });
             });
             $("#domainesProjet").trigger("chosen:updated");
-        });
+        });*/
     }
     
     $("[name='typeProjet']").change(function(){
@@ -60,13 +87,40 @@ $(function(){
     });
     
     $("#secteurProjet").change(function(){
-        $("#domainesProjet").prop("disabled", true);
+        /*$("#domainesProjet").prop("disabled", true);
         $("#sousDomaineProjet").prop("disabled", true);
         $("#sousDomaineProjet").html("");
-        $("#domainesProjet").html("");
+        $("#domainesProjet").html("");*/
+
+        /*listeSecteurs.forEach(function(secteur){
+            if(secteur.id == $("#secteurProjet").val())
+            {
+                var htmlDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    htmlDomaine += "<option id='" + domaine.id + "'>" + domaine.libelle + "</option>";
+                });
+                $("#domainesProjet").html(htmlDomaine);
+                $("#domainesProjet").trigger("chosen:updated");
+
+                var htmlSousDomaine = "";
+                secteur.domaines.forEach(function(domaine){
+                    htmlSousDomaine += "<optgroup label='" + domaine.libelle + "' >"
+                    console.log(domaine);
+                    domaine.sousDomaines.forEach(function(sd){
+                        htmlSousDomaine += "<option id='" + sd.id + "'>" + sd.libelle + "</option>";
+                    });
+                    htmlSousDomaine += "</optgroup>";
+                });
+                $("#sousDomaineProjet").html("");
+                $("#sousDomaineProjet").trigger("chosen:updated");
+                $("#sousDomaineProjet").html(htmlSousDomaine);
+                $("#sousDomaineProjet").trigger("chosen:updated");
+            }
+        });*/
+
         actualiserHautFormulaire();
-        $("#domainesProjet").prop("disabled", false);
-        $("#sousDomaineProjet").prop("disabled", false);
+        /*$("#domainesProjet").prop("disabled", false);
+        $("#sousDomaineProjet").prop("disabled", false);*/
     });
     
     actualiserHautFormulaire();
