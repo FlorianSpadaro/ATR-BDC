@@ -5,6 +5,7 @@
         header('Location: index.php');
         exit();
     }
+    $listeSecteurs = json_decode(getSecteursDomainesSousdomaines());
     
 ?>
 
@@ -57,6 +58,9 @@
     </head>
     
     <body>
+
+        <div id="listeSecteurs" style="display:none"><?php echo json_encode($listeSecteurs) ?></div>
+
         <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
             <div class="container">
                 <div class="row">
