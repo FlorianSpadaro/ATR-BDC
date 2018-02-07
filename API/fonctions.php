@@ -187,12 +187,12 @@
 			
 			$lien = "actualite.php?id=" + $idActu;
 			$titreMail = "Une actualité a été modifiée";
-			$contenuMail = "Bonjour,<br/><br/>L'actualité '".$actu->titre."' a été modifiée.<br/>Pour la consulter vous pouvez cliquer <a href='".$lien."'>ICI</a>";
+			$contenuMail = "Bonjour,<br/><br/>L'actualité '".$actu->titre."' a été modifiée.<br/>Pour la consulter vous pouvez cliquer <a href='192.168.30.242/bdc/".$lien."'>ICI</a>";
 			$reponse = json_decode(envoyerMail($emails, $titreMail, $contenuMail));
 			if($reponse)
 			{
 				$titreNotif = $titreMail;
-				$contenuNotif = $contenuMail;
+				$contenuNotif = "Bonjour,<br/><br/>L'actualité '".$actu->titre."' a été modifiée.<br/>Pour la consulter vous pouvez cliquer <a href='".$lien."'>ICI</a>";
 				$lienNotif = $lien;
 				$idNotif = json_decode(addNotification($titreNotif, $contenuNotif, $lienNotif));
 				if($idNotif != null)
@@ -228,12 +228,12 @@
 			
 			$lien = "actualite.php?id=" + $idActu;
 			$titreMail = "Une nouvelle actualité a été créée";
-			$contenuMail = "Bonjour,<br/><br/>Une nouvelle actualité vient d'être créée.<br/>Pour la consulter vous pouvez cliquer <a href='".$lien."'>ICI</a>";
+			$contenuMail = "Bonjour,<br/><br/>Une nouvelle actualité vient d'être créée.<br/>Pour la consulter vous pouvez cliquer <a href='192.168.30.242/bdc/".$lien."'>ICI</a>";
 			$reponse = json_decode(envoyerMail($emails, $titreMail, $contenuMail));
 			if($reponse)
 			{
 				$titreNotif = $titreMail;
-				$contenuNotif = $contenuMail;
+				$contenuNotif = "Bonjour,<br/><br/>Une nouvelle actualité vient d'être créée.<br/>Pour la consulter vous pouvez cliquer <a href='".$lien."'>ICI</a>";
 				$lienNotif = $lien;
 				$idNotif = json_decode(addNotification($titreNotif, $contenuNotif, $lienNotif));
 				if($idNotif != null)
@@ -296,13 +296,13 @@
 				
 				$lien = "projet.php?id=".$idProjet;
 				$titre = "Un projet a été modifié";
-				$contenu = "Bonjour<br/><br/>Le projet \"".$titreProjet."\" du secteur ".$secteur." a été modifié.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd .")<br/>Pour y accéder, cliquez <a href='".$lien."'>ICI</a>";
+				$contenu = "Bonjour<br/><br/>Le projet \"".$titreProjet."\" du secteur ".$secteur." a été modifié.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd .")<br/>Pour y accéder, cliquez <a href='192.168.30.242/bdc/".$lien."'>ICI</a>";
 				
 				$reponse = json_decode(envoyerMail($emails, $titre, $contenu));
 				if($reponse)
 				{
 					$titreNotif = $titre;
-					$descriptionNotif = $contenu;
+					$descriptionNotif = "Bonjour<br/><br/>Le projet \"".$titreProjet."\" du secteur ".$secteur." a été modifié.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd .")<br/>Pour y accéder, cliquez <a href='".$lien."'>ICI</a>";
 					$lienNotif = $lien;
 					$idNotif = json_decode(addNotification($titreNotif, $descriptionNotif, $lienNotif));
 					if($idNotif != null)
@@ -364,13 +364,13 @@
 				
 				$lien = "projet.php?id=".$idProjet;
 				$titre = "Un nouveau projet a été créé";
-				$contenu = "Bonjour<br/><br/>Un projet du secteur ".$secteur." a été créé.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd.")<br/>Pour y accéder, cliquez <a href='".$lien."'>ICI</a>";
+				$contenu = "Bonjour<br/><br/>Un projet du secteur ".$secteur." a été créé.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd.")<br/>Pour y accéder, cliquez <a href='192.168.30.242/bdc/".$lien."'>ICI</a>";
 				
 				$reponse = json_decode(envoyerMail($emails, $titre, $contenu));
 				if($reponse)
 				{
 					$titreNotif = $titre;
-					$descriptionNotif = $contenu;
+					$descriptionNotif = "Bonjour<br/><br/>Un projet du secteur ".$secteur." a été créé.<br/>Il s'agit d'un projet ".$typeProjet." (".$domSd.")<br/>Pour y accéder, cliquez <a href='".$lien."'>ICI</a>";;
 					$lienNotif = $lien;
 					$idNotif = json_decode(addNotification($titreNotif, $descriptionNotif, $lienNotif));
 					if($idNotif != null)
