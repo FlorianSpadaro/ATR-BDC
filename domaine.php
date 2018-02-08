@@ -385,7 +385,7 @@
                                 echo "0";
                             }
                             ?>
-                            </span> <?php echo $sd->libelle ?></a> 
+                            </span> <img src="<?php echo $sd->miniature_url ?>" title="<?php echo $sd->miniature_nom ?>" width="25" height="25" /> <?php echo $sd->libelle ?></a> 
                                 </h3>
                               </div>
                               <div id="sd<?php echo $sd->id ?>" class="panel-collapse collapse in">

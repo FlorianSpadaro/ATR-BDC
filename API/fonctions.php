@@ -3919,7 +3919,7 @@
 		$sousDomaines = null;
 		$i = 0;
 		$j = 0;
-		$req = $bdd->prepare("SELECT id, contrat_id, libelle, description FROM sous_domaine WHERE domaine_id = ? ORDER BY libelle");
+		$req = $bdd->prepare("SELECT sous_domaine.id, sous_domaine.contrat_id, sous_domaine.libelle, sous_domaine.description, miniature.nom, miniature.url FROM sous_domaine JOIN contrat ON contrat.id = sous_domaine.contrat_id JOIN miniature ON miniature.id = contrat.miniature_id WHERE domaine_id = ? ORDER BY libelle");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
@@ -3927,6 +3927,8 @@
 			$sousDomaines[$i]["libelle"] = $data["libelle"];
 			$sousDomaines[$i]["description"] = $data["description"];
 			$sousDomaines[$i]["contrat_id"] = $data["contrat_id"];
+			$sousDomaines[$i]["miniature_nom"] = $data["nom"];
+			$sousDomaines[$i]["miniature_url"] = $data["url"];
 			$req2 = $bdd->prepare("SELECT id, titre, description, contenu, date_creation, date_derniere_maj FROM projet WHERE sous_domaine_id = ? ORDER BY titre");
 			$req2->execute(array($data["id"]));
 			while($data2 = $req2->fetch())
